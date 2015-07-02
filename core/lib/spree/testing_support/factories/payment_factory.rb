@@ -2,7 +2,9 @@ FactoryGirl.define do
   factory :payment, class: Spree::Payment do
     amount 45.75
     association(:payment_method, factory: :credit_card_payment_method)
-    association(:source, factory: :credit_card)
+    source do |e|
+      e.association(:credit_card, payment_method: e.payment_method)
+    end
     order
     state 'checkout'
     response_code '12345'
