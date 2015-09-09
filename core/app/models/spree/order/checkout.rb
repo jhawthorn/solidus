@@ -267,7 +267,7 @@ module Spree
               end
 
               update = OrderUpdateAttributes.new(self, attributes, request_env: request_env)
-              success = update.update
+              success = update.apply
             end
 
             @updating_params = nil
