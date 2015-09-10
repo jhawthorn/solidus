@@ -27,11 +27,9 @@ module Spree
     attr_reader :order, :payment, :attributes, :source_attributes
 
     def build_source
-      payment_method = payment.payment_method
-      if source_attributes.present? && payment_method.try(:payment_source_class)
-        payment.source = payment_method.payment_source_class.new(source_attributes)
-        payment.source.payment_method_id = payment_method.id
-        payment.source.user_id = order.user_id if order
+      if source_attributes.present? && payment.payment_method
+        source = payment.payment_method.build_payment_source(source_attributes, order: order, payment: payment)
+        payment.source = source
       end
     end
 

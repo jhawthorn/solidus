@@ -56,6 +56,16 @@ module Spree
       true
     end
 
+    # Builds a new source for this payment method
+    # This method can be overridden with custom logic to create a payment source.
+    # @api public
+    def build_payment_source(source_attributes, order: nil, payment: nil)
+      payment_source_class.new(source_attributes) do |source|
+        source.payment_method_id = id
+        source.user_id = order.user_id if order
+      end
+    end
+
     # Custom gateways should redefine this method. See Gateway implementation
     # as an example
     def reusable_sources(order)
