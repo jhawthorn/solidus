@@ -1,15 +1,16 @@
 module Spree
   module PromotionHandler
     class Coupon
-      attr_reader :order
+      attr_reader :order, :coupon_code
       attr_accessor :error, :success, :status_code
 
       def initialize(order)
         @order = order
+        @coupon_code = order.coupon_code && order.coupon_code.downcase
       end
 
       def apply
-        if order.coupon_code.present?
+        if coupon_code.present?
           if promotion.present? && promotion.actions.exists?
             handle_present_promotion(promotion)
           else
@@ -49,7 +50,7 @@ module Spree
       private
 
       def promotion_code
-        @promotion_code ||= Spree::PromotionCode.where(value: order.coupon_code.downcase).first
+        @promotion_code ||= Spree::PromotionCode.where(value: coupon_code).first
       end
 
       def handle_present_promotion(promotion)
@@ -88,7 +89,7 @@ module Spree
 
       def determine_promotion_application_result
         detector = lambda { |p|
-          p.source.promotion.codes.any? { |code| code.value == order.coupon_code.downcase }
+          p.source.promotion.codes.any? { |code| code.value == coupon_code }
         }
 
         # Check for applied adjustments.
@@ -106,7 +107,7 @@ module Spree
         else
           # if the promotion exists on an order, but wasn't found above,
           # we've already selected a better promotion
-          if order.promotions.with_coupon_code(order.coupon_code)
+          if order.promotions.with_coupon_code(coupon_code)
             set_error_code :coupon_code_better_exists
           else
             # if the promotion was created after the order
