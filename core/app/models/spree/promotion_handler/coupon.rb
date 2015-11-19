@@ -65,7 +65,9 @@ module Spree
         # then result here will also be `true`.
         result = promotion.activate(order: order, promotion_code: promotion_code)
         if result
-          determine_promotion_application_result
+          order.update_totals
+          order.persist_totals
+          set_success_code :coupon_code_applied
         else
           set_error_code :coupon_code_unknown_error
         end
@@ -85,35 +87,6 @@ module Spree
 
       def promotion_exists_on_order?(order, promotion)
         order.promotions.include? promotion
-      end
-
-      def determine_promotion_application_result
-        detector = lambda { |p|
-          p.source.promotion.codes.any? { |code| code.value == coupon_code }
-        }
-
-        # Check for applied adjustments.
-        discount = order.line_item_adjustments.promotion.detect(&detector)
-        discount ||= order.shipment_adjustments.promotion.detect(&detector)
-        discount ||= order.adjustments.promotion.detect(&detector)
-
-        # Check for applied line items.
-        created_line_items = promotion.actions.detect { |a| a.type == 'Spree::Promotion::Actions::CreateLineItems' }
-
-        if (discount && discount.eligible) || created_line_items
-          order.update_totals
-          order.persist_totals
-          set_success_code :coupon_code_applied
-        else
-          # if the promotion exists on an order, but wasn't found above,
-          # we've already selected a better promotion
-          if order.promotions.with_coupon_code(coupon_code)
-            set_error_code :coupon_code_better_exists
-          else
-            # if the promotion was created after the order
-            set_error_code :coupon_code_not_found
-          end
-        end
       end
     end
   end
