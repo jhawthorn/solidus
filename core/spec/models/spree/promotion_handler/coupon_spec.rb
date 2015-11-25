@@ -89,7 +89,7 @@ module Spree
 
           context "right coupon given" do
             context "with correct coupon code casing" do
-              before { allow(order).to receive_messages :coupon_code => "10off" }
+              before { order.coupon_code = "10off" }
 
               it "successfully activates promo" do
                 expect(order.total).to eq(130)
@@ -113,7 +113,7 @@ module Spree
 
             # Regression test for #4211
             context "with incorrect coupon code casing" do
-              before { allow(order).to receive_messages :coupon_code => "10OFF" }
+              before { order.coupon_code = "10OFF" }
               it "successfully activates promo" do
                 expect(order.total).to eq(130)
                 subject.apply
@@ -132,10 +132,10 @@ module Spree
             let!(:order) { Order.create }
 
             before do
-              allow(order).to receive_messages :coupon_code => "10off"
+              order.coupon_code = "10off"
               calculator = Calculator::FlatRate.new(preferred_amount: 10)
               general_promo = create(:promotion, apply_automatically: true, name: "General Promo")
-              general_action = Promotion::Actions::CreateItemAdjustments.create(promotion: general_promo, calculator: calculator)
+              Promotion::Actions::CreateItemAdjustments.create(promotion: general_promo, calculator: calculator)
 
               order.contents.add create(:variant)
             end
@@ -155,10 +155,10 @@ module Spree
             let!(:order) { Order.create }
 
             before do
-              allow(order).to receive_messages :coupon_code => "10off"
+              order.coupon_code = "10off"
               calculator = Calculator::FlatPercentItemTotal.new(preferred_flat_percent: 10)
               general_promo = create(:promotion, apply_automatically: true, name: "General Promo")
-              general_action = Promotion::Actions::CreateItemAdjustments.create!(promotion: general_promo, calculator: calculator)
+              Promotion::Actions::CreateItemAdjustments.create!(promotion: general_promo, calculator: calculator)
 
               order.contents.add create(:variant, price: 500)
               order.contents.add create(:variant, price: 10)
@@ -182,7 +182,7 @@ module Spree
           context "right coupon code given" do
             let(:order) { create(:order_with_line_items, :line_items_count => 3) }
 
-            before { allow(order).to receive_messages :coupon_code => "10off" }
+            before { order.coupon_code = "10off" }
 
             it "successfully activates promo" do
               expect(order.total).to eq(130)
@@ -290,7 +290,7 @@ module Spree
             )
 
             @order = Spree::Order.create!
-            allow(@order).to receive_messages :coupon_code => "10off"
+            @order.coupon_code = "10off"
           end
           context "and the product price is less than promo discount" do
             before(:each) do
@@ -335,8 +335,7 @@ module Spree
               Promotion::Actions::CreateItemAdjustments.create(promotion: twnty_off,
                                                                calculator: twnty_off_calc)
 
-              allow(@order).to receive(:coupon_code).and_call_original
-              allow(@order).to receive_messages :coupon_code => "20off"
+              @order.coupon_code = "20off"
               3.times do |i|
                 taxable = create(:product, :tax_category => @category, :price => 10.0)
                 @order.contents.add(taxable.master, 2)
