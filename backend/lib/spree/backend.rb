@@ -3,6 +3,7 @@ require 'jquery-rails'
 require 'jquery-ui-rails'
 require 'bourbon'
 require 'select2-rails'
+require 'sprockets/railtie'
 require 'handlebars_assets'
 
 require 'spree_core'
