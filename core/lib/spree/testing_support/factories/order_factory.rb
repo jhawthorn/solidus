@@ -22,9 +22,6 @@ FactoryGirl.define do
     end
 
     factory :order_with_line_items do
-      bill_address
-      ship_address
-
       transient do
         line_items_count 1
         line_items_attributes { [{}] * line_items_count }
