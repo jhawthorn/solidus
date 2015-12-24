@@ -2,7 +2,7 @@ FactoryGirl.define do
   factory :order, class: Spree::Order do
     user
     bill_address
-    ship_address
+    ship_address { bill_address }
     completed_at nil
     email { user.try(:email) }
     store
@@ -65,7 +65,7 @@ FactoryGirl.define do
           end
 
           after(:create) do |order, evaluator|
-            create(evaluator.payment_type, amount: order.total, order: order, state: 'completed')
+            create(evaluator.payment_type, amount: order.total, order: order, state: 'completed', address: evaluator.bill_address)
             order.shipments.each do |shipment|
               shipment.inventory_units.update_all state: 'on_hand'
               shipment.update_column('state', 'ready')

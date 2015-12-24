@@ -1,7 +1,14 @@
 FactoryGirl.define do
-  factory :payment, aliases: [:credit_card_payment], class: Spree::Payment do
+  factory :base_payment, class: Spree::Payment do
+    transient do
+      address nil # used on a credit card source
+    end
+  end
+  factory :payment, aliases: [:credit_card_payment], parent: :base_payment do
     association(:payment_method, factory: :credit_card_payment_method)
-    association(:source, factory: :credit_card)
+    source do |e|
+      e.association(:credit_card, address: e.address)
+    end
     order
     state 'checkout'
     response_code '12345'
@@ -17,7 +24,7 @@ FactoryGirl.define do
     end
   end
 
-  factory :check_payment, class: Spree::Payment do
+  factory :check_payment, class: Spree::Payment, parent: :base_payment do
     association(:payment_method, factory: :check_payment_method)
     order
   end
