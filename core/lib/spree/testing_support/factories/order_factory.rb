@@ -1,10 +1,13 @@
 FactoryGirl.define do
   factory :order, class: Spree::Order do
-    user
+    trait :with_user do
+      user
+    end
+
     bill_address
     ship_address { bill_address }
     completed_at nil
-    email { user.try(:email) }
+    email { user.try!(:email) || Faker::Internet.email }
     store
 
     transient do
