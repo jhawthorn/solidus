@@ -7,6 +7,9 @@ machine:
   ruby:
     version: 2.1.5
 dependencies:
+  pre:
+    - ls -l /usr/local/bin/phantomjs
+    - curl https://s3.amazonaws.com/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2 | sudo tar -C /usr/local/bin/ -xjpf - phantomjs
   override:
     - bundle check --path=vendor/bundle || bundle install --path=vendor/bundle
     - ./build-ci.rb install
