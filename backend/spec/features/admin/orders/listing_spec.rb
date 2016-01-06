@@ -15,6 +15,7 @@ describe "Orders Listing", type: :feature, js: true do
 
   context "listing orders" do
     it "should list existing orders" do
+      raise
       within_row(1) do
         expect(column_text(2)).to eq "R100"
         expect(column_text(3)).to eq "CART"
