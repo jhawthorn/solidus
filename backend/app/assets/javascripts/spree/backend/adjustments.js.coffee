@@ -8,7 +8,7 @@ $(@).ready( ->
         coupon_code: $("#coupon_code").val()
         token: Spree.api_key
       success: ->
-        window.location.reload()
+        #window.location.reload()
       error: (msg) ->
         if msg.responseJSON["error"]
           show_flash 'error', msg.responseJSON["error"]

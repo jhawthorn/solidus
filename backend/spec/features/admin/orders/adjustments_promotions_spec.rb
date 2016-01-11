@@ -42,7 +42,9 @@ describe "Adjustments Promotions", :type => :feature do
       it "should show an error message", :js => true do
         fill_in "coupon_code", :with => "10_off"
         click_button "Add Coupon Code"
+        puts "have_content"
         expect(page).to have_content('-$10.00')
+        puts "found"
 
         fill_in "coupon_code", :with => "10_off"
         click_button "Add Coupon Code"

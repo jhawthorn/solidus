@@ -1,6 +1,6 @@
-before_script:
-  - sh -e /etc/init.d/xvfb start
-  - export DISPLAY=:99.0
+addons:
+  artifacts: true
+  s3_region: "us-west-1"
 bundler_args: --without development production --quiet
 env:
   - GEM=api DB=mysql
