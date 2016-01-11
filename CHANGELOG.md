@@ -22,6 +22,17 @@
 
 *   Removed `Product#set_master_variant_defaults`, which was unnecessary since master is build with `is_master` already `true`.
 
+*   Fix logic around raising InsufficientStock when creating shipments.
+
+    Previously, `InsufficientStock` was raised if any StockLocations were fully
+    out of inventory. This was incorrect because it was possible other stock
+    locations could have fulfilled the inventory. This was also incorrect because
+    the stock location could have some, but insufficient inventory, and not raise
+    the exception (an incomplete package would be returned). Now the coordinator
+    checks that the package is complete and raises `InsufficientStock` if it is
+    incomplete for any reason.
+
+>>>>>>> 18fce61... Add changelog entry for InsufficientStock change
 ## Solidus 1.1.0 (unreleased)
 
 *   Address is immutable (Address#readonly? is always true)
