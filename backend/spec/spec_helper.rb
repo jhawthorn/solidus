@@ -67,27 +67,27 @@ RSpec.configure do |config|
     DatabaseCleaner.clean_with :truncation
   end
 
-  config.before(:each) do
-    Rails.cache.clear
-    reset_spree_preferences
-    WebMock.disable!
-    if RSpec.current_example.metadata[:js]
-      page.driver.browser.url_blacklist = ['http://fonts.googleapis.com']
+  config.around(:each) do |example|
+    if example.metadata[:js]
       DatabaseCleaner.strategy = :truncation
     else
       DatabaseCleaner.strategy = :transaction
     end
-    DatabaseCleaner.start
+
+    DatabaseCleaner.cleaning do
+      example.run
+    end
   end
 
-  config.after(:each) do
-    # Ensure js requests finish processing before advancing to the next test
-    wait_for_ajax if RSpec.current_example.metadata[:js]
+  config.before(:each) do |example|
+    Rails.cache.clear
+    reset_spree_preferences
+    WebMock.disable!
 
-    DatabaseCleaner.clean
+    if example.metadata[:js]
+      page.driver.browser.url_blacklist = ['http://fonts.googleapis.com']
+    end
   end
-
-  config.include BaseFeatureHelper, type: :feature
 
   config.after(:each, type: :feature) do |example|
     missing_translations = page.body.scan(/translation missing: #{I18n.locale}\.(.*?)[\s<\"&]/)
@@ -96,6 +96,8 @@ RSpec.configure do |config|
       puts "In spec: #{example.location}"
     end
   end
+
+  config.include BaseFeatureHelper, type: :feature
 
   config.include FactoryGirl::Syntax::Methods
 
