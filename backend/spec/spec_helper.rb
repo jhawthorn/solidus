@@ -67,24 +67,30 @@ RSpec.configure do |config|
     DatabaseCleaner.clean_with :truncation
   end
 
-  config.before(:each) do
+  config.before(:each) do |example|
     Rails.cache.clear
     reset_spree_preferences
     WebMock.disable!
-    if RSpec.current_example.metadata[:js]
+
+    if example.metadata[:js]
       page.driver.browser.url_blacklist = ['http://fonts.googleapis.com']
+    end
+  end
+
+  config.around(:each) do |example|
+    Rails.cache.clear
+    reset_spree_preferences
+    WebMock.disable!
+
+    if example.metadata[:js]
       DatabaseCleaner.strategy = :truncation
     else
       DatabaseCleaner.strategy = :transaction
     end
-    DatabaseCleaner.start
-  end
 
-  config.after(:each) do
-    # Ensure js requests finish processing before advancing to the next test
-    wait_for_ajax if RSpec.current_example.metadata[:js]
-
-    DatabaseCleaner.clean
+    DatabaseCleaner.cleaning do
+      example.run
+    end
   end
 
   config.include BaseFeatureHelper, :type => :feature
