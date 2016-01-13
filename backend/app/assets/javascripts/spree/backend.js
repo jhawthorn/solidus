@@ -1,5 +1,5 @@
 //= require handlebars
-//= require jquery
+//= require jquery2
 //= require jquery_ujs
 //= require jquery-ui/datepicker
 //= require jquery-ui/sortable
