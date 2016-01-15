@@ -74,21 +74,19 @@ module Spree
 
     def update_adjustment_total
       recalculate_adjustments
+
+      all_items = line_items.all.to_a + shipments.all.to_a
+      eligible_adjustments = adjustments.all.to_a.select(&:eligible?)
+
       order.adjustment_total =
-        line_items.sum(:adjustment_total) +
-        shipments.sum(:adjustment_total)  +
-        adjustments.eligible.sum(:amount)
-      order.included_tax_total =
-        line_items.sum(:included_tax_total) +
-        shipments.sum(:included_tax_total)
-      order.additional_tax_total =
-        line_items.sum(:additional_tax_total) +
-        shipments.sum(:additional_tax_total)
+        all_items.map(&:adjustment_total).sum +
+        eligible_adjustments.map(&:amount).sum
+      order.included_tax_total = all_items.map(&:included_tax_total).sum
+      order.additional_tax_total = all_items.map(&:additional_tax_total).sum
 
       order.promo_total =
-        line_items.sum(:promo_total) +
-        shipments.sum(:promo_total) +
-        adjustments.promotion.eligible.sum(:amount)
+        all_items.map(&:promo_total).sum +
+        eligible_adjustments.select(&:promotion?).map(&:amount).sum
 
       update_order_total
     end
