@@ -24,6 +24,8 @@ Style/ClassAndModuleChildren:
 Style/GuardClause:
   Enabled: false
 
+Lint/EndAlignment:
+  AutoCorrect: true
 
 # From http://relaxed.ruby.style/
 
