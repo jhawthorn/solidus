@@ -4,14 +4,14 @@ module Spree
 
     acts_as_paranoid
 
-    has_many :stock_movements, :as => :originator
+    has_many :stock_movements, as: :originator
     has_many :transfer_items, inverse_of: :stock_transfer
 
-    belongs_to :created_by, :class_name => Spree::UserClassHandle.new
-    belongs_to :finalized_by, :class_name => Spree::UserClassHandle.new
-    belongs_to :closed_by, :class_name => Spree::UserClassHandle.new
-    belongs_to :source_location, :class_name => 'Spree::StockLocation'
-    belongs_to :destination_location, :class_name => 'Spree::StockLocation'
+    belongs_to :created_by, class_name: Spree::UserClassHandle.new
+    belongs_to :finalized_by, class_name: Spree::UserClassHandle.new
+    belongs_to :closed_by, class_name: Spree::UserClassHandle.new
+    belongs_to :source_location, class_name: 'Spree::StockLocation'
+    belongs_to :destination_location, class_name: 'Spree::StockLocation'
 
     validates_presence_of :source_location
     validates_presence_of :destination_location, if: :finalized?
@@ -60,17 +60,17 @@ module Spree
 
     def source_movements
       stock_movements.joins(:stock_item)
-        .where('spree_stock_items.stock_location_id' => source_location_id)
+                     .where('spree_stock_items.stock_location_id' => source_location_id)
     end
 
     def destination_movements
       stock_movements.joins(:stock_item)
-        .where('spree_stock_items.stock_location_id' => destination_location_id)
+                     .where('spree_stock_items.stock_location_id' => destination_location_id)
     end
 
     def finalize(finalized_by)
       if finalizable?
-        self.update_attributes({ finalized_at: Time.current, finalized_by: finalized_by })
+        update_attributes({ finalized_at: Time.current, finalized_by: finalized_by })
       else
         errors.add(:base, Spree.t(:stock_transfer_cannot_be_finalized))
         false
@@ -91,7 +91,7 @@ module Spree
 
     def close(closed_by)
       if receivable?
-        self.update_attributes({ closed_at: Time.current, closed_by: closed_by })
+        update_attributes({ closed_at: Time.current, closed_by: closed_by })
       else
         errors.add(:base, Spree.t(:stock_transfer_must_be_receivable))
         false

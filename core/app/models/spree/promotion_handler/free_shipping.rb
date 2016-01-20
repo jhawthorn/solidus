@@ -33,10 +33,10 @@ module Spree
         Spree::Promotion.active.
           joins(promotion_code_join).
           where({
-            id: Spree::Promotion::Actions::FreeShipping.pluck(:promotion_id), # This would probably be more efficient by joining instead
-            spree_promotion_codes: { id: nil },
-            path: nil
-          })
+                  id: Spree::Promotion::Actions::FreeShipping.pluck(:promotion_id), # This would probably be more efficient by joining instead
+                  spree_promotion_codes: { id: nil },
+                  path: nil
+                })
       end
     end
   end

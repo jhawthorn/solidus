@@ -10,26 +10,26 @@ module Spree
       # TODO: Clean this up by moving searching out to user_class_extensions
       # And then JSON building with something like Active Model Serializers
       def users
-        if params[:ids]
-          # split here may be String#split or Array#split, so we must flatten the results
-          @users = Spree.user_class.where(id: params[:ids].split(',').flatten)
-        else
-          @users = Spree.user_class.ransack({
-            m: 'or',
-            email_start: params[:q],
-            addresses_firstname_start: params[:q],
-            addresses_lastname_start: params[:q]
-          }).result.limit(10)
-        end
+        @users = if params[:ids]
+                   # split here may be String#split or Array#split, so we must flatten the results
+                   Spree.user_class.where(id: params[:ids].split(',').flatten)
+                 else
+                   Spree.user_class.ransack({
+                                              m: 'or',
+                                              email_start: params[:q],
+                                              addresses_firstname_start: params[:q],
+                                              addresses_lastname_start: params[:q]
+                                            }).result.limit(10)
+                 end
       end
 
       def products
-        if params[:ids]
-          # split here may be String#split or Array#split, so we must flatten the results
-          @products = Product.where(id: params[:ids].split(",").flatten)
-        else
-          @products = Product.ransack(params[:q]).result
-        end
+        @products = if params[:ids]
+                      # split here may be String#split or Array#split, so we must flatten the results
+                      Product.where(id: params[:ids].split(",").flatten)
+                    else
+                      Product.ransack(params[:q]).result
+                    end
 
         @products = @products.distinct.page(params[:page]).per(params[:per_page])
         expires_in 15.minutes, public: true
@@ -38,4 +38,3 @@ module Spree
     end
   end
 end
-

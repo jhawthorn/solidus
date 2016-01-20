@@ -15,7 +15,7 @@ class Spree::StoreCredit < Spree::Base
   belongs_to :user, class_name: Spree::UserClassHandle.new
   belongs_to :created_by, class_name: Spree::UserClassHandle.new
   belongs_to :category, class_name: "Spree::StoreCreditCategory"
-  belongs_to :credit_type, class_name: 'Spree::StoreCreditType', :foreign_key => 'type_id'
+  belongs_to :credit_type, class_name: 'Spree::StoreCreditType', foreign_key: 'type_id'
   has_many :store_credit_events
 
   validates_presence_of :user_id, :category_id, :type_id, :created_by_id, :currency
@@ -44,7 +44,7 @@ class Spree::StoreCredit < Spree::Base
     amount - amount_used - amount_authorized
   end
 
-  def authorize(amount, order_currency, options={})
+  def authorize(amount, order_currency, options = {})
     authorization_code = options[:action_authorization_code]
     if authorization_code
       if store_credit_events.find_by(action: AUTHORIZE_ACTION, authorization_code: authorization_code)
@@ -57,13 +57,13 @@ class Spree::StoreCredit < Spree::Base
 
     if validate_authorization(amount, order_currency)
       update_attributes!({
-        action: AUTHORIZE_ACTION,
-        action_amount: amount,
-        action_originator: options[:action_originator],
-        action_authorization_code: authorization_code,
+                           action: AUTHORIZE_ACTION,
+                           action_amount: amount,
+                           action_originator: options[:action_originator],
+                           action_authorization_code: authorization_code,
 
-        amount_authorized: self.amount_authorized + amount,
-      })
+                           amount_authorized: amount_authorized + amount
+                         })
       authorization_code
     else
       errors.add(:base, Spree.t('store_credit.insufficient_authorized_amount'))
@@ -77,10 +77,10 @@ class Spree::StoreCredit < Spree::Base
     elsif currency != order_currency
       errors.add(:base, Spree.t('store_credit.currency_mismatch'))
     end
-    return errors.blank?
+    errors.blank?
   end
 
-  def capture(amount, authorization_code, order_currency, options={})
+  def capture(amount, authorization_code, order_currency, options = {})
     return false unless authorize(amount, order_currency, action_authorization_code: authorization_code)
     auth_event = store_credit_events.find_by!(action: AUTHORIZE_ACTION, authorization_code: authorization_code)
 
@@ -90,14 +90,14 @@ class Spree::StoreCredit < Spree::Base
         false
       else
         update_attributes!({
-          action: CAPTURE_ACTION,
-          action_amount: amount,
-          action_originator: options[:action_originator],
-          action_authorization_code: authorization_code,
+                             action: CAPTURE_ACTION,
+                             action_amount: amount,
+                             action_originator: options[:action_originator],
+                             action_authorization_code: authorization_code,
 
-          amount_used: self.amount_used + amount,
-          amount_authorized: self.amount_authorized - auth_event.amount,
-        })
+                             amount_used: amount_used + amount,
+                             amount_authorized: amount_authorized - auth_event.amount
+                           })
         authorization_code
       end
     else
@@ -106,16 +106,16 @@ class Spree::StoreCredit < Spree::Base
     end
   end
 
-  def void(authorization_code, options={})
+  def void(authorization_code, options = {})
     if auth_event = store_credit_events.find_by(action: AUTHORIZE_ACTION, authorization_code: authorization_code)
-      self.update_attributes!({
-        action: VOID_ACTION,
-        action_amount: auth_event.amount,
-        action_authorization_code: authorization_code,
-        action_originator: options[:action_originator],
+      update_attributes!({
+                           action: VOID_ACTION,
+                           action_amount: auth_event.amount,
+                           action_authorization_code: authorization_code,
+                           action_originator: options[:action_originator],
 
-        amount_authorized: amount_authorized - auth_event.amount,
-      })
+                           amount_authorized: amount_authorized - auth_event.amount
+                         })
       true
     else
       errors.add(:base, Spree.t('store_credit.unable_to_void', auth_code: authorization_code))
@@ -123,11 +123,11 @@ class Spree::StoreCredit < Spree::Base
     end
   end
 
-  def credit(amount, authorization_code, order_currency, options={})
+  def credit(amount, authorization_code, order_currency, options = {})
     # Find the amount related to this authorization_code in order to add the store credit back
     capture_event = store_credit_events.find_by(action: CAPTURE_ACTION, authorization_code: authorization_code)
 
-    if currency != order_currency  # sanity check to make sure the order currency hasn't changed since the auth
+    if currency != order_currency # sanity check to make sure the order currency hasn't changed since the auth
       errors.add(:base, Spree.t('store_credit.currency_mismatch'))
       false
     elsif capture_event && amount <= capture_event.amount
@@ -135,7 +135,7 @@ class Spree::StoreCredit < Spree::Base
         action: CREDIT_ACTION,
         action_amount: amount,
         action_originator: options[:action_originator],
-        action_authorization_code: authorization_code,
+        action_authorization_code: authorization_code
       }
       create_credit_record(amount, action_attributes)
       true
@@ -162,7 +162,7 @@ class Spree::StoreCredit < Spree::Base
   end
 
   def generate_authorization_code
-    "#{self.id}-SC-#{Time.current.utc.strftime("%Y%m%d%H%M%S%6N")}"
+    "#{id}-SC-#{Time.current.utc.strftime('%Y%m%d%H%M%S%6N')}"
   end
 
   def editable?
@@ -208,15 +208,15 @@ class Spree::StoreCredit < Spree::Base
 
   private
 
-  def create_credit_record(amount, action_attributes={})
+  def create_credit_record(amount, action_attributes = {})
     # Setting credit_to_new_allocation to true will create a new allocation anytime #credit is called
     # If it is not set, it will update the store credit's amount in place
     credit = if Spree::Config[:credit_to_new_allocation]
-      Spree::StoreCredit.new(create_credit_record_params(amount))
-    else
-      self.amount_used = amount_used - amount
-      self
-    end
+               Spree::StoreCredit.new(create_credit_record_params(amount))
+             else
+               self.amount_used = amount_used - amount
+               self
+             end
 
     credit.assign_attributes(action_attributes)
     credit.save!
@@ -225,35 +225,35 @@ class Spree::StoreCredit < Spree::Base
   def create_credit_record_params(amount)
     {
       amount: amount,
-      user_id: self.user_id,
-      category_id: self.category_id,
-      created_by_id: self.created_by_id,
-      currency: self.currency,
-      type_id: self.type_id,
-      memo: credit_allocation_memo,
+      user_id: user_id,
+      category_id: category_id,
+      created_by_id: created_by_id,
+      currency: currency,
+      type_id: type_id,
+      memo: credit_allocation_memo
     }
   end
 
   def credit_allocation_memo
-    Spree.t("store_credit.credit_allocation_memo", id: self.id)
+    Spree.t("store_credit.credit_allocation_memo", id: id)
   end
 
   def store_event
     return unless amount_changed? || amount_used_changed? || amount_authorized_changed? || [ELIGIBLE_ACTION, INVALIDATE_ACTION].include?(action)
 
     event = if action
-      store_credit_events.build(action: action)
-    else
-      store_credit_events.where(action: ALLOCATION_ACTION).first_or_initialize
-    end
+              store_credit_events.build(action: action)
+            else
+              store_credit_events.where(action: ALLOCATION_ACTION).first_or_initialize
+            end
 
     event.update_attributes!({
-      amount: action_amount || amount,
-      authorization_code: action_authorization_code || event.authorization_code || generate_authorization_code,
-      user_total_amount: user.total_available_store_credit,
-      originator: action_originator,
-      update_reason: update_reason,
-    })
+                               amount: action_amount || amount,
+                               authorization_code: action_authorization_code || event.authorization_code || generate_authorization_code,
+                               user_total_amount: user.total_available_store_credit,
+                               originator: action_originator,
+                               update_reason: update_reason
+                             })
   end
 
   def amount_used_less_than_or_equal_to_amount
@@ -283,7 +283,7 @@ class Spree::StoreCredit < Spree::Base
   end
 
   def associate_credit_type
-    unless self.type_id
+    unless type_id
       credit_type_name = category.try(:non_expiring?) ? Spree.t("store_credit.non_expiring") : Spree.t("store_credit.expiring")
       self.credit_type = Spree::StoreCreditType.find_by_name(credit_type_name)
     end

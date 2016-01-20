@@ -110,10 +110,10 @@ module Spree::Preferences::Preferable
       if !value ||
          value == 0 ||
          value =~ /\A(f|false|0)\Z/i ||
-         (value.respond_to? :empty? and value.empty?)
-         false
+         (value.respond_to?(:empty?) && value.empty?)
+        false
       else
-         true
+        true
       end
     when :array
       raise TypeError, "Array expected got #{value.inspect}" unless value.is_a?(Array)

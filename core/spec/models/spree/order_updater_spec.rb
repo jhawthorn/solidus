@@ -37,15 +37,15 @@ module Spree
 
         let(:promotion_action) do
           Promotion::Actions::CreateAdjustment.create!({
-            calculator: calculator,
-            promotion: promotion,
-          })
+                                                         calculator: calculator,
+                                                         promotion: promotion
+                                                       })
         end
 
         before do
           updater.update
           create(:adjustment, source: promotion_action, adjustable: order, order: order)
-          create(:line_item, :order => order, price: 10) # in addition to the two already created
+          create(:line_item, order: order, price: 10) # in addition to the two already created
           updater.update
         end
 
@@ -58,10 +58,10 @@ module Spree
         # A line item will not have both additional and included tax,
         # so please just humour me for now.
         order.line_items.first.update_columns({
-          adjustment_total: 10.05,
-          additional_tax_total: 0.05,
-          included_tax_total: 0.05,
-        })
+                                                adjustment_total: 10.05,
+                                                additional_tax_total: 0.05,
+                                                included_tax_total: 0.05
+                                              })
         updater.update_adjustment_total
         expect(order.adjustment_total).to eq(10.05)
         expect(order.additional_tax_total).to eq(0.05)
@@ -86,8 +86,7 @@ module Spree
         expect(order.shipment_state).to be_nil
       end
 
-
-      ["shipped", "ready", "pending"].each do |state|
+      %w(shipped ready pending).each do |state|
         it "is #{state}" do
           create(:shipment, order: order, state: state)
           updater.update_shipment_state
@@ -165,7 +164,6 @@ module Spree
       end
 
       context "order is canceled" do
-
         before do
           order.state = 'canceled'
         end
@@ -181,7 +179,6 @@ module Spree
         end
 
         context "and is paid" do
-
           it "is credit_owed" do
             order.payment_total = 30
             order.total = 30
@@ -190,7 +187,6 @@ module Spree
               updater.update_payment_state
             }.to change { order.payment_state }.to 'credit_owed'
           end
-
         end
 
         context "and payment is refunded" do
@@ -203,7 +199,6 @@ module Spree
           end
         end
       end
-
     end
 
     it "state change" do

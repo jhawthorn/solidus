@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'setting locale', :type => :feature do
+describe 'setting locale', type: :feature do
   def with_locale(locale)
     I18n.locale = locale
     Spree::Frontend::Config[:locale] = locale
@@ -13,10 +13,10 @@ describe 'setting locale', :type => :feature do
   context 'shopping cart link and page' do
     before do
       I18n.backend.store_translations(:fr,
-       :spree => {
-         :cart => 'Panier',
-         :shopping_cart => 'Panier'
-      })
+                                      spree: {
+                                        cart: 'Panier',
+                                        shopping_cart: 'Panier'
+                                      })
     end
 
     it 'should be in french' do

@@ -35,7 +35,7 @@ module Spree
       # through the rest of the packing / prioritization, lets just put them
       # in packages we know they should be in and deal with other automatically-
       # handled inventory units otherwise.
-      def build_location_configured_packages(packages = Array.new)
+      def build_location_configured_packages(packages = [])
         order.order_stock_locations.where(shipment_fulfilled: false).group_by(&:stock_location).each do |stock_location, stock_location_configurations|
           units = stock_location_configurations.flat_map do |stock_location_configuration|
             unallocated_inventory_units.select { |iu| iu.variant == stock_location_configuration.variant }.take(stock_location_configuration.quantity)
@@ -56,7 +56,7 @@ module Spree
       # for the given order
       #
       # Returns an array of Package instances
-      def build_packages(packages = Array.new)
+      def build_packages(packages = [])
         stock_location_variant_ids.each do |stock_location, variant_ids|
           units_for_location = unallocated_inventory_units.select { |unit| variant_ids.include?(unit.variant_id) }
           packer = build_packer(stock_location, units_for_location)
@@ -80,10 +80,10 @@ module Spree
       def stock_location_variant_ids
         # associate the variant ids we're interested in with stock location ids
         location_variant_ids = StockItem.
-          where(variant_id: unallocated_variant_ids).
-          joins(:stock_location).
-          merge(StockLocation.active).
-          pluck(:stock_location_id, :variant_id)
+                               where(variant_id: unallocated_variant_ids).
+                               joins(:stock_location).
+                               merge(StockLocation.active).
+                               pluck(:stock_location_id, :variant_id)
 
         # load activerecord objects for the stock location ids and turn them
         # into a lookup hash like:
@@ -92,9 +92,9 @@ module Spree
         #     ...,
         #   }
         location_lookup = StockLocation.
-          where(id: location_variant_ids.map(&:first).uniq).
-          map { |l| [l.id, l] }.
-          to_h
+                          where(id: location_variant_ids.map(&:first).uniq).
+                          map { |l| [l.id, l] }.
+                          to_h
 
         # build the final lookup hash of
         #   {<stock location> => <set of variant ids>, ...}
@@ -134,7 +134,7 @@ module Spree
         packaged_quantity = packages.sum(&:quantity)
         if packaged_quantity != desired_quantity
           raise Spree::Order::InsufficientStock,
-            "Was only able to package #{packaged_quantity} inventory units of #{desired_quantity} requested"
+                "Was only able to package #{packaged_quantity} inventory units of #{desired_quantity} requested"
         end
       end
 
@@ -142,7 +142,7 @@ module Spree
         Packer.new(stock_location, inventory_units, splitters(stock_location))
       end
 
-      def splitters(stock_location)
+      def splitters(_stock_location)
         # extension point to return custom splitters for a location
         Rails.application.config.spree.stock_splitters
       end

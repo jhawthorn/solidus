@@ -2,15 +2,15 @@ module Spree
   module Api
     class TaxonsController < Spree::Api::BaseController
       def index
-        if taxonomy
-          @taxons = taxonomy.root.children
-        else
-          if params[:ids]
-            @taxons = Spree::Taxon.accessible_by(current_ability, :read).where(id: params[:ids].split(','))
-          else
-            @taxons = Spree::Taxon.accessible_by(current_ability, :read).order(:taxonomy_id, :lft).ransack(params[:q]).result
-          end
-        end
+        @taxons = if taxonomy
+                    taxonomy.root.children
+                  else
+                    @taxons = if params[:ids]
+                                Spree::Taxon.accessible_by(current_ability, :read).where(id: params[:ids].split(','))
+                              else
+                                Spree::Taxon.accessible_by(current_ability, :read).order(:taxonomy_id, :lft).ransack(params[:q]).result
+                              end
+                  end
 
         @taxons = @taxons.page(params[:page]).per(params[:per_page])
         respond_with(@taxons)
@@ -33,7 +33,7 @@ module Spree
 
         if taxonomy.nil?
           @taxon.errors[:taxonomy_id] = I18n.t(:invalid_taxonomy_id, scope: 'spree.api')
-          invalid_resource!(@taxon) and return
+          invalid_resource!(@taxon) && return
         end
 
         @taxon.parent_id = taxonomy.root.id unless params[:taxon][:parent_id]
@@ -71,23 +71,23 @@ module Spree
 
       private
 
-        def taxonomy
-          if params[:taxonomy_id].present?
-            @taxonomy ||= Spree::Taxonomy.accessible_by(current_ability, :read).find(params[:taxonomy_id])
-          end
+      def taxonomy
+        if params[:taxonomy_id].present?
+          @taxonomy ||= Spree::Taxonomy.accessible_by(current_ability, :read).find(params[:taxonomy_id])
         end
+      end
 
-        def taxon
-          @taxon ||= taxonomy.taxons.accessible_by(current_ability, :read).find(params[:id])
-        end
+      def taxon
+        @taxon ||= taxonomy.taxons.accessible_by(current_ability, :read).find(params[:id])
+      end
 
-        def taxon_params
-          if params[:taxon] && !params[:taxon].empty?
-            params.require(:taxon).permit(permitted_taxon_attributes)
-          else
-            {}
-          end
+      def taxon_params
+        if params[:taxon] && !params[:taxon].empty?
+          params.require(:taxon).permit(permitted_taxon_attributes)
+        else
+          {}
         end
+      end
     end
   end
 end

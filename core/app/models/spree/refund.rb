@@ -9,7 +9,7 @@ module Spree
     validates :payment, presence: true
     validates :reason, presence: true
     validates :transaction_id, presence: true, on: :update # can't require this on create because the before_create needs to run first
-    validates :amount, presence: true, numericality: {greater_than: 0}
+    validates :amount, presence: true, numericality: { greater_than: 0 }
 
     validate :amount_is_less_than_or_equal_to_allowed_amount, on: :create
 
@@ -52,10 +52,10 @@ module Spree
     # return an activemerchant response object if successful or else raise an error
     def process!(credit_cents)
       response = if payment.payment_method.payment_profiles_supported?
-        payment.payment_method.credit(credit_cents, payment.source, payment.transaction_id, {originator: self})
-      else
-        payment.payment_method.credit(credit_cents, payment.transaction_id, {originator: self})
-      end
+                   payment.payment_method.credit(credit_cents, payment.source, payment.transaction_id, { originator: self })
+                 else
+                   payment.payment_method.credit(credit_cents, payment.transaction_id, { originator: self })
+                 end
 
       if !response.success?
         logger.error(Spree.t(:gateway_error) + "  #{response.to_yaml}")

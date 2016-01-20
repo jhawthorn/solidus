@@ -32,21 +32,21 @@ module Spree
     belongs_to :shipping_category, class_name: 'Spree::ShippingCategory', inverse_of: :products
 
     has_one :master,
-      -> { where(is_master: true).with_deleted },
-      inverse_of: :product,
-      class_name: 'Spree::Variant',
-      autosave: true
+            -> { where(is_master: true).with_deleted },
+            inverse_of: :product,
+            class_name: 'Spree::Variant',
+            autosave: true
 
     has_many :variants,
-      -> { where(is_master: false).order(:position) },
-      inverse_of: :product,
-      class_name: 'Spree::Variant'
+             -> { where(is_master: false).order(:position) },
+             inverse_of: :product,
+             class_name: 'Spree::Variant'
 
     has_many :variants_including_master,
-      -> { order(:position) },
-      inverse_of: :product,
-      class_name: 'Spree::Variant',
-      dependent: :destroy
+             -> { order(:position) },
+             inverse_of: :product,
+             class_name: 'Spree::Variant',
+             dependent: :destroy
 
     has_many :prices, -> { order(Spree::Variant.arel_table[:position].asc, Spree::Variant.arel_table[:id].asc, :currency) }, through: :variants
 
@@ -165,7 +165,7 @@ module Spree
     # @return [Hash] option_type as keys, array of variants as values.
     def categorise_variants_from_option(opt_type)
       return {} unless option_types.include?(opt_type)
-      variants.active.group_by { |v| v.option_values.detect { |o| o.option_type == opt_type} }
+      variants.active.group_by { |v| v.option_values.detect { |o| o.option_type == opt_type } }
     end
 
     # Poor man's full text search.
@@ -200,9 +200,9 @@ module Spree
     # associated with the products variants grouped by option type
     def variant_option_values_by_option_type(variant_scope = nil)
       option_value_ids = Spree::OptionValuesVariant.joins(:variant)
-        .where(spree_variants: { product_id: self.id})
-        .merge(variant_scope)
-        .distinct.pluck(:option_value_id)
+                                                   .where(spree_variants: { product_id: id })
+                                                   .merge(variant_scope)
+                                                   .distinct.pluck(:option_value_id)
       Spree::OptionValue.where(id: option_value_ids).
         includes(:option_type).
         order("#{Spree::OptionType.table_name}.position, #{Spree::OptionValue.table_name}.position").
@@ -327,7 +327,7 @@ module Spree
     def validate_master
       unless master.valid?
         master.errors.each do |att, error|
-          self.errors.add(att, error)
+          errors.add(att, error)
         end
       end
     end

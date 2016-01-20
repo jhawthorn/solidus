@@ -78,10 +78,10 @@ RSpec.describe Spree::PromotionCode do
       end
       before do
         promotion.actions.first.perform({
-          order: order,
-          promotion: promotion,
-          promotion_code: code
-        })
+                                          order: order,
+                                          promotion: promotion,
+                                          promotion_code: code
+                                        })
       end
       context "when there are multiple line items" do
         let(:order) { FactoryGirl.create(:order_with_line_items, line_items_count: 2) }

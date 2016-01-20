@@ -48,7 +48,6 @@ module Spree
       update_adjustment_total
     end
 
-
     # give each of the shipments a chance to update themselves
     def update_shipments
       shipments.each do |shipment|
@@ -75,14 +74,14 @@ module Spree
     def update_adjustment_total
       recalculate_adjustments
       order.adjustment_total = line_items.sum(:adjustment_total) +
-                               shipments.sum(:adjustment_total)  +
-                               adjustments.eligible.sum(:amount)
+      shipments.sum(:adjustment_total) +
+      adjustments.eligible.sum(:amount)
       order.included_tax_total = line_items.sum(:included_tax_total) + shipments.sum(:included_tax_total)
       order.additional_tax_total = line_items.sum(:additional_tax_total) + shipments.sum(:additional_tax_total)
 
       order.promo_total = line_items.sum(:promo_total) +
-                          shipments.sum(:promo_total) +
-                          adjustments.promotion.eligible.sum(:amount)
+      shipments.sum(:promo_total) +
+      adjustments.promotion.eligible.sum(:amount)
 
       update_order_total
     end
@@ -116,18 +115,18 @@ module Spree
       else
         # get all the shipment states for this order
         shipment_states = shipments.states
-        if shipment_states.size > 1
-          # multiple shiment states means it's most likely partially shipped
-          order.shipment_state = 'partial'
-        else
-          # will return nil if no shipments are found
-          order.shipment_state = shipment_states.first
-          # TODO inventory unit states?
-          # if order.shipment_state && order.inventory_units.where(:shipment_id => nil).exists?
-          #   shipments exist but there are unassigned inventory units
-          #   order.shipment_state = 'partial'
-          # end
-        end
+        order.shipment_state = if shipment_states.size > 1
+                                 # multiple shiment states means it's most likely partially shipped
+                                 'partial'
+                               else
+                                 # will return nil if no shipments are found
+                                 shipment_states.first
+                                 # TODO: inventory unit states?
+                                 # if order.shipment_state && order.inventory_units.where(:shipment_id => nil).exists?
+                                 #   shipments exist but there are unassigned inventory units
+                                 #   order.shipment_state = 'partial'
+                                 # end
+                               end
       end
 
       order.state_changed('shipment')
@@ -158,8 +157,9 @@ module Spree
     end
 
     private
-      def round_money(n)
-        (n * 100).round / 100.0
-      end
+
+    def round_money(n)
+      (n * 100).round / 100.0
+    end
   end
 end

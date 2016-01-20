@@ -38,7 +38,6 @@ module Spree
     #   item, if there is one
     delegate :product, to: :variant
 
-
     attr_accessor :target_shipment
 
     self.whitelisted_ransackable_associations = ['variant']
@@ -146,10 +145,10 @@ module Spree
 
     def handle_copy_price_override
       copy_price
-      ActiveSupport::Deprecation.warn 'You have overridden Spree::LineItem#copy_price. ' + \
-        'This method is now called Spree::LineItem#set_pricing_attributes. ' + \
+      ActiveSupport::Deprecation.warn 'You have overridden Spree::LineItem#copy_price. ' \\
+        'This method is now called Spree::LineItem#set_pricing_attributes. ' \\
         'Please adjust your override.',
-        caller
+                                      caller
     end
 
     def update_inventory

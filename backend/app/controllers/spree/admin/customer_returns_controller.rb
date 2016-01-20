@@ -35,9 +35,9 @@ module Spree
       def collection
         parent # trigger loading the order
         @collection ||= Spree::ReturnItem
-          .accessible_by(current_ability, :read)
-          .where(inventory_unit_id: @order.inventory_units.pluck(:id))
-          .map(&:customer_return).uniq.compact
+                        .accessible_by(current_ability, :read)
+                        .where(inventory_unit_id: @order.inventory_units.pluck(:id))
+                        .map(&:customer_return).uniq.compact
         @customer_returns = @collection
       end
 
@@ -63,7 +63,7 @@ module Spree
           return_item = item_params[:id] ? Spree::ReturnItem.find(item_params[:id]) : Spree::ReturnItem.new
           return_item.assign_attributes(item_params)
           if item_params[:reception_status_event].blank?
-            redirect_to(new_object_url, flash: { error: 'Reception status choice required' }) and return
+            redirect_to(new_object_url, flash: { error: 'Reception status choice required' }) && return
           end
           return_item
         end.compact

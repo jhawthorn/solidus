@@ -14,7 +14,6 @@ module Spree
 
         # Used in the link_to_cart helper.
         def simple_current_order
-
           return @simple_current_order if @simple_current_order
 
           @simple_current_order = find_order_by_token_or_user
@@ -82,15 +81,15 @@ module Spree
           { currency: current_currency, guest_token: cookies.signed[:guest_token], store_id: current_store.id, user_id: try_spree_current_user.try(:id) }
         end
 
-        def find_order_by_token_or_user(options={}, with_adjustments = false)
+        def find_order_by_token_or_user(options = {}, with_adjustments = false)
           options[:lock] ||= false
 
           # Find any incomplete orders for the guest_token
-          if with_adjustments
-            order = Spree::Order.incomplete.includes(:adjustments).lock(options[:lock]).find_by(current_order_params)
-          else
-            order = Spree::Order.incomplete.lock(options[:lock]).find_by(current_order_params)
-          end
+          order = if with_adjustments
+                    Spree::Order.incomplete.includes(:adjustments).lock(options[:lock]).find_by(current_order_params)
+                  else
+                    Spree::Order.incomplete.lock(options[:lock]).find_by(current_order_params)
+                  end
 
           # Find any incomplete orders for the current user
           if order.nil? && try_spree_current_user
@@ -99,7 +98,6 @@ module Spree
 
           order
         end
-
       end
     end
   end

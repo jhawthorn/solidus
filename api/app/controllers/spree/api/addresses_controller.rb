@@ -13,9 +13,9 @@ module Spree
         authorize! :update, @order, order_token
         find_address
 
-        if @order.update_attributes({"#{@order_source}_attributes" => address_params})
+        if @order.update_attributes({ "#{@order_source}_attributes" => address_params })
           @address = @order.send(@order_source)
-          respond_with(@address, :default_template => :show)
+          respond_with(@address, default_template: :show)
         else
           @address = @order.send(@order_source)
           invalid_resource!(@address)
@@ -23,6 +23,7 @@ module Spree
       end
 
       private
+
       def address_params
         params.require(:address).permit(permitted_address_attributes)
       end
@@ -33,14 +34,14 @@ module Spree
 
       def find_address
         @address = if @order.bill_address_id == params[:id].to_i
-          @order_source = :bill_address
-          @order.bill_address
-        elsif @order.ship_address_id == params[:id].to_i
-          @order_source = :ship_address
-          @order.ship_address
-        else
-          raise CanCan::AccessDenied
-        end
+                     @order_source = :bill_address
+                     @order.bill_address
+                   elsif @order.ship_address_id == params[:id].to_i
+                     @order_source = :ship_address
+                     @order.ship_address
+                   else
+                     raise CanCan::AccessDenied
+                   end
       end
     end
   end

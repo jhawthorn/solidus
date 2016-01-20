@@ -6,10 +6,10 @@ module Spree
 
       # @param stock_location [Spree::StockLocation] the stock location this package originates from
       # @param contents [Array<Spree::Stock::ContentItem>] the contents of this package
-      def initialize(stock_location, contents=[])
+      def initialize(stock_location, contents = [])
         @stock_location = stock_location
         @contents = contents
-        @shipping_rates = Array.new
+        @shipping_rates = []
       end
 
       # Adds an inventory unit to this package.
@@ -45,7 +45,7 @@ module Spree
       def order
         # Fix regression that removed package.order.
         # Find it dynamically through an inventory_unit.
-        contents.detect {|item| !!item.try(:inventory_unit).try(:order) }.try(:inventory_unit).try(:order)
+        contents.detect { |item| !!item.try(:inventory_unit).try(:order) }.try(:inventory_unit).try(:order)
       end
 
       # @return [Float] the summed weight of the contents of this package

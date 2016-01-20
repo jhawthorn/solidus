@@ -5,7 +5,7 @@ describe "General Settings", type: :feature, js: true do
 
   let!(:store) do
     create(:store, name: 'Test Store', url: 'test.example.org',
-           mail_from_address: 'test@example.org')
+                   mail_from_address: 'test@example.org')
   end
 
   before(:each) do

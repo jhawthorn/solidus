@@ -6,26 +6,22 @@ module Spree
 
       def index
         @topics = {
-          typography: [
-            'fonts',
-            'colors',
-            'lists',
-            'icons',
-            'tags'
-          ],
-          forms: [
-            'building_forms',
-            'validation'
-          ],
-          messaging: [
-            'loading',
-            'flashes',
-            'tooltips'
-          ],
-          tables: [
-            'building_tables',
-            'pagination'
-          ]
+          typography: %w(
+            fonts
+            colors
+            lists
+            icons
+            tags),
+          forms: %w(
+            building_forms
+            validation),
+          messaging: %w(
+            loading
+            flashes
+            tooltips),
+          tables: %w(
+            building_tables
+            pagination)
         }
       end
     end

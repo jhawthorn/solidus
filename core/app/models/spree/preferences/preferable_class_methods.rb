@@ -4,7 +4,7 @@ module Spree::Preferences
       []
     end
 
-    def preference(name, type, options={})
+    def preference(name, type, options = {})
       options.assert_valid_keys(:default)
       default = options[:default]
       default = ->{ options[:default] } unless default.is_a?(Proc)
@@ -50,7 +50,7 @@ module Spree::Preferences
     end
 
     def preference_setter_method(name)
-       "preferred_#{name}=".to_sym
+      "preferred_#{name}=".to_sym
     end
 
     def preference_default_getter_method(name)

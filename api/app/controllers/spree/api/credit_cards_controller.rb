@@ -6,10 +6,10 @@ module Spree
 
       def index
         @credit_cards = user
-          .credit_cards
-          .accessible_by(current_ability, :read)
-          .with_payment_profile
-          .ransack(params[:q]).result.page(params[:page]).per(params[:per_page])
+                        .credit_cards
+                        .accessible_by(current_ability, :read)
+                        .with_payment_profile
+                        .ransack(params[:q]).result.page(params[:page]).per(params[:per_page])
         respond_with(@credit_cards)
       end
 
@@ -23,20 +23,20 @@ module Spree
 
       private
 
-        def user
-          if params[:user_id].present?
-            @user ||= Spree::user_class.accessible_by(current_ability, :read).find(params[:user_id])
-          end
+      def user
+        if params[:user_id].present?
+          @user ||= Spree.user_class.accessible_by(current_ability, :read).find(params[:user_id])
         end
+      end
 
-        def find_credit_card
-          @credit_card = Spree::CreditCard.find(params[:id])
-          authorize! :update, @credit_card
-        end
+      def find_credit_card
+        @credit_card = Spree::CreditCard.find(params[:id])
+        authorize! :update, @credit_card
+      end
 
-        def credit_card_update_params
-          params.require(:credit_card).permit(permitted_credit_card_update_attributes)
-        end
+      def credit_card_update_params
+        params.require(:credit_card).permit(permitted_credit_card_update_attributes)
+      end
     end
   end
 end

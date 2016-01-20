@@ -57,10 +57,10 @@ module Spree
       def collection
         params[:q] = params[:q] || {}
         @show_only_open = if params[:q][:closed_at_null].present?
-          params[:q][:closed_at_null] == '1'
-        else
-          true
-        end
+                            params[:q][:closed_at_null] == '1'
+                          else
+                            true
+                          end
         params[:q].delete(:closed_at_null) unless @show_only_open
         @search = super.ransack(params[:q])
         @search.sorts = 'created_at desc'
@@ -72,7 +72,7 @@ module Spree
       def permitted_resource_params
         resource_params = super
         if action == :create
-          resource_params.merge!(created_by: try_spree_current_user)
+          resource_params[:created_by] = try_spree_current_user
         end
         resource_params
       end
@@ -119,7 +119,7 @@ module Spree
       def ensure_receivable_stock_transfer
         unless @stock_transfer.receivable?
           flash[:error] = Spree.t(:stock_transfer_must_be_receivable)
-          redirect_to admin_stock_transfers_path and return
+          redirect_to(admin_stock_transfers_path) && return
         end
       end
 
@@ -129,7 +129,7 @@ module Spree
       end
 
       def source_location
-        @source_location ||= params.has_key?(:transfer_receive_stock) ? nil :
+        @source_location ||= params.key?(:transfer_receive_stock) ? nil :
                                StockLocation.find(params[:transfer_source_location_id])
       end
 

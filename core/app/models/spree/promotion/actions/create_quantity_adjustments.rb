@@ -60,8 +60,8 @@ module Spree::Promotion::Actions
       line_items = actionable_line_items(order)
 
       actioned_line_items = order.line_item_adjustments(true).
-        select { |a| a.source == self && a.amount < 0 }.
-        map(&:adjustable)
+                            select { |a| a.source == self && a.amount < 0 }.
+                            map(&:adjustable)
       other_line_items = actioned_line_items - [line_item]
 
       applicable_quantity = total_applicable_quantity(line_items)
@@ -71,7 +71,7 @@ module Spree::Promotion::Actions
         line_item.quantity
       ].min
 
-      persist_quantity(usable_quantity,  line_item)
+      persist_quantity(usable_quantity, line_item)
 
       amount = adjustment_amount * usable_quantity
       [line_item.amount, amount].min * -1

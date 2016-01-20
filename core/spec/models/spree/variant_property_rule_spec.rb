@@ -18,8 +18,8 @@ describe Spree::VariantPropertyRule, type: :model do
     let(:second_condition_option_value) { create(:option_value) }
     let!(:second_condition) do
       create(:variant_property_rule_condition,
-        variant_property_rule: rule,
-        option_value: second_condition_option_value)
+             variant_property_rule: rule,
+             option_value: second_condition_option_value)
     end
     let(:rule) { create(:variant_property_rule, option_value: first_condition_option_value) }
 
@@ -53,7 +53,7 @@ describe Spree::VariantPropertyRule, type: :model do
   describe "#applies_to_variant?" do
     let(:variant_option_value_1) { create(:option_value) }
     let(:variant_option_value_2) { create(:option_value) }
-    let!(:variant) { create(:variant, option_values: option_values)}
+    let!(:variant) { create(:variant, option_values: option_values) }
 
     let(:rule_option_value) { create(:option_value) }
     let(:rule) { create(:variant_property_rule, option_value: rule_option_value) }

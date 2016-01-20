@@ -28,11 +28,11 @@ module Spree
           # relevant option values, groups by variant and ensures the variant
           # has ALL of the relevant option values.
           variant_ids = Spree::OptionValuesVariant.
-            where(variant_id: product_variants.distinct.pluck(:id)).
-            where(option_value: relevant_option_values).
-            group(:variant_id).
-            having('COUNT(*) = ?', relevant_option_values.size).
-            pluck(:variant_id)
+                        where(variant_id: product_variants.distinct.pluck(:id)).
+                        where(option_value: relevant_option_values).
+                        group(:variant_id).
+                        having('COUNT(*) = ?', relevant_option_values.size).
+                        pluck(:variant_id)
           product_variants.where(id: variant_ids)
         else
           product_variants

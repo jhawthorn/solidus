@@ -52,7 +52,7 @@ module Spree
       expect(response).to have_http_status(:created)
     end
 
-    def add_promotion(promotion)
+    def add_promotion(_promotion)
       expect {
         put "/api/orders/#{@order.number}/apply_coupon_code", coupon_code: promotion_code.value
       }.to change { @order.promotions.count }.by 1
@@ -126,23 +126,23 @@ module Spree
       login
 
       create_order(order_params: {
-        order: {
-          bill_address: bill_address.as_json.except('id'),
-          ship_address: ship_address.as_json.except('id'),
-          line_items: {
-            0 => { variant_id: variant_1.id, quantity: 2 },
-            1 => { variant_id: variant_2.id, quantity: 2 }
-          },
-          # Would like to do this, but the save process from the orders controller
-          # does not actually call what it needs to to apply this coupon code :(
-          # coupon_code: promotion.code,
+                     order: {
+                       bill_address: bill_address.as_json.except('id'),
+                       ship_address: ship_address.as_json.except('id'),
+                       line_items: {
+                         0 => { variant_id: variant_1.id, quantity: 2 },
+                         1 => { variant_id: variant_2.id, quantity: 2 }
+                       },
+                       # Would like to do this, but the save process from the orders controller
+                       # does not actually call what it needs to to apply this coupon code :(
+                       # coupon_code: promotion.code,
 
-          # Would like to do this, but it puts the payment in a complete state,
-          # which the order does not like when transitioning from confirm to complete
-          # since it looks to process pending payments.
-          # payments: [ { payment_method: payment_method.name, state: "pending" } ],
-        }
-      })
+                       # Would like to do this, but it puts the payment in a complete state,
+                       # which the order does not like when transitioning from confirm to complete
+                       # since it looks to process pending payments.
+                       # payments: [ { payment_method: payment_method.name, state: "pending" } ],
+                     }
+                   })
 
       add_promotion(promotion)
       add_payment
@@ -158,23 +158,23 @@ module Spree
 
       create_order
       update_order(order_params: {
-        order: {
-          bill_address: bill_address.as_json.except('id'),
-          ship_address: ship_address.as_json.except('id'),
-          line_items: {
-            0 => { variant_id: variant_1.id, quantity: 2 },
-            1 => { variant_id: variant_2.id, quantity: 2 }
-          },
-          # Would like to do this, but the save process from the orders controller
-          # does not actually call what it needs to to apply this coupon code :(
-          # coupon_code: promotion.code,
+                     order: {
+                       bill_address: bill_address.as_json.except('id'),
+                       ship_address: ship_address.as_json.except('id'),
+                       line_items: {
+                         0 => { variant_id: variant_1.id, quantity: 2 },
+                         1 => { variant_id: variant_2.id, quantity: 2 }
+                       },
+                       # Would like to do this, but the save process from the orders controller
+                       # does not actually call what it needs to to apply this coupon code :(
+                       # coupon_code: promotion.code,
 
-          # Would like to do this, but it puts the payment in a complete state,
-          # which the order does not like when transitioning from confirm to complete
-          # since it looks to process pending payments.
-          # payments: [ { payment_method: payment_method.name, state: "pending" } ],
-        }
-      })
+                       # Would like to do this, but it puts the payment in a complete state,
+                       # which the order does not like when transitioning from confirm to complete
+                       # since it looks to process pending payments.
+                       # payments: [ { payment_method: payment_method.name, state: "pending" } ],
+                     }
+                   })
 
       add_promotion(promotion)
       add_payment
