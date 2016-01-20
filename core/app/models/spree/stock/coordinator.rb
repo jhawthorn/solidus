@@ -37,9 +37,10 @@ module Spree
       # handled inventory units otherwise.
       def build_location_configured_packages(packages = [])
         order.order_stock_locations.where(shipment_fulfilled: false).group_by(&:stock_location).each do |stock_location, stock_location_configurations|
-          units = stock_location_configurations.flat_map do |stock_location_configuration|
-            unallocated_inventory_units.select { |iu| iu.variant == stock_location_configuration.variant }.take(stock_location_configuration.quantity)
-          end
+          units =
+            stock_location_configurations.flat_map do |stock_location_configuration|
+              unallocated_inventory_units.select { |iu| iu.variant == stock_location_configuration.variant }.take(stock_location_configuration.quantity)
+            end
           packer = build_packer(stock_location, units)
           packages += packer.packages
           @preallocated_inventory_units += units
@@ -99,11 +100,12 @@ module Spree
         # build the final lookup hash of
         #   {<stock location> => <set of variant ids>, ...}
         # using the previous results
-        hash = location_variant_ids.each_with_object({}) do |(location_id, variant_id), hash|
-          location = location_lookup[location_id]
-          hash[location] ||= Set.new
-          hash[location] << variant_id
-        end
+        hash =
+          location_variant_ids.each_with_object({}) do |(location_id, variant_id), hash|
+            location = location_lookup[location_id]
+            hash[location] ||= Set.new
+            hash[location] << variant_id
+          end
 
         hash
       end

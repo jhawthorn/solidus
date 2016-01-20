@@ -147,10 +147,11 @@ module Spree
     private
 
     def generate_number
-      self.number ||= loop do
-        random = "RI#{Array.new(9){ rand(9) }.join}"
-        break random unless self.class.exists?(number: random)
-      end
+      self.number ||=
+        loop do
+          random = "RI#{Array.new(9){ rand(9) }.join}"
+          break random unless self.class.exists?(number: random)
+        end
     end
 
     def validate_return_items_belong_to_same_order
@@ -170,14 +171,16 @@ module Spree
     # payments and credits have already been processed, we should allow the
     # reimbursement to show as 'reimbursed' and not 'errored'.
     def unpaid_amount_within_tolerance?
-      reimbursement_count = reimbursement_models.count do |model|
-        model.total_amount_reimbursed_for(self) > 0
-      end
-      leniency = if reimbursement_count > 0
-                   (reimbursement_count - 1) * 0.01.to_d
-                 else
-                   0
-                 end
+      reimbursement_count =
+        reimbursement_models.count do |model|
+          model.total_amount_reimbursed_for(self) > 0
+        end
+      leniency =
+        if reimbursement_count > 0
+          (reimbursement_count - 1) * 0.01.to_d
+        else
+          0
+        end
       unpaid_amount.abs.between?(0, leniency)
     end
   end

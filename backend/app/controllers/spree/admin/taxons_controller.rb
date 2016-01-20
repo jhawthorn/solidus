@@ -7,11 +7,12 @@ module Spree
       end
 
       def search
-        @taxons = if params[:ids]
-                    Spree::Taxon.where(id: params[:ids].split(','))
-                  else
-                    Spree::Taxon.limit(20).ransack(name_cont: params[:q]).result
-                  end
+        @taxons =
+          if params[:ids]
+            Spree::Taxon.where(id: params[:ids].split(','))
+          else
+            Spree::Taxon.limit(20).ransack(name_cont: params[:q]).result
+          end
       end
 
       def create

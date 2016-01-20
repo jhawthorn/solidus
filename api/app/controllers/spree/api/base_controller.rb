@@ -55,11 +55,12 @@ module Spree
       end
 
       def load_user_roles
-        @current_user_roles = if @current_api_user
-                                @current_api_user.spree_roles.pluck(:name)
-                              else
-                                []
-                              end
+        @current_user_roles =
+          if @current_api_user
+            @current_api_user.spree_roles.pluck(:name)
+          else
+            []
+          end
       end
 
       def unauthorized

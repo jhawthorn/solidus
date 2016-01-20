@@ -24,12 +24,13 @@ describe Spree::CustomController, type: :controller do
   end
 
   before do
-    @routes = ActionDispatch::Routing::RouteSet.new.tap do |r|
-      r.draw {
-        get 'index', to: 'spree/custom#index'
-        post 'create', to: 'spree/custom#create'
-      }
-    end
+    @routes =
+      ActionDispatch::Routing::RouteSet.new.tap do |r|
+        r.draw {
+          get 'index', to: 'spree/custom#index'
+          post 'create', to: 'spree/custom#create'
+        }
+      end
   end
 
   context "extension testing" do

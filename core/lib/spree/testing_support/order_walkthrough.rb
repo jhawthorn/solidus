@@ -25,12 +25,13 @@ class OrderWalkthrough
     add_line_item!(order)
     order.next!
 
-    states_to_process = if state == :complete
-                          states
-                        else
-                          end_state_position = states.index(state.to_sym)
-                          states[0..end_state_position]
-                        end
+    states_to_process =
+      if state == :complete
+        states
+      else
+        end_state_position = states.index(state.to_sym)
+        states[0..end_state_position]
+      end
 
     states_to_process.each do |state|
       send(state, order)

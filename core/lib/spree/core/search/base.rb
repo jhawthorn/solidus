@@ -65,11 +65,12 @@ module Spree
         def add_search_scopes(base_scope)
           search.each do |name, scope_attribute|
             scope_name = name.to_sym
-            base_scope = if base_scope.respond_to?(:search_scopes) && base_scope.search_scopes.include?(scope_name.to_sym)
-                           base_scope.send(scope_name, *scope_attribute)
-                         else
-                           base_scope.merge(Spree::Product.ransack({ scope_name => scope_attribute }).result)
-                         end
+            base_scope =
+              if base_scope.respond_to?(:search_scopes) && base_scope.search_scopes.include?(scope_name.to_sym)
+                base_scope.send(scope_name, *scope_attribute)
+              else
+                base_scope.merge(Spree::Product.ransack({ scope_name => scope_attribute }).result)
+              end
           end if search
           base_scope
         end

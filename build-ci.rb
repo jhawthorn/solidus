@@ -137,10 +137,11 @@ class Project
       log("- #{project.name}")
     end
 
-    builds = projects.map do |project|
-      log("Building: #{project.name}")
-      project.pass?
-    end
+    builds =
+      projects.map do |project|
+        log("Building: #{project.name}")
+        project.pass?
+      end
     log("Finished running #{suffix}")
 
     projects.zip(builds).each do |project, build|

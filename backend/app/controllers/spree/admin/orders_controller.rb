@@ -25,19 +25,21 @@ module Spree
         params[:q].delete(:inventory_units_shipment_id_null) if params[:q][:inventory_units_shipment_id_null] == "0"
 
         if params[:q][:created_at_gt].present?
-          params[:q][:created_at_gt] = begin
-                                         Time.zone.parse(params[:q][:created_at_gt]).beginning_of_day
-                                       rescue
-                                         ""
-                                       end
+          params[:q][:created_at_gt] =
+            begin
+                                                    Time.zone.parse(params[:q][:created_at_gt]).beginning_of_day
+                                                  rescue
+                                                    ""
+                                                  end
         end
 
         if params[:q][:created_at_lt].present?
-          params[:q][:created_at_lt] = begin
-                                         Time.zone.parse(params[:q][:created_at_lt]).end_of_day
-                                       rescue
-                                         ""
-                                       end
+          params[:q][:created_at_lt] =
+            begin
+                                                    Time.zone.parse(params[:q][:created_at_lt]).end_of_day
+                                                  rescue
+                                                    ""
+                                                  end
         end
 
         if @show_only_completed
@@ -50,11 +52,12 @@ module Spree
         # lazy loading other models here (via includes) may result in an invalid query
         # e.g. SELECT  DISTINCT DISTINCT "spree_orders".id, "spree_orders"."created_at" AS alias_0 FROM "spree_orders"
         # see https://github.com/spree/spree/pull/3919
-        @orders = if query_present
-                    @search.result(distinct: true)
-                  else
-                    @search.result
-                  end
+        @orders =
+          if query_present
+            @search.result(distinct: true)
+          else
+            @search.result
+          end
 
         @orders = @orders.
                   page(params[:page]).

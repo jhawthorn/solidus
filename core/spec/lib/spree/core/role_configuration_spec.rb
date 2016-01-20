@@ -88,9 +88,10 @@ describe Spree::RoleConfiguration do
     let(:ability) { DummyAbility.new }
 
     before do
-      user.spree_roles = user_roles.map do |role|
-        Spree::Role.create!(name: role)
-      end
+      user.spree_roles =
+        user_roles.map do |role|
+          Spree::Role.create!(name: role)
+        end
     end
 
     subject { described_class.instance.activate_permissions! ability, user }

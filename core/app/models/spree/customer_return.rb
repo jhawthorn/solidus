@@ -50,10 +50,11 @@ module Spree
     private
 
     def generate_number
-      self.number ||= loop do
-        random = "CR#{Array.new(9){ rand(9) }.join}"
-        break random unless self.class.exists?(number: random)
-      end
+      self.number ||=
+        loop do
+          random = "CR#{Array.new(9){ rand(9) }.join}"
+          break random unless self.class.exists?(number: random)
+        end
     end
 
     def return_items_belong_to_same_order

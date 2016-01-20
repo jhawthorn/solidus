@@ -24,10 +24,11 @@ module Spree
       end
 
       it 'keeps a single package' do
-        package1 = pack do |package|
-          package.add build_inventory_unit
-          package.add build_inventory_unit
-        end
+        package1 =
+          pack do |package|
+            package.add build_inventory_unit
+            package.add build_inventory_unit
+          end
 
         packages = [package1]
         prioritizer = Prioritizer.new(inventory_units, packages)
@@ -36,15 +37,17 @@ module Spree
       end
 
       it 'removes duplicate packages' do
-        package1 = pack do |package|
-          package.add build_inventory_unit
-          package.add build_inventory_unit
-        end
+        package1 =
+          pack do |package|
+            package.add build_inventory_unit
+            package.add build_inventory_unit
+          end
 
-        package2 = pack do |package|
-          package.add inventory_units.first
-          package.add inventory_units.last
-        end
+        package2 =
+          pack do |package|
+            package.add inventory_units.first
+            package.add inventory_units.last
+          end
 
         packages = [package1, package2]
         prioritizer = Prioritizer.new(inventory_units, packages)
@@ -53,12 +56,14 @@ module Spree
       end
 
       it 'split over 2 packages' do
-        package1 = pack do |package|
-          package.add build_inventory_unit
-        end
-        package2 = pack do |package|
-          package.add build_inventory_unit
-        end
+        package1 =
+          pack do |package|
+            package.add build_inventory_unit
+          end
+        package2 =
+          pack do |package|
+            package.add build_inventory_unit
+          end
 
         packages = [package1, package2]
         prioritizer = Prioritizer.new(inventory_units, packages)
@@ -69,12 +74,14 @@ module Spree
       it '1st has some, 2nd has remaining' do
         5.times { build_inventory_unit }
 
-        package1 = pack do |package|
-          2.times { |i| package.add inventory_units[i] }
-        end
-        package2 = pack do |package|
-          5.times { |i| package.add inventory_units[i] }
-        end
+        package1 =
+          pack do |package|
+            2.times { |i| package.add inventory_units[i] }
+          end
+        package2 =
+          pack do |package|
+            5.times { |i| package.add inventory_units[i] }
+          end
 
         packages = [package1, package2]
         prioritizer = Prioritizer.new(inventory_units, packages)
@@ -87,12 +94,14 @@ module Spree
       it '1st has backorder, 2nd has some' do
         5.times { build_inventory_unit }
 
-        package1 = pack do |package|
-          5.times { |i| package.add inventory_units[i], :backordered }
-        end
-        package2 = pack do |package|
-          2.times { |i| package.add inventory_units[i] }
-        end
+        package1 =
+          pack do |package|
+            5.times { |i| package.add inventory_units[i], :backordered }
+          end
+        package2 =
+          pack do |package|
+            2.times { |i| package.add inventory_units[i] }
+          end
 
         packages = [package1, package2]
         prioritizer = Prioritizer.new(inventory_units, packages)
@@ -105,12 +114,14 @@ module Spree
       it '1st has backorder, 2nd has all' do
         5.times { build_inventory_unit }
 
-        package1 = pack do |package|
-          3.times { |i| package.add inventory_units[i], :backordered }
-        end
-        package2 = pack do |package|
-          5.times { |i| package.add inventory_units[i] }
-        end
+        package1 =
+          pack do |package|
+            3.times { |i| package.add inventory_units[i], :backordered }
+          end
+        package2 =
+          pack do |package|
+            5.times { |i| package.add inventory_units[i] }
+          end
 
         packages = [package1, package2]
         prioritizer = Prioritizer.new(inventory_units, packages)

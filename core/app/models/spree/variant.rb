@@ -124,9 +124,10 @@ module Spree
     #
     # @return [String] a sentence-ified string of option values.
     def options_text
-      values = option_values.includes(:option_type).sort_by do |option_value|
-        option_value.option_type.position
-      end
+      values =
+        option_values.includes(:option_type).sort_by do |option_value|
+          option_value.option_type.position
+        end
 
       values.to_a.map! do |ov|
         "#{ov.option_type.presentation}: #{ov.presentation}"
@@ -175,10 +176,11 @@ module Spree
       # no option values on master
       return if is_master
 
-      option_type = Spree::OptionType.where(name: opt_name).first_or_initialize do |o|
-        o.presentation = opt_name
-        o.save!
-      end
+      option_type =
+        Spree::OptionType.where(name: opt_name).first_or_initialize do |o|
+          o.presentation = opt_name
+          o.save!
+        end
 
       current_value = option_values.detect { |o| o.option_type.name == opt_name }
 
@@ -192,10 +194,11 @@ module Spree
         end
       end
 
-      option_value = Spree::OptionValue.where(option_type_id: option_type.id, name: opt_value).first_or_initialize do |o|
-        o.presentation = opt_value
-        o.save!
-      end
+      option_value =
+        Spree::OptionValue.where(option_type_id: option_type.id, name: opt_value).first_or_initialize do |o|
+          o.presentation = opt_value
+          o.save!
+        end
 
       option_values << option_value
       save

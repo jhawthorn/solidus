@@ -177,9 +177,10 @@ module Spree
     # @param values [Array{String}] strings to search through fields for
     # @return [ActiveRecord::Relation] scope with WHERE clause for search applied
     def self.like_any(fields, values)
-      conditions = fields.product(values).map do |(field, value)|
-        arel_table[field].matches("%#{value}%")
-      end
+      conditions =
+        fields.product(values).map do |(field, value)|
+          arel_table[field].matches("%#{value}%")
+        end
       where conditions.inject(:or)
     end
 

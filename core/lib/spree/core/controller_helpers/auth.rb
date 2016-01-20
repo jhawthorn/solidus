@@ -16,10 +16,11 @@ module Spree
           helper_method :try_spree_current_user
 
           class_attribute :unauthorized_redirect
-          self.unauthorized_redirect = -> do
-            flash[:error] = Spree.t(:authorization_failure)
-            redirect_to "/unauthorized"
-          end
+          self.unauthorized_redirect =
+            -> do
+              flash[:error] = Spree.t(:authorization_failure)
+              redirect_to "/unauthorized"
+            end
 
           rescue_from CanCan::AccessDenied do
             instance_exec &unauthorized_redirect

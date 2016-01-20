@@ -51,9 +51,10 @@ module Spree
     # Not public due to the fact this class is a Singleton
     # @!visibility private
     def initialize
-      @roles = Hash.new do |h, name|
-        h[name] = Role.new(name, Set.new)
-      end
+      @roles =
+        Hash.new do |h, name|
+          h[name] = Role.new(name, Set.new)
+        end
     end
 
     # Assign permission sets for a {Spree::Role} that has the name of role_name

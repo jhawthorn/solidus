@@ -28,22 +28,24 @@ module Spree
       def sales_total
         params[:q] = {} unless params[:q]
 
-        params[:q][:completed_at_gt] = if params[:q][:completed_at_gt].blank?
-                                         Time.current.beginning_of_month
-                                       else
-                                         begin
-                                           Time.zone.parse(params[:q][:completed_at_gt]).beginning_of_day
-                                         rescue
-                                           Time.current.beginning_of_month
-                                         end
-                                       end
+        params[:q][:completed_at_gt] =
+          if params[:q][:completed_at_gt].blank?
+            Time.current.beginning_of_month
+          else
+            begin
+              Time.zone.parse(params[:q][:completed_at_gt]).beginning_of_day
+            rescue
+              Time.current.beginning_of_month
+            end
+          end
 
         if params[:q] && !params[:q][:completed_at_lt].blank?
-          params[:q][:completed_at_lt] = begin
-                                           Time.zone.parse(params[:q][:completed_at_lt]).end_of_day
-                                         rescue
-                                           ""
-                                         end
+          params[:q][:completed_at_lt] =
+            begin
+                                                      Time.zone.parse(params[:q][:completed_at_lt]).end_of_day
+                                                    rescue
+                                                      ""
+                                                    end
         end
 
         params[:q][:s] ||= "completed_at desc"

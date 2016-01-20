@@ -16,36 +16,39 @@ module Spree
       if store_credit.nil?
         ActiveMerchant::Billing::Response.new(false, Spree.t('store_credit.unable_to_find'), {}, {})
       else
-        action = -> (store_credit) {
-          store_credit.authorize(
-            amount_in_cents / 100.0.to_d,
-            gateway_options[:currency],
-            action_originator: gateway_options[:originator]
-          )
-        }
+        action =
+          -> (store_credit) {
+            store_credit.authorize(
+              amount_in_cents / 100.0.to_d,
+              gateway_options[:currency],
+              action_originator: gateway_options[:originator]
+            )
+          }
         handle_action_call(store_credit, action, :authorize)
       end
     end
 
     def capture(amount_in_cents, auth_code, gateway_options = {})
-      action = -> (store_credit) {
-        store_credit.capture(
-          amount_in_cents / 100.0.to_d,
-          auth_code,
-          gateway_options[:currency],
-          action_originator: gateway_options[:originator]
-        )
-      }
+      action =
+        -> (store_credit) {
+          store_credit.capture(
+            amount_in_cents / 100.0.to_d,
+            auth_code,
+            gateway_options[:currency],
+            action_originator: gateway_options[:originator]
+          )
+        }
 
       handle_action(action, :capture, auth_code)
     end
 
     def purchase(amount_in_cents, store_credit, gateway_options = {})
       eligible_events = store_credit.store_credit_events.where(amount: amount_in_cents / 100.0.to_d, action: Spree::StoreCredit::ELIGIBLE_ACTION)
-      event = eligible_events.find do |eligible_event|
-        store_credit.store_credit_events.where(authorization_code: eligible_event.authorization_code)
-                    .where.not(action: Spree::StoreCredit::ELIGIBLE_ACTION).empty?
-      end
+      event =
+        eligible_events.find do |eligible_event|
+          store_credit.store_credit_events.where(authorization_code: eligible_event.authorization_code)
+                      .where.not(action: Spree::StoreCredit::ELIGIBLE_ACTION).empty?
+        end
 
       if event.blank?
         ActiveMerchant::Billing::Response.new(false, Spree.t('store_credit.unable_to_find'), {}, {})
@@ -55,19 +58,21 @@ module Spree
     end
 
     def void(auth_code, gateway_options = {})
-      action = -> (store_credit) {
-        store_credit.void(auth_code, action_originator: gateway_options[:originator])
-      }
+      action =
+        -> (store_credit) {
+          store_credit.void(auth_code, action_originator: gateway_options[:originator])
+        }
       handle_action(action, :void, auth_code)
     end
 
     def credit(amount_in_cents, auth_code, gateway_options)
-      action = -> (store_credit) do
-        currency = gateway_options[:currency] || store_credit.currency
-        originator = gateway_options[:originator]
+      action =
+        -> (store_credit) do
+          currency = gateway_options[:currency] || store_credit.currency
+          originator = gateway_options[:originator]
 
-        store_credit.credit(amount_in_cents / 100.0.to_d, auth_code, currency, action_originator: originator)
-      end
+          store_credit.credit(amount_in_cents / 100.0.to_d, auth_code, currency, action_originator: originator)
+        end
 
       handle_action(action, :credit, auth_code)
     end

@@ -11,11 +11,12 @@ module Spree
 
     def self.property_conditions(property)
       properties = Property.table_name
-      conditions = case property
-                   when String   then { "#{properties}.name" => property }
-                   when Property then { "#{properties}.id" => property.id }
-                   else               { "#{properties}.id" => property.to_i }
-                   end
+      conditions =
+        case property
+        when String   then { "#{properties}.name" => property }
+        when Property then { "#{properties}.id" => property.id }
+        else               { "#{properties}.id" => property.to_i }
+        end
     end
 
     scope :ascend_by_updated_at, -> { order(updated_at: :asc) }
@@ -90,22 +91,24 @@ module Spree
 
     add_search_scope :with_option do |option|
       option_types = OptionType.table_name
-      conditions = case option
-                   when String     then { "#{option_types}.name" => option }
-                   when OptionType then { "#{option_types}.id" => option.id }
-                   else                 { "#{option_types}.id" => option.to_i }
-                   end
+      conditions =
+        case option
+        when String     then { "#{option_types}.name" => option }
+        when OptionType then { "#{option_types}.id" => option.id }
+        else                 { "#{option_types}.id" => option.to_i }
+        end
 
       joins(:option_types).where(conditions)
     end
 
     add_search_scope :with_option_value do |option, value|
       option_values = OptionValue.table_name
-      option_type_id = case option
-                       when String then OptionType.find_by(name: option) || option.to_i
-                       when OptionType then option.id
-                       else option.to_i
-                       end
+      option_type_id =
+        case option
+        when String then OptionType.find_by(name: option) || option.to_i
+        when OptionType then option.id
+        else option.to_i
+        end
 
       conditions = "#{option_values}.name = ? AND #{option_values}.option_type_id = ?", value, option_type_id
       group('spree_products.id').joins(variants_including_master: :option_values).where(conditions)

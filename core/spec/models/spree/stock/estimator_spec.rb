@@ -144,13 +144,14 @@ module Spree
           shipping_rate = Spree::ShippingRate.new
           allow(Spree::ShippingRate).to receive(:new).and_return(shipping_rate)
 
-          selector_class = Class.new do
-            def initialize(_); end;
+          selector_class =
+            Class.new do
+              def initialize(_); end;
 
-            def find_default
-              Spree::ShippingRate.new
+              def find_default
+                Spree::ShippingRate.new
+              end
             end
-          end
           Spree::Config.shipping_rate_selector_class = selector_class
 
           subject.shipping_rates(package)

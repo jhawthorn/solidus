@@ -33,13 +33,14 @@ module Spree::Preferences
         # has been cleared from the cache
 
         # does it exist in the database?
-        val = if preference = Spree::Preference.find_by_key(key)
-                # it does exist
-                preference.value
-              else
-                # use the fallback value
-                yield
-              end
+        val =
+          if preference = Spree::Preference.find_by_key(key)
+            # it does exist
+            preference.value
+          else
+            # use the fallback value
+            yield
+          end
 
         # Cache either the value from the db or the fallback value.
         # This avoids hitting the db with subsequent queries.

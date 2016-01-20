@@ -10,11 +10,12 @@ module Spree
       # instead of actually deleting the product.
       def destroy
         @variant = Variant.find(params[:id])
-        flash[:success] = if @variant.destroy
-                            Spree.t('notice_messages.variant_deleted')
-                          else
-                            Spree.t('notice_messages.variant_not_deleted')
-                          end
+        flash[:success] =
+          if @variant.destroy
+            Spree.t('notice_messages.variant_deleted')
+          else
+            Spree.t('notice_messages.variant_not_deleted')
+          end
 
         respond_with(@variant) do |format|
           format.html { redirect_to admin_product_variants_url(params[:product_id]) }
@@ -34,11 +35,12 @@ module Spree
       def collection
         @deleted = (params.key?(:deleted) && params[:deleted] == "on") ? "checked" : ""
 
-        @collection ||= if @deleted.blank?
-                          super
-                        else
-                          Variant.only_deleted.where(product_id: parent.id)
-                        end
+        @collection ||=
+          if @deleted.blank?
+            super
+          else
+            Variant.only_deleted.where(product_id: parent.id)
+          end
 
         params[:q] ||= {}
 

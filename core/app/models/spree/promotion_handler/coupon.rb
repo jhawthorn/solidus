@@ -35,11 +35,12 @@ module Spree
       end
 
       def promotion
-        @promotion ||= begin
-          if promotion_code && promotion_code.promotion.active?
-            promotion_code.promotion
-          end
-        end
+        @promotion ||=
+          begin
+                   if promotion_code && promotion_code.promotion.active?
+                     promotion_code.promotion
+                   end
+                 end
       end
 
       def successful?
@@ -87,9 +88,10 @@ module Spree
       end
 
       def determine_promotion_application_result
-        detector = lambda { |p|
-          p.source.promotion.codes.any? { |code| code.value == order.coupon_code.downcase }
-        }
+        detector =
+          lambda { |p|
+            p.source.promotion.codes.any? { |code| code.value == order.coupon_code.downcase }
+          }
 
         # Check for applied adjustments.
         discount = order.line_item_adjustments.promotion.detect(&detector)

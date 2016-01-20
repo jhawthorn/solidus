@@ -2,15 +2,17 @@ module Spree
   module Api
     class TaxonsController < Spree::Api::BaseController
       def index
-        @taxons = if taxonomy
-                    taxonomy.root.children
-                  else
-                    @taxons = if params[:ids]
-                                Spree::Taxon.accessible_by(current_ability, :read).where(id: params[:ids].split(','))
-                              else
-                                Spree::Taxon.accessible_by(current_ability, :read).order(:taxonomy_id, :lft).ransack(params[:q]).result
-                              end
-                  end
+        @taxons =
+          if taxonomy
+            taxonomy.root.children
+          else
+            @taxons =
+              if params[:ids]
+                Spree::Taxon.accessible_by(current_ability, :read).where(id: params[:ids].split(','))
+              else
+                Spree::Taxon.accessible_by(current_ability, :read).order(:taxonomy_id, :lft).ransack(params[:q]).result
+              end
+          end
 
         @taxons = @taxons.page(params[:page]).per(params[:per_page])
         respond_with(@taxons)

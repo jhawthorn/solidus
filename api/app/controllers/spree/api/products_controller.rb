@@ -103,11 +103,12 @@ module Spree
       end
 
       def variants_params
-        variants_key = if params[:product].key? :variants
-                         :variants
-                       else
-                         :variants_attributes
-                       end
+        variants_key =
+          if params[:product].key? :variants
+            :variants
+          else
+            :variants_attributes
+          end
 
         params.require(:product).permit(
           variants_key => [permitted_variant_attributes, :id]

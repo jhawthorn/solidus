@@ -268,17 +268,18 @@ module Spree
       possible = (0..9).to_a
       possible += ('A'..'Z').to_a if options[:letters]
 
-      self.number ||= loop do
-        # Make a random number.
-        random = "#{options[:prefix]}#{(0...options[:length]).map { possible.sample }.join}"
-        # Use the random  number if no other order exists with it.
-        if self.class.exists?(number: random)
-          # If over half of all possible options are taken add another digit.
-          options[:length] += 1 if self.class.count > (10**options[:length] / 2)
-        else
-          break random
+      self.number ||=
+        loop do
+          # Make a random number.
+          random = "#{options[:prefix]}#{(0...options[:length]).map { possible.sample }.join}"
+          # Use the random  number if no other order exists with it.
+          if self.class.exists?(number: random)
+            # If over half of all possible options are taken add another digit.
+            options[:length] += 1 if self.class.count > (10**options[:length] / 2)
+          else
+            break random
+          end
         end
-      end
     end
 
     def shipped_shipments
@@ -464,11 +465,12 @@ module Spree
     end
 
     def coupon_code=(code)
-      @coupon_code = begin
-                       code.strip.downcase
-                     rescue
-                       nil
-                     end
+      @coupon_code =
+        begin
+                              code.strip.downcase
+                            rescue
+                              nil
+                            end
     end
 
     def can_add_coupon?
@@ -754,10 +756,11 @@ module Spree
     end
 
     def create_token
-      self.guest_token ||= loop do
-        random_token = SecureRandom.urlsafe_base64(nil, false)
-        break random_token unless self.class.exists?(guest_token: random_token)
-      end
+      self.guest_token ||=
+        loop do
+          random_token = SecureRandom.urlsafe_base64(nil, false)
+          break random_token unless self.class.exists?(guest_token: random_token)
+        end
     end
   end
 end

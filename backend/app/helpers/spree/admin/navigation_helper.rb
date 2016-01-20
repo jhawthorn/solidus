@@ -26,13 +26,14 @@ module Spree
           link = link_to(titleized_label, destination_url)
         end
 
-        selected = if options[:match_path].is_a? Regexp
-                     request.fullpath =~ options[:match_path]
-                   elsif options[:match_path]
-                     request.fullpath.starts_with?("#{admin_path}#{options[:match_path]}")
-                   else
-                     args.include?(controller.controller_name.to_sym)
-                   end
+        selected =
+          if options[:match_path].is_a? Regexp
+            request.fullpath =~ options[:match_path]
+          elsif options[:match_path]
+            request.fullpath.starts_with?("#{admin_path}#{options[:match_path]}")
+          else
+            args.include?(controller.controller_name.to_sym)
+          end
         css_classes << 'selected' if selected
 
         if options[:css_class]

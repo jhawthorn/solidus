@@ -53,13 +53,15 @@ module Spree
     # first unshipped that already includes this variant
     # first unshipped that's leaving from a stock_location that stocks this variant
     def determine_target_shipment
-      shipment = order.shipments.detect do |shipment|
-        shipment.ready_or_pending? && shipment.include?(variant)
-      end
+      shipment =
+        order.shipments.detect do |shipment|
+          shipment.ready_or_pending? && shipment.include?(variant)
+        end
 
-      shipment ||= order.shipments.detect do |shipment|
-        shipment.ready_or_pending? && variant.stock_location_ids.include?(shipment.stock_location_id)
-      end
+      shipment ||=
+        order.shipments.detect do |shipment|
+          shipment.ready_or_pending? && variant.stock_location_ids.include?(shipment.stock_location_id)
+        end
     end
 
     def add_to_shipment(shipment, quantity)

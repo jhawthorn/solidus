@@ -33,15 +33,16 @@ module Spree
       end
 
       def find_address
-        @address = if @order.bill_address_id == params[:id].to_i
-                     @order_source = :bill_address
-                     @order.bill_address
-                   elsif @order.ship_address_id == params[:id].to_i
-                     @order_source = :ship_address
-                     @order.ship_address
-                   else
-                     raise CanCan::AccessDenied
-                   end
+        @address =
+          if @order.bill_address_id == params[:id].to_i
+            @order_source = :bill_address
+            @order.bill_address
+          elsif @order.ship_address_id == params[:id].to_i
+            @order_source = :ship_address
+            @order.ship_address
+          else
+            raise CanCan::AccessDenied
+          end
       end
     end
   end

@@ -14,9 +14,10 @@ describe Spree::Api::BaseController, type: :controller do
   end
 
   before do
-    @routes = ActionDispatch::Routing::RouteSet.new.tap do |r|
-      r.draw { get 'index', to: 'spree/api/base#index' }
-    end
+    @routes =
+      ActionDispatch::Routing::RouteSet.new.tap do |r|
+        r.draw { get 'index', to: 'spree/api/base#index' }
+      end
   end
 
   context "when validating based on an order token" do
@@ -93,9 +94,10 @@ describe Spree::Api::BaseController, type: :controller do
     end
 
     # What would be placed in config/initializers/spree.rb
-    Spree::Api::BaseController.error_notifier = proc do |e, controller|
-      MockHoneybadger.notify_or_ignore(e, rack_env: controller.request.env)
-    end
+    Spree::Api::BaseController.error_notifier =
+      proc do |e, controller|
+        MockHoneybadger.notify_or_ignore(e, rack_env: controller.request.env)
+      end
 
     ##
     # Fake HB alert class
@@ -109,9 +111,10 @@ describe Spree::Api::BaseController, type: :controller do
       user = double(email: "spree@example.com")
       allow(user).to receive_message_chain :spree_roles, pluck: []
       allow(Spree.user_class).to receive_messages find_by: user
-      @routes = ActionDispatch::Routing::RouteSet.new.tap do |r|
-        r.draw { get 'foo' => 'fakes#foo' }
-      end
+      @routes =
+        ActionDispatch::Routing::RouteSet.new.tap do |r|
+          r.draw { get 'foo' => 'fakes#foo' }
+        end
     end
 
     it 'should notify notify_error_during_processing' do

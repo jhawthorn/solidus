@@ -28,9 +28,10 @@ module Spree
       end
 
       def initialize
-        @store = Hash.new do |h, klass|
-          h[klass] = {}
-        end
+        @store =
+          Hash.new do |h, klass|
+            h[klass] = {}
+          end
       end
 
       def add(klass, name, preferences)

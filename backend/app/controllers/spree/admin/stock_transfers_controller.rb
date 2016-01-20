@@ -56,11 +56,12 @@ module Spree
 
       def collection
         params[:q] = params[:q] || {}
-        @show_only_open = if params[:q][:closed_at_null].present?
-                            params[:q][:closed_at_null] == '1'
-                          else
-                            true
-                          end
+        @show_only_open =
+          if params[:q][:closed_at_null].present?
+            params[:q][:closed_at_null] == '1'
+          else
+            true
+          end
         params[:q].delete(:closed_at_null) unless @show_only_open
         @search = super.ransack(params[:q])
         @search.sorts = 'created_at desc'
@@ -129,8 +130,9 @@ module Spree
       end
 
       def source_location
-        @source_location ||= params.key?(:transfer_receive_stock) ? nil :
-                               StockLocation.find(params[:transfer_source_location_id])
+        @source_location ||=
+          params.key?(:transfer_receive_stock) ? nil :
+                                        StockLocation.find(params[:transfer_source_location_id])
       end
 
       def destination_location
@@ -138,9 +140,10 @@ module Spree
       end
 
       def adjust_inventory
-        @stock_movements = @stock_transfer.transfer_items.received.map do |transfer_item|
-          @stock_transfer.destination_location.move(transfer_item.variant, transfer_item.received_quantity, @stock_transfer)
-        end
+        @stock_movements =
+          @stock_transfer.transfer_items.received.map do |transfer_item|
+            @stock_transfer.destination_location.move(transfer_item.variant, transfer_item.received_quantity, @stock_transfer)
+          end
       end
     end
   end

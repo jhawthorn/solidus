@@ -99,26 +99,27 @@ module Spree
       end
 
       def preference_field_options(options)
-        field_options = case options[:type]
-                        when :integer
-                          { size: 10,
-                            class: 'input_integer' }
-                        when :boolean
-                          {}
-                        when :string
-                          { size: 10,
-                            class: 'input_string fullwidth' }
-                        when :password
-                          { size: 10,
-                            class: 'password_string fullwidth' }
-                        when :text
-                          { rows: 15,
-                            cols: 85,
-                            class: 'fullwidth' }
-                        else
-                          { size: 10,
-                            class: 'input_string fullwidth' }
-                        end
+        field_options =
+          case options[:type]
+          when :integer
+            { size: 10,
+              class: 'input_integer' }
+          when :boolean
+            {}
+          when :string
+            { size: 10,
+              class: 'input_string fullwidth' }
+          when :password
+            { size: 10,
+              class: 'password_string fullwidth' }
+          when :text
+            { rows: 15,
+              cols: 85,
+              class: 'fullwidth' }
+          else
+            { size: 10,
+              class: 'input_string fullwidth' }
+          end
 
         field_options.merge!({
                                readonly: options[:readonly],

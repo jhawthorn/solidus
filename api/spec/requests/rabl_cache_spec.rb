@@ -14,9 +14,10 @@ describe "Rabl Cache", type: :request, caching: true do
     expect(response.status).to eq(200)
 
     # Make sure we get a non master variant
-    variant_a = JSON.parse(response.body)['variants'].find do |v|
-      !v['is_master']
-    end
+    variant_a =
+      JSON.parse(response.body)['variants'].find do |v|
+        !v['is_master']
+      end
 
     expect(variant_a['is_master']).to be false
     expect(variant_a['stock_items']).not_to be_nil

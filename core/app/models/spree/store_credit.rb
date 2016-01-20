@@ -211,12 +211,13 @@ class Spree::StoreCredit < Spree::Base
   def create_credit_record(amount, action_attributes = {})
     # Setting credit_to_new_allocation to true will create a new allocation anytime #credit is called
     # If it is not set, it will update the store credit's amount in place
-    credit = if Spree::Config[:credit_to_new_allocation]
-               Spree::StoreCredit.new(create_credit_record_params(amount))
-             else
-               self.amount_used = amount_used - amount
-               self
-             end
+    credit =
+      if Spree::Config[:credit_to_new_allocation]
+        Spree::StoreCredit.new(create_credit_record_params(amount))
+      else
+        self.amount_used = amount_used - amount
+        self
+      end
 
     credit.assign_attributes(action_attributes)
     credit.save!
@@ -241,11 +242,12 @@ class Spree::StoreCredit < Spree::Base
   def store_event
     return unless amount_changed? || amount_used_changed? || amount_authorized_changed? || [ELIGIBLE_ACTION, INVALIDATE_ACTION].include?(action)
 
-    event = if action
-              store_credit_events.build(action: action)
-            else
-              store_credit_events.where(action: ALLOCATION_ACTION).first_or_initialize
-            end
+    event =
+      if action
+        store_credit_events.build(action: action)
+      else
+        store_credit_events.where(action: ALLOCATION_ACTION).first_or_initialize
+      end
 
     event.update_attributes!({
                                amount: action_amount || amount,

@@ -21,11 +21,12 @@ module Spree
         max = preferred_max_items.to_i
         quantity.times do |i|
           # check max value to avoid divide by 0 errors
-          sum += if (max == 0 && i == 0) || (max > 0) && (i % max == 0)
-                   preferred_first_item.to_f
-                 else
-                   preferred_additional_item.to_f
-                 end
+          sum +=
+            if (max == 0 && i == 0) || (max > 0) && (i % max == 0)
+              preferred_first_item.to_f
+            else
+              preferred_additional_item.to_f
+            end
         end
 
         sum

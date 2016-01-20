@@ -31,11 +31,12 @@ module Spree
     end
 
     def load_product
-      @products = if try_spree_current_user.try(:has_spree_role?, "admin")
-                    Product.with_deleted
-                  else
-                    Product.active(current_currency)
-                  end
+      @products =
+        if try_spree_current_user.try(:has_spree_role?, "admin")
+          Product.with_deleted
+        else
+          Product.active(current_currency)
+        end
       @product = @products.friendly.find(params[:id])
     end
 

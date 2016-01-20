@@ -31,9 +31,10 @@ module Spree
         def results
           return @scope if @query_string.blank?
 
-          matches = @query_string.split.map do |word|
-            @scope.ransack(search_term_params(word)).result.pluck(:id)
-          end
+          matches =
+            @query_string.split.map do |word|
+              @scope.ransack(search_term_params(word)).result.pluck(:id)
+            end
 
           Spree::Variant.where(id: matches.inject(:&))
         end

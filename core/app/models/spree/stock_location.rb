@@ -53,11 +53,12 @@ module Spree
     #
     # @return [StockItem] Corresponding StockItem for the StockLocation's variant.
     def stock_item_or_create(variant)
-      vid = if variant.is_a?(Variant)
-              variant.id
-            else
-              variant
-            end
+      vid =
+        if variant.is_a?(Variant)
+          variant.id
+        else
+          variant
+        end
       stock_item(vid) || stock_items.create(variant_id: vid)
     end
 

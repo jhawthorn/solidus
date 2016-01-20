@@ -53,11 +53,12 @@ module Spree
       end
 
       def scope
-        variants = if @product
-                     @product.variants_including_master
-                   else
-                     Variant
-                   end
+        variants =
+          if @product
+            @product.variants_including_master
+          else
+            Variant
+          end
 
         if current_ability.can?(:manage, Variant) && params[:show_deleted]
           variants = variants.with_deleted

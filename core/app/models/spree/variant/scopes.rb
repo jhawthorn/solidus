@@ -14,22 +14,25 @@ module Spree
       def has_option(option_type, *option_values)
         option_types = OptionType.table_name
 
-        option_type_conditions = case option_type
-                                 when OptionType then { "#{option_types}.name" => option_type.name }
-                                 when String     then { "#{option_types}.name" => option_type }
-                                 else                 { "#{option_types}.id"   => option_type }
-                                 end
+        option_type_conditions =
+          case option_type
+          when OptionType then { "#{option_types}.name" => option_type.name }
+          when String     then { "#{option_types}.name" => option_type }
+          else                 { "#{option_types}.id"   => option_type }
+          end
 
         relation = joins(option_values: :option_type).where(option_type_conditions)
 
-        option_values_conditions = option_values.each do |option_value|
-          option_value_conditions = case option_value
-                                    when OptionValue then { "#{OptionValue.table_name}.name" => option_value.name }
-                                    when String      then { "#{OptionValue.table_name}.name" => option_value }
-                                    else                  { "#{OptionValue.table_name}.id"   => option_value }
-                                    end
-          relation = relation.where(option_value_conditions)
-        end
+        option_values_conditions =
+          option_values.each do |option_value|
+            option_value_conditions =
+              case option_value
+              when OptionValue then { "#{OptionValue.table_name}.name" => option_value.name }
+              when String      then { "#{OptionValue.table_name}.name" => option_value }
+              else                  { "#{OptionValue.table_name}.id"   => option_value }
+              end
+            relation = relation.where(option_value_conditions)
+          end
 
         relation
       end

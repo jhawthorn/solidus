@@ -64,11 +64,12 @@ module Spree
     #
     # @param num [String] the desired credit card number
     def number=(num)
-      @number = begin
-                  num.gsub(/[^0-9]/, '')
-                rescue
-                  nil
-                end
+      @number =
+        begin
+                         num.gsub(/[^0-9]/, '')
+                       rescue
+                         nil
+                       end
     end
 
     # Sets the credit card type, converting it to the preferred internal
@@ -78,13 +79,14 @@ module Spree
     def cc_type=(type)
       # cc_type is set by jquery.payment, which helpfully provides different
       # types from Active Merchant. Converting them is necessary.
-      self[:cc_type] = case type
-                       when 'mastercard', 'maestro' then 'master'
-                       when 'amex' then 'american_express'
-                       when 'dinersclub' then 'diners_club'
-                       when '' then try_type_from_number
-                       else type
-                       end
+      self[:cc_type] =
+        case type
+        when 'mastercard', 'maestro' then 'master'
+        when 'amex' then 'american_express'
+        when 'dinersclub' then 'diners_club'
+        when '' then try_type_from_number
+        else type
+        end
     end
 
     # Sets the last digits field based on the assigned credit card number.
