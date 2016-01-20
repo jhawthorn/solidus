@@ -35,6 +35,10 @@ Style/GuardClause:
 Lint/EndAlignment:
   AutoCorrect: true
 
+Style/MultilineAssignmentLayout:
+  EnforcedStyle: new_line
+  Enabled: true
+
 # From http://relaxed.ruby.style/
 
 Style/Alias:
