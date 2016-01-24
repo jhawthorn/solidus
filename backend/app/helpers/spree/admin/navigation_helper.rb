@@ -38,7 +38,7 @@ module Spree
         if options[:css_class]
           css_classes << options[:css_class]
         end
-        content_tag('li', link + (yield if block_given?), class: css_classes.join(' ') )
+        content_tag('li', link + (yield if block_given?), class: css_classes)
       end
 
       def link_to_clone(resource, options = {})
