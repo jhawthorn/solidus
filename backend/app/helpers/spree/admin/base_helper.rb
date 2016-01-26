@@ -15,7 +15,8 @@ module Spree
         obj = object.respond_to?(:errors) ? object : instance_variable_get("@#{object}")
 
         if obj && obj.errors[method].present?
-          errors = obj.errors[method].map { |err| h(err) }.join('<br />').html_safe
+          errors = obj.errors[method].map { |err| h(err) }
+          errors = safe_join(errors, "<br />")
           content_tag(:span, errors, :class => 'formError')
         else
           ''
@@ -132,12 +133,13 @@ module Spree
 
       def preference_fields(object, form)
         return unless object.respond_to?(:preferences)
-        object.preferences.keys.map{ |key|
+        fields = object.preferences.keys.map{ |key|
 
           form.label("preferred_#{key}", Spree.t(key) + ": ") +
             preference_field_for(form, "preferred_#{key}", :type => object.preference_type(key))
 
-        }.join("<br />").html_safe
+        }
+        safe_join(fields, "<br />")
       end
 
       def link_to_add_fields(name, target, options = {})
