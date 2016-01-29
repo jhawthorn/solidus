@@ -82,7 +82,6 @@ RSpec.configure do |config|
   config.before(:each) do |example|
     Rails.cache.clear
     reset_spree_preferences
-    WebMock.disable!
 
     if example.metadata[:js]
       page.driver.browser.url_blacklist = ['http://fonts.googleapis.com']
