@@ -9,6 +9,8 @@ Spree::Core::Engine.add_routes do
       end
     end
 
+    resources :translations, only: [:show]
+
     resources :promotions do
       resources :promotion_rules
       resources :promotion_actions
