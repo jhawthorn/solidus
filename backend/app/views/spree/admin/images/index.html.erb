@@ -15,13 +15,15 @@
 <% else %>
   <table class="index sortable" data-hook="images_table" data-sortable-link="<%= update_positions_admin_product_images_url(@product) %>">
     <colgroup>
-      <col style="width: 5%">
-      <col style="width: 10%">
-      <% if @product.has_variants? %>
-        <col style="width: 25%">
-      <% end %>
-      <col style="width: 45%">
+      <col style="width: 0%">
       <col style="width: 15%">
+      <% if @product.has_variants? %>
+        <col style="width: 35%">
+        <col style="width: 50%">
+      <% else %>
+        <col style="width: 85%">
+      <% end %>
+      <col style="width: 0%">
     </colgroup>
     <thead>
       <tr data-hook="images_header">

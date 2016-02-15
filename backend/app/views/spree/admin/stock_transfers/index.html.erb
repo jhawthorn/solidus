@@ -71,6 +71,16 @@
 
 <% if @stock_transfers.any? %>
   <table class="index" id="listing_stock_transfers">
+    <colgroup>
+      <col style="width: 20%" />
+      <col style="width: 20%" />
+      <col style="width: 20%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 10%" />
+      <col style="width: 0%" />
+    </colgroup>
     <thead>
       <tr>
         <th><%= sort_link @search, :number,          Spree.t(:number) %></th>
