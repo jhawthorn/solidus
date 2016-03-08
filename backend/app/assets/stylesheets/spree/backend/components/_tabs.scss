@@ -1,8 +1,13 @@
 .tabs {
   @include display(flex);
   margin: 1em 0;
-  border-bottom: 1px solid $color-border;
   white-space: nowrap;
+
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+
+  border-bottom: 1px solid $nav-tabs-border-color;
 
   &,
   ul {
@@ -19,35 +24,32 @@
   @include flex-grow(0);
   @include flex-shrink(0);
 
-  // Move down one pixel to sit on top of the ul's border-bottom
-  position: relative;
-  top: 1px;
+  // Move down one pixel to sit on top of the ul's border-botto
+  margin-bottom: -1px;
+
+  + .tab:not(.tabs-overflowed) {
+    margin-left: .2rem;
+  }
 
   > a {
     display: block;
-    border: 1px solid $color-border;
-    border-radius: 2px 2px 0 0;
-    line-height: 1;
-  }
+    padding: $nav-link-padding;
+    border: $nav-tabs-link-border-width solid transparent;
+    @include border-radius($border-radius $border-radius 0 0);
+    line-height: 1.5;
 
-  &:not(:first-child) > a {
-    border-left: none;
-  }
-
-  &:not(.active) > a {
-    background: $color-tbl-thead;
+    @include hover-focus {
+      border-color: $nav-tabs-link-hover-border-color $nav-tabs-link-hover-border-color $nav-tabs-border-color;
+    }
   }
 
   &.active > a,
   &.active:hover {
-    background: white;
-    border-bottom-color: white;
-    color: $color-body-text;
-  }
-
-  &:not(.active):hover > a {
-    background: darken($color-tbl-thead, 5%);
-    color: $color-link;
+    @include plain-hover-focus {
+      color: $nav-tabs-active-link-hover-color;
+      background-color: $nav-tabs-active-link-hover-bg;
+      border-color: $nav-tabs-active-link-hover-border-color $nav-tabs-active-link-hover-border-color transparent;
+    }
   }
 }
 
@@ -57,8 +59,6 @@
 }
 
 .tabs-dropdown {
-  @include flex-grow(0);
-  @include flex-shrink(0);
   position: relative;
 
   .tabs:not(.tabs-overflowed) & {
@@ -67,7 +67,6 @@
 
   > a {
     position: relative;
-    background: white;
     z-index: 1;
 
     &:before {
