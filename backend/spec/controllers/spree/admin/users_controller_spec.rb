@@ -122,10 +122,10 @@ describe Spree::Admin::UsersController, type: :controller do
     end
 
     it "can set stock locations" do
-      location = Spree::StockLocation.create(name: "my_location")
-      location_2 = Spree::StockLocation.create(name: "my_location_2")
-      expect(mock_user).to receive(:stock_locations=).with([location, location_2])
+      location = Spree::StockLocation.create!(name: "my_location")
+      location_2 = Spree::StockLocation.create!(name: "my_location_2")
       spree_post :create, { user: { stock_location_ids: [location.id, location_2.id] } }
+      expect(Spree::User.last.stock_locations).to match_array([location, location_2])
     end
   end
 
