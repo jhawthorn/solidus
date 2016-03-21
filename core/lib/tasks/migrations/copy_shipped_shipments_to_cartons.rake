@@ -148,6 +148,7 @@ namespace 'spree:migrations:copy_shipped_shipments_to_cartons' do
   end
 
   def say(message)
+    return if ENV['VERBOSE'] == 'false'
     if Rails.env.test?
       Rails.logger.info message
     else

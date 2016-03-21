@@ -17,9 +17,12 @@ namespace :common do
 
     puts "Setting up dummy database..."
 
-    silence_stream(STDOUT) do
-      sh "bundle exec rake db:drop db:create db:migrate"
-    end
+    require './config/environment'
+    Rails.application.load_tasks
+    Rake::Task['db:drop'].invoke
+    Rake::Task['db:create'].invoke
+    ENV['VERBOSE']='false' # silence migrations
+    Rake::Task['db:migrate'].invoke
 
     begin
       require "generators/#{ENV['LIB_NAME']}/install/install_generator"
