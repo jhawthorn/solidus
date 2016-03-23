@@ -10,6 +10,9 @@ machine:
   pre:
     - sudo curl --output /usr/local/bin/phantomjs https://s3.amazonaws.com/circle-downloads/phantomjs-2.1.1
 dependencies:
+  pre:
+    - echo Y | rvm @global do gem uninstall bundler
+    - gem install bundler -v '1.10.6'
   override:
     - bundle check --path=vendor/bundle || bundle install --path=vendor/bundle
     - ./build-ci.rb install
