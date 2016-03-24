@@ -1,35 +1,39 @@
-class CountUpdateForms
-  @beginListening: (isReceiving) ->
-    # Edit
-    $('body').on 'click', '#listing_transfer_items .fa-edit', (ev) =>
-      ev.preventDefault()
-      transferItemId = $(ev.currentTarget).data('id')
-      Spree.NumberFieldUpdater.hideReadOnly(transferItemId)
-      Spree.NumberFieldUpdater.showForm(transferItemId)
+EditTransferItemView = Backbone.View.extend
+  initialize: (options) ->
+    @isReceiving = options.isReceiving
 
-    # Cancel
-    $('body').on 'click', '#listing_transfer_items .fa-void', (ev) =>
-      ev.preventDefault()
-      transferItemId = $(ev.currentTarget).data('id')
-      Spree.NumberFieldUpdater.hideForm(transferItemId)
-      Spree.NumberFieldUpdater.showReadOnly(transferItemId)
+  events:
+    'click .fa-edit': "onEdit"
+    'click .fa-void': "onCancel"
+    'click .fa-check': "onSubmit"
 
-    # Submit
-    $('body').on 'click', '#listing_transfer_items .fa-check', (ev) =>
-      ev.preventDefault()
-      transferItemId = $(ev.currentTarget).data('id')
-      stockTransferNumber = $("#stock_transfer_number").val()
-      quantity = parseInt($("#number-update-#{transferItemId} input[type='number']").val(), 10)
+  onEdit: (ev) ->
+    ev.preventDefault()
+    transferItemId = $(ev.currentTarget).data('id')
+    Spree.NumberFieldUpdater.hideReadOnly(transferItemId)
+    Spree.NumberFieldUpdater.showForm(transferItemId)
 
-      itemAttributes =
-        id: transferItemId
-        stockTransferNumber: stockTransferNumber
-      quantityKey = if isReceiving then 'receivedQuantity' else 'expectedQuantity'
-      itemAttributes[quantityKey] = quantity
-      transferItem = new Spree.TransferItem(itemAttributes)
-      transferItem.update(successHandler, errorHandler)
+  onCancel: (ev) ->
+    ev.preventDefault()
+    transferItemId = $(ev.currentTarget).data('id')
+    Spree.NumberFieldUpdater.hideForm(transferItemId)
+    Spree.NumberFieldUpdater.showReadOnly(transferItemId)
 
-  successHandler = (transferItem) =>
+  onSubmit: (ev) ->
+    ev.preventDefault()
+    transferItemId = $(ev.currentTarget).data('id')
+    stockTransferNumber = $("#stock_transfer_number").val()
+    quantity = parseInt($("#number-update-#{transferItemId} input[type='number']").val(), 10)
+
+    itemAttributes =
+      id: transferItemId
+      stockTransferNumber: stockTransferNumber
+    quantityKey = if @isReceiving then 'receivedQuantity' else 'expectedQuantity'
+    itemAttributes[quantityKey] = quantity
+    transferItem = new Spree.TransferItem(itemAttributes)
+    transferItem.update(@onSuccess, @onError)
+
+  onSuccess: (transferItem) =>
     if $('#received-transfer-items').length > 0
       Spree.NumberFieldUpdater.successHandler(transferItem.id, transferItem.received_quantity)
       Spree.StockTransfers.ReceivedCounter.updateTotal()
@@ -37,8 +41,12 @@ class CountUpdateForms
       Spree.NumberFieldUpdater.successHandler(transferItem.id, transferItem.expected_quantity)
     show_flash("success", Spree.translations.updated_successfully)
 
-  errorHandler = (errorData) =>
+  onError: (errorData) =>
     show_flash("error", errorData.responseText)
 
 Spree.StockTransfers ?= {}
-Spree.StockTransfers.CountUpdateForms = CountUpdateForms
+Spree.StockTransfers.CountUpdateForms =
+  beginListening: (isReceiving) ->
+    new EditTransferItemView
+      el: $('body')
+      isReceiving: isReceiving
