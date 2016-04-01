@@ -93,10 +93,7 @@ class VariantForm
 
     htmlOutput = rowTemplate(templateAttributes)
     $("tr[data-transfer-item-id='#{transferItem.id}']").remove()
-    if $("#listing_transfer_items tbody tr:first").length > 0
-      $("#listing_transfer_items tbody tr:first").before(htmlOutput)
-    else
-      $("#listing_transfer_items tbody").html(htmlOutput)
+    $("#listing_transfer_items tbody").prepend(htmlOutput)
     $("#listing_transfer_items").prop('hidden', false)
     $(".no-objects-found").prop('hidden', true)
     $("tr[data-transfer-item-id='#{transferItem.id}']").fadeIn()
