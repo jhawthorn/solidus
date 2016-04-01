@@ -96,7 +96,6 @@ class VariantForm
     $("#listing_transfer_items tbody").prepend(htmlOutput)
     $("#listing_transfer_items").prop('hidden', false)
     $(".no-objects-found").prop('hidden', true)
-    $("tr[data-transfer-item-id='#{transferItem.id}']").fadeIn()
 
   errorHandler = (errorData) ->
     resetVariantAutocomplete()
