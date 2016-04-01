@@ -1,5 +1,5 @@
-class VariantForm
-  constructor: ({@isBuilding}) ->
+class VariantForm extends Backbone.View
+  initialize: ({@isBuilding}) ->
     autoCompleteEl().variantAutocomplete({ in_stock_only: @isBuilding })
     resetVariantAutocomplete()
     if @isBuilding
