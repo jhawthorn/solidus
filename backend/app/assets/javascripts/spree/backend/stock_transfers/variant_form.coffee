@@ -1,8 +1,8 @@
 class VariantForm
-  @initializeForm: (isBuilding) ->
-    autoCompleteEl().variantAutocomplete({ in_stock_only: isBuilding })
+  constructor: ({@isBuilding}) ->
+    autoCompleteEl().variantAutocomplete({ in_stock_only: @isBuilding })
     resetVariantAutocomplete()
-    if isBuilding
+    if @isBuilding
       beginListeningForAdd()
     else
       beginListeningForReceive()

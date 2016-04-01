@@ -1,6 +1,7 @@
 $(document).ready ->
   if $('#stock-transfer-transfer-items').length > 0
-    Spree.StockTransfers.VariantForm.initializeForm(true)
+    new Spree.StockTransfers.VariantForm
+      isBuilding: true
 
     $("#ready-to-ship-transfer-button").on('click', (ev) ->
       ev.preventDefault()
