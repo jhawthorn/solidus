@@ -22,8 +22,7 @@ class VariantForm
       createTransferItem(ev.val)
 
   autoCompleteEl = ->
-    @variantAutocomplete ?= $('[data-hook="transfer_item_selection"]').find('.variant_autocomplete')
-    @variantAutocomplete
+    $('[data-hook="transfer_item_selection"]').find('.variant_autocomplete')
 
   resetVariantAutocomplete = ->
     autoCompleteEl().select2('val', '').trigger('change').select2('open')
