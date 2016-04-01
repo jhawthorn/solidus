@@ -41,6 +41,7 @@ module Spree
     end
 
     def stock_availability
+      return unless variant
       stock_item = variant.stock_items.find_by(stock_location: stock_transfer.source_location)
       if stock_item.nil? || stock_item.count_on_hand < expected_quantity
         errors.add(:base, Spree.t('errors.messages.transfer_item_insufficient_stock'))

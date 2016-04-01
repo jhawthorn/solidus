@@ -1,6 +1,10 @@
 class TransferItemView extends Backbone.View
   initialize: (options) ->
     @isReceiving = options.isReceiving
+    stockTransferNumber = $("#stock_transfer_number").val()
+    @collection = new Spree.TransferItemCollection null,
+      stockTransferNumber: stockTransferNumber
+    @model = new Spree.TransferItem({id: @$el.data('transfer-item-id')}, {collection: @collection})
 
   events:
     'click .fa-edit': "onEdit"
@@ -23,23 +27,19 @@ class TransferItemView extends Backbone.View
   onSubmit: (ev) ->
     ev.preventDefault()
     transferItemId = $(ev.currentTarget).data('id')
-    stockTransferNumber = $("#stock_transfer_number").val()
     quantity = parseInt($("#number-update-#{transferItemId} input[type='number']").val(), 10)
-
-    itemAttributes =
-      id: transferItemId
-      stockTransferNumber: stockTransferNumber
-    quantityKey = if @isReceiving then 'receivedQuantity' else 'expectedQuantity'
-    itemAttributes[quantityKey] = quantity
-    transferItem = new Spree.TransferItem(itemAttributes)
-    transferItem.update(@onEditSuccess, @onError)
+    quantityKey = if @isReceiving then 'received_quantity' else 'expected_quantity'
+    @model.set(quantityKey, quantity)
+    @model.save null,
+      success: @onEditSuccess
+      error: @onError
 
   onEditSuccess: (transferItem) =>
-    if $('#received-transfer-items').length > 0
-      Spree.NumberFieldUpdater.successHandler(transferItem.id, transferItem.received_quantity)
+    if @isReceiving
+      Spree.NumberFieldUpdater.successHandler(transferItem.id, transferItem.get('received_quantity'))
       Spree.StockTransfers.ReceivedCounter.updateTotal()
     else
-      Spree.NumberFieldUpdater.successHandler(transferItem.id, transferItem.expected_quantity)
+      Spree.NumberFieldUpdater.successHandler(transferItem.id, transferItem.get('expected_quantity'))
     show_flash("success", Spree.translations.updated_successfully)
 
   onDelete: (ev) ->
@@ -48,17 +48,16 @@ class TransferItemView extends Backbone.View
       transferItemId = $(ev.currentTarget).data('id')
       stockTransferNumber = $("#stock_transfer_number").val()
 
-      transferItem = new Spree.TransferItem
-        id: transferItemId
-        stockTransferNumber: stockTransferNumber
-      transferItem.destroy(@onDeleteSuccess, @onError)
+      @model.destroy
+        success: @onDeleteSuccess
+        error: @onError
 
   onDeleteSuccess: (transferItem) =>
     @remove()
     show_flash("success", Spree.translations.deleted_successfully)
 
-  onError: (errorData) =>
-    show_flash("error", errorData.responseText)
+  onError: (_, response) =>
+    show_flash("error", response.responseText)
 
 Spree.StockTransfers ?= {}
 Spree.StockTransfers.TransferItemView = TransferItemView

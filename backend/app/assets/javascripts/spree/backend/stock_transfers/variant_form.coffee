@@ -1,5 +1,10 @@
 class VariantForm extends Backbone.View
   initialize: ({@isBuilding}) ->
+    stockTransferNumber = $("#stock_transfer_number").val()
+    @collection = new Spree.TransferItemCollection null,
+      stockTransferNumber: stockTransferNumber
+    window.collection = @collection
+
     @isReceiving = !@isBuilding
     @autoCompleteEl().variantAutocomplete({ in_stock_only: @isBuilding })
     @resetVariantAutocomplete()
@@ -21,21 +26,24 @@ class VariantForm extends Backbone.View
   createTransferItem: (variantId) ->
     stockTransferNumber = $("#stock_transfer_number").val()
     $(".select2-results").html("<li class='select2-no-results'>#{Spree.translations.adding_match}</li>")
+
+    transferItem = new Spree.TransferItem({variant_id: variantId}, {collection: @collection})
     transferItemRow = $("[data-variant-id='#{variantId}']")
     if transferItemRow.length > 0
       transferItemId = transferItemRow.parents('tr:first').data('transfer-item-id')
-      expectedQuantity = parseInt($("#number-update-#{transferItemId}").find('.js-number-update-text').text().trim(), 10)
-      transferItem = new Spree.TransferItem
-        id: transferItemId
-        stockTransferNumber: stockTransferNumber
-        expectedQuantity: expectedQuantity + 1
-      transferItem.update(@updateSuccessHandler, @errorHandler)
+      quantity = parseInt($("#number-update-#{transferItemId}").find('.js-number-update-text').text().trim(), 10)
+
+      transferItem.set("id", transferItemId)
+      transferItem.set("expected_quantity", quantity+1)
+      window.transferItem = transferItem
+      transferItem.save null,
+        success: @updateSuccessHandler
+        error: (_, response) => @errorHandler(response)
     else
-      transferItem = new Spree.TransferItem
-        stockTransferNumber: stockTransferNumber
-        variantId: variantId
-        expectedQuantity: 1
-      transferItem.create(@createSuccessHandler, @errorHandler)
+      transferItem.set("expected_quantity", 1)
+      transferItem.save null,
+        success: @createSuccessHandler
+        error: (_, response) => @errorHandler(response)
 
   receiveTransferItem: (variantId) ->
     stockTransferNumber = $("#stock_transfer_number").val()
@@ -45,11 +53,11 @@ class VariantForm extends Backbone.View
     stockTransfer.receive(variantId, @receiveSuccessHandler, @errorHandler)
 
   createSuccessHandler: (transferItem) =>
-    @successHandler(transferItem)
+    @successHandler(transferItem.attributes)
     show_flash('success', Spree.translations.created_successfully)
 
   updateSuccessHandler: (transferItem) =>
-    @successHandler(transferItem)
+    @successHandler(transferItem.attributes)
     show_flash('success', Spree.translations.updated_successfully)
 
   receiveSuccessHandler: (stockTransfer, variantId) =>
