@@ -2,8 +2,12 @@ class VariantForm
   @initializeForm: (isBuilding) ->
     autoCompleteEl().variantAutocomplete({ in_stock_only: isBuilding })
     resetVariantAutocomplete()
+    if isBuilding
+      beginListeningForAdd()
+    else
+      beginListeningForReceive()
 
-  @beginListeningForReceive: ->
+  beginListeningForReceive = ->
     variantSelector = autoCompleteEl()
     # Search result selected
     variantSelector.on 'select2-selecting', (ev) =>
@@ -14,7 +18,7 @@ class VariantForm
       if ev.items.results.length == 1
         receiveTransferItem(ev.items.results[0].id)
 
-  @beginListeningForAdd: ->
+  beginListeningForAdd = ->
     variantSelector = autoCompleteEl()
     # Search result selected
     variantSelector.on 'select2-selecting', (ev) =>
