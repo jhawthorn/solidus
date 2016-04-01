@@ -1,4 +1,4 @@
-TransferItemView = Backbone.View.extend
+class TransferItemView extends Backbone.View
   initialize: (options) ->
     @isReceiving = options.isReceiving
 
@@ -51,10 +51,10 @@ TransferItemView = Backbone.View.extend
       transferItem = new Spree.TransferItem
         id: transferItemId
         stockTransferNumber: stockTransferNumber
-      transferItem.destroy(@onEditSuccess, @onError)
+      transferItem.destroy(@onDeleteSuccess, @onError)
 
-  onDeleteSuccess: (transferItem) ->
-    $("[data-transfer-item-id='#{transferItem.id}']").remove()
+  onDeleteSuccess: (transferItem) =>
+    @remove()
     show_flash("success", Spree.translations.deleted_successfully)
 
   onError: (errorData) =>
