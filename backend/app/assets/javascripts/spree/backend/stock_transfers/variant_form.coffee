@@ -91,9 +91,10 @@ class VariantForm
     else
       templateAttributes["expectedQuantity"] = transferItem.expected_quantity
 
-    htmlOutput = rowTemplate(templateAttributes)
+    $el = $(rowTemplate(templateAttributes))
     $("tr[data-transfer-item-id='#{transferItem.id}']").remove()
-    $("#listing_transfer_items tbody").prepend(htmlOutput)
+    $el.prependTo($("#listing_transfer_items > tbody"))
+    new Spree.StockTransfers.TransferItemView({el: $el, isReceiving: isReceiving})
     $("#listing_transfer_items").prop('hidden', false)
     $(".no-objects-found").prop('hidden', true)
 
