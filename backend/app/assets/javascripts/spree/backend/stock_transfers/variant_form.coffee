@@ -13,10 +13,6 @@ class VariantForm
     variantSelector.on 'select2-selecting', (ev) =>
       ev.preventDefault()
       receiveTransferItem(ev.val)
-    # Search results came back from the server
-    variantSelector.on 'select2-loaded', (ev) =>
-      if ev.items.results.length == 1
-        receiveTransferItem(ev.items.results[0].id)
 
   beginListeningForAdd = ->
     variantSelector = autoCompleteEl()
@@ -24,10 +20,6 @@ class VariantForm
     variantSelector.on 'select2-selecting', (ev) =>
       ev.preventDefault()
       createTransferItem(ev.val)
-    # Search results came back from the server
-    variantSelector.on 'select2-loaded', (ev) =>
-      if ev.items.results.length == 1
-        createTransferItem(ev.items.results[0].id)
 
   autoCompleteEl = ->
     @variantAutocomplete ?= $('[data-hook="transfer_item_selection"]').find('.variant_autocomplete')
