@@ -33,15 +33,3 @@
 #stock-transfer-transfer-items {
   margin-top: 70px;
 }
-
-#listing_transfer_items {
-  > tbody {
-    tr {
-      &:hover {
-        td {
-          background-color: $color-1;
-        }
-      }
-    }
-  }
-}
