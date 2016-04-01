@@ -2,24 +2,14 @@ class VariantForm extends Backbone.View
   initialize: ({@isBuilding}) ->
     autoCompleteEl().variantAutocomplete({ in_stock_only: @isBuilding })
     resetVariantAutocomplete()
+    autoCompleteEl().on "select2-selecting", @onSelect
+
+  onSelect: (ev) =>
+    ev.preventDefault()
     if @isBuilding
-      beginListeningForAdd()
-    else
-      beginListeningForReceive()
-
-  beginListeningForReceive = ->
-    variantSelector = autoCompleteEl()
-    # Search result selected
-    variantSelector.on 'select2-selecting', (ev) =>
-      ev.preventDefault()
-      receiveTransferItem(ev.val)
-
-  beginListeningForAdd = ->
-    variantSelector = autoCompleteEl()
-    # Search result selected
-    variantSelector.on 'select2-selecting', (ev) =>
-      ev.preventDefault()
       createTransferItem(ev.val)
+    else
+      receiveTransferItem(ev.val)
 
   autoCompleteEl = ->
     $('[data-hook="transfer_item_selection"]').find('.variant_autocomplete')
