@@ -1,6 +1,13 @@
 module Spree
   module Api
     class TransferItemsController < Spree::Api::BaseController
+      def index
+        authorize! :index, TransferItem
+        stock_transfer = StockTransfer.accessible_by(current_ability, :show).find_by(number: params[:stock_transfer_id])
+        @transfer_items = stock_transfer.transfer_items
+        respond_with(@transfer_items, default_template: :index)
+      end
+
       def create
         authorize! :create, TransferItem
         stock_transfer = StockTransfer.accessible_by(current_ability, :update).find_by(number: params[:stock_transfer_id])
