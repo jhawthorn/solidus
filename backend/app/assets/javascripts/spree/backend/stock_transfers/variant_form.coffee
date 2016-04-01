@@ -12,7 +12,7 @@ class VariantForm extends Backbone.View
       receiveTransferItem(ev.val)
 
   autoCompleteEl = ->
-    $('[data-hook="transfer_item_selection"]').find('.variant_autocomplete')
+    $('[data-hook="transfer_item_selection"] .variant_autocomplete')
 
   resetVariantAutocomplete = ->
     autoCompleteEl().select2('val', '').trigger('change').select2('open')
