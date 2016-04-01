@@ -1,4 +1,4 @@
-EditTransferItemView = Backbone.View.extend
+TransferItemView = Backbone.View.extend
   initialize: (options) ->
     @isReceiving = options.isReceiving
 
@@ -61,8 +61,15 @@ EditTransferItemView = Backbone.View.extend
     show_flash("error", errorData.responseText)
 
 Spree.StockTransfers ?= {}
-Spree.StockTransfers.CountUpdateForms =
-  beginListening: (isReceiving) ->
-    new EditTransferItemView
-      el: $('body')
-      isReceiving: isReceiving
+Spree.StockTransfers.TransferItemView = TransferItemView
+
+$ ->
+  $('#stock-transfer-transfer-items .stock-table tr').each ->
+    new Spree.StockTransfers.TransferItemView
+      isReceiving: false
+      el: @
+
+  $('#stock-transfer-transfer-items .stock-table tr').each ->
+    new Spree.StockTransfers.TransferItemView
+      isReceiving: true
+      el: @
