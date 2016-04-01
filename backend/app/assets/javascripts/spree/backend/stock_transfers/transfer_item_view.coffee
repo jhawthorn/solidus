@@ -69,7 +69,7 @@ $ ->
       isReceiving: false
       el: @
 
-  $('#stock-transfer-transfer-items .stock-table tr').each ->
+  $('#received-transfer-items .stock-table tr').each ->
     new Spree.StockTransfers.TransferItemView
       isReceiving: true
       el: @
