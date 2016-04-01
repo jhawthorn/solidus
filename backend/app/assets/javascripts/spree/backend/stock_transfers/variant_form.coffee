@@ -45,11 +45,11 @@ class VariantForm extends Backbone.View
     stockTransfer.receive(variantId, @receiveSuccessHandler, @errorHandler)
 
   createSuccessHandler: (transferItem) =>
-    @successHandler(transferItem, false)
+    @successHandler(transferItem)
     show_flash('success', Spree.translations.created_successfully)
 
   updateSuccessHandler: (transferItem) =>
-    @successHandler(transferItem, false)
+    @successHandler(transferItem)
     show_flash('success', Spree.translations.updated_successfully)
 
   receiveSuccessHandler: (stockTransfer, variantId) =>
@@ -57,22 +57,22 @@ class VariantForm extends Backbone.View
       id: stockTransfer.received_item.id
       variant: stockTransfer.received_item.variant
       received_quantity: stockTransfer.received_item.received_quantity
-    @successHandler(receivedItem, true)
+    @successHandler(receivedItem)
     Spree.StockTransfers.ReceivedCounter.updateTotal()
     show_flash('success', Spree.translations.received_successfully)
 
-  successHandler: (transferItem, isReceiving) =>
+  successHandler: (transferItem) =>
     @resetVariantAutocomplete()
     rowTemplate = HandlebarsTemplates['stock_transfers/transfer_item']
     templateAttributes =
       id: transferItem.id
-      isReceiving: isReceiving
+      isReceiving: @isReceiving
       variantId: transferItem.variant.id
       variantDisplayAttributes: formatVariantDisplayAttributes(transferItem.variant)
       variantOptions: formatVariantOptionValues(transferItem.variant)
       variantImageURL: transferItem.variant.images[0]?.small_url
 
-    if isReceiving
+    if @isReceiving
       templateAttributes["receivedQuantity"] = transferItem.received_quantity
     else
       templateAttributes["expectedQuantity"] = transferItem.expected_quantity
@@ -80,7 +80,7 @@ class VariantForm extends Backbone.View
     $el = $(rowTemplate(templateAttributes))
     $("tr[data-transfer-item-id='#{transferItem.id}']").remove()
     $el.prependTo($("#listing_transfer_items > tbody"))
-    new Spree.StockTransfers.TransferItemView({el: $el, isReceiving: isReceiving})
+    new Spree.StockTransfers.TransferItemView({el: $el, isReceiving: @isReceiving})
     $("#listing_transfer_items").prop('hidden', false)
     $(".no-objects-found").prop('hidden', true)
 
