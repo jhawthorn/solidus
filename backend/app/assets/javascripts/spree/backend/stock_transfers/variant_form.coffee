@@ -1,24 +1,24 @@
 class VariantForm extends Backbone.View
   initialize: ({@isBuilding}) ->
     @isReceiving = !@isBuilding
-    autoCompleteEl().variantAutocomplete({ in_stock_only: @isBuilding })
-    resetVariantAutocomplete()
-    autoCompleteEl().on "select2-selecting", @onSelect
+    @autoCompleteEl().variantAutocomplete({ in_stock_only: @isBuilding })
+    @resetVariantAutocomplete()
+    @autoCompleteEl().on "select2-selecting", @onSelect
 
   onSelect: (ev) =>
     ev.preventDefault()
     if @isBuilding
-      createTransferItem(ev.val)
+      @createTransferItem(ev.val)
     else
-      receiveTransferItem(ev.val)
+      @receiveTransferItem(ev.val)
 
-  autoCompleteEl = ->
+  autoCompleteEl: ->
     $('[data-hook="transfer_item_selection"] .variant_autocomplete')
 
-  resetVariantAutocomplete = ->
-    autoCompleteEl().select2('val', '').trigger('change').select2('open')
+  resetVariantAutocomplete: ->
+    @autoCompleteEl().select2('val', '').trigger('change').select2('open')
 
-  createTransferItem = (variantId) ->
+  createTransferItem: (variantId) ->
     stockTransferNumber = $("#stock_transfer_number").val()
     $(".select2-results").html("<li class='select2-no-results'>#{Spree.translations.adding_match}</li>")
     transferItemRow = $("[data-variant-id='#{variantId}']")
@@ -29,40 +29,40 @@ class VariantForm extends Backbone.View
         id: transferItemId
         stockTransferNumber: stockTransferNumber
         expectedQuantity: expectedQuantity + 1
-      transferItem.update(updateSuccessHandler, errorHandler)
+      transferItem.update(@updateSuccessHandler, @errorHandler)
     else
       transferItem = new Spree.TransferItem
         stockTransferNumber: stockTransferNumber
         variantId: variantId
         expectedQuantity: 1
-      transferItem.create(createSuccessHandler, errorHandler)
+      transferItem.create(@createSuccessHandler, @errorHandler)
 
-  receiveTransferItem = (variantId) ->
+  receiveTransferItem: (variantId) ->
     stockTransferNumber = $("#stock_transfer_number").val()
     $(".select2-results").html("<li class='select2-no-results'>#{Spree.translations.receiving_match}</li>")
     stockTransfer = new Spree.StockTransfer
       number: stockTransferNumber
-    stockTransfer.receive(variantId, receiveSuccessHandler, errorHandler)
+    stockTransfer.receive(variantId, @receiveSuccessHandler, @errorHandler)
 
-  createSuccessHandler = (transferItem) =>
-    successHandler(transferItem, false)
+  createSuccessHandler: (transferItem) =>
+    @successHandler(transferItem, false)
     show_flash('success', Spree.translations.created_successfully)
 
-  updateSuccessHandler = (transferItem) =>
-    successHandler(transferItem, false)
+  updateSuccessHandler: (transferItem) =>
+    @successHandler(transferItem, false)
     show_flash('success', Spree.translations.updated_successfully)
 
-  receiveSuccessHandler = (stockTransfer, variantId) =>
+  receiveSuccessHandler: (stockTransfer, variantId) =>
     receivedItem =
       id: stockTransfer.received_item.id
       variant: stockTransfer.received_item.variant
       received_quantity: stockTransfer.received_item.received_quantity
-    successHandler(receivedItem, true)
+    @successHandler(receivedItem, true)
     Spree.StockTransfers.ReceivedCounter.updateTotal()
     show_flash('success', Spree.translations.received_successfully)
 
-  successHandler = (transferItem, isReceiving) =>
-    resetVariantAutocomplete()
+  successHandler: (transferItem, isReceiving) =>
+    @resetVariantAutocomplete()
     rowTemplate = HandlebarsTemplates['stock_transfers/transfer_item']
     templateAttributes =
       id: transferItem.id
@@ -84,8 +84,8 @@ class VariantForm extends Backbone.View
     $("#listing_transfer_items").prop('hidden', false)
     $(".no-objects-found").prop('hidden', true)
 
-  errorHandler = (errorData) ->
-    resetVariantAutocomplete()
+  errorHandler: (errorData) =>
+    @resetVariantAutocomplete()
     errorMessage = if errorData.responseJSON?.error? and !errorData.responseJSON.errors?
       errorData.responseJSON.error
     else
