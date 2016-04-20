@@ -25,13 +25,14 @@ class MigrateOldPreferences < ActiveRecord::Migration
           ).pluck(:key, :value)]
 
           # Copy preferences to the record.
-          keys.each do |key|
+          model_prefs = keys.map do |key|
             value = preferences[cache_key(record, key)]
-            record.preferences[key] = value unless value.nil?
-          end
+            next if value.nil?
+            [key, value]
+          end.compact.to_h
 
           # Persist the preferences.
-          record.update_column(:preferences, record.preferences)
+          record.update_column(:preferences, model_prefs)
         end
       end
     end
