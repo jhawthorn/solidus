@@ -5,7 +5,9 @@ module Spree
     end
 
     def safe_add_index(table, column)
-      add_index(table, column) if column_exists?(table, column)
+      if column_exists?(table, column) && !index_exists?(table, column)
+        add_index(table, column)
+      end
     end
   end
 end
