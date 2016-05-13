@@ -1,7 +1,10 @@
 require 'spec_helper'
 
 module Spree
-  describe Api::ZonesController, type: :controller do
+  describe Api::ZonesController,
+    :apidoc, type: :controller,
+    resource_group: 'API V1',
+    resource: 'Zones [/api/zones]' do
     render_views
 
     let!(:attributes) { [:id, :name, :zone_members] }
@@ -11,24 +14,30 @@ module Spree
       @zone = create(:zone, name: 'Europe')
     end
 
-    it "gets list of zones" do
-      api_get :index
-      expect(json_response['zones'].first).to have_attributes(attributes)
-    end
+    context "index",
+      action: 'Retrieve all Zones [GET]',
+      action_description: 'This endpoint allows you to get all zones' do
 
-    it 'can control the page size through a parameter' do
-      create(:zone)
-      api_get :index, per_page: 1
-      expect(json_response['count']).to eq(1)
-      expect(json_response['current_page']).to eq(1)
-      expect(json_response['pages']).to eq(2)
-    end
+      it "gets list of zones" do
+        api_get :index
+        expect(response).to have_http_status(:ok)
+        expect(json_response['zones'].first).to have_attributes(attributes)
+      end
 
-    it 'can query the results through a paramter' do
-      expected_result = create(:zone, name: 'South America')
-      api_get :index, q: { name_cont: 'south' }
-      expect(json_response['count']).to eq(1)
-      expect(json_response['zones'].first['name']).to eq expected_result.name
+      it 'can control the page size through a parameter' do
+        create(:zone)
+        api_get :index, per_page: 1
+        expect(json_response['count']).to eq(1)
+        expect(json_response['current_page']).to eq(1)
+        expect(json_response['pages']).to eq(2)
+      end
+
+      it 'can query the results through a paramter' do
+        expected_result = create(:zone, name: 'South America')
+        api_get :index, q: { name_cont: 'south' }
+        expect(json_response['count']).to eq(1)
+        expect(json_response['zones'].first['name']).to eq expected_result.name
+      end
     end
 
     it "gets a zone" do
