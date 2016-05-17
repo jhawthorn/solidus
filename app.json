@@ -14,6 +14,16 @@
     "heroku-postgresql:hobby-dev"
   ],
   "scripts": {
-    "postdeploy": "rake db:migrate && AUTO_ACCEPT=1 rake db:seed spree_sample:load && rails runner Spree::Image.destroy_all"
+    "postdeploy": "rake db:migrate && rake db:seed spree_sample:load && rails runner Spree::Image.destroy_all"
+  },
+  "env": {
+    "ADMIN_EMAIL": {
+      "description": "We will create an admin user with this email.",
+      "value": "admin@example.com"
+    },
+    "ADMIN_PASSWORD": {
+      "description": "We will create an admin user with this password.",
+      "value": "test123"
+    }
   }
 }
