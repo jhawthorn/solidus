@@ -35,14 +35,7 @@ module Spree
     private
 
     def alias_actions
-      clear_aliased_actions
-
-      # override cancan default aliasing (we don't want to differentiate between read and index)
-      alias_action :delete, to: :destroy
-      alias_action :edit, to: :update
-      alias_action :new, to: :create
       alias_action :new_action, to: :create
-      alias_action :show, to: :read
       alias_action :index, :read, to: :display
     end
 
