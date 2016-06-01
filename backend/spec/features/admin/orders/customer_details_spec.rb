@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "Customer Details", type: :feature, js: true do
   stub_authorization!
 
-  let(:country) { create(:country, name: "Kangaland") }
+  let(:country) { create(:country) }
   let(:state) { create(:state, name: "Alabama", country: country) }
   let!(:shipping_method) { create(:shipping_method, display_on: "front_end") }
   let!(:order) { create(:order, ship_address: ship_address, bill_address: bill_address, state: 'complete', completed_at: "2011-02-01 12:36:15") }
@@ -42,6 +42,35 @@ describe "Customer Details", type: :feature, js: true do
       expect(page).to have_field('Phone', with: user.bill_address.phone)
       click_button "Update"
       expect(Spree::Order.last.user).not_to be_nil
+    end
+  end
+
+  context "with a checkout_zone specified" do
+    let!(:default_country) { create(:country, iso: 'AD', states_required: true) }
+    let!(:default_country_state) { create(:state, country: default_country) }
+    let!(:checkout_zone) { create(:zone, name: "Checkout Zone", countries: [country]) }
+
+    it "has a working state selector" do
+      Spree::Country.update_all(states_required: true)
+      Spree::Config.default_country_iso = default_country.iso
+      Spree::Config.checkout_zone = checkout_zone.name
+
+      visit spree.new_admin_order_path
+      click_link "Customer"
+
+      # Only displaying country from our checkout zone
+      expect(page).to have_select(
+        'Country',
+        selected: "United States of America",
+        options: ["United States of America"]
+      )
+
+      # It should use the states from the selected country, NOT the default
+      # country
+      expect(page).to have_select(
+        'State',
+        options: [""] + country.states.map(&:name)
+      )
     end
   end
 
