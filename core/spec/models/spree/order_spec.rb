@@ -860,6 +860,7 @@ describe Spree::Order, type: :model do
     let!(:payment2) { create(:payment_with_refund, order: order, amount: 5, refund_amount: 2.5) }
 
     it "sums the reimbursment refunds on the order" do
+      order.payments.reset
       expect(order.refund_total).to eq(5.5)
     end
   end

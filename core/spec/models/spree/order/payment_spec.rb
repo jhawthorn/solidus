@@ -15,6 +15,7 @@ module Spree
       it 'processes all checkout payments' do
         payment_1 = create(:payment, order: order, amount: 50)
         payment_2 = create(:payment, order: order, amount: 50)
+        order.payments.reload
 
         order.process_payments!
         updater.update_payment_state
@@ -30,6 +31,7 @@ module Spree
         payment_1 = create(:payment, order: order, amount: 50)
         payment_2 = create(:payment, order: order, amount: 50)
         payment_3 = create(:payment, order: order, amount: 50)
+        order.payments.reload
 
         order.process_payments!
         updater.update_payment_state

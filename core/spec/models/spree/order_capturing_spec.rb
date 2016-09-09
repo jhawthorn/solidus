@@ -50,6 +50,7 @@ describe Spree::OrderCapturing do
         order.update!
         @secondary_bogus_payment = create(:payment, order: order, amount: secondary_total, payment_method: secondary_payment_method.create!(name: 'So bogus'))
         @bogus_payment = create(:payment, order: order, amount: bogus_total)
+        order.payments.reset
         order.contents.advance
         order.complete!
         order.reload
