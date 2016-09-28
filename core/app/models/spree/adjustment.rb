@@ -28,7 +28,7 @@ module Spree
 
     # We need to use `after_commit` here because otherwise it's too early to
     # tell if any repair is needed.
-    after_commit :repair_adjustments_associations_on_create, on: [:create]
+    after_create :repair_adjustments_associations_on_create
     after_commit :repair_adjustments_associations_on_destroy, on: [:destroy]
 
     scope :not_finalized, -> { where(finalized: false) }
@@ -184,7 +184,7 @@ module Spree
     end
 
     def repair_adjustments_associations_on_create
-      if adjustable.adjustments.loaded? && !adjustable.adjustments.include?(self) && Spree::Adjustment.exists?(id)
+      if adjustable.adjustments.loaded? && !association(:adjustable).inversed
         Spree::Deprecation.warn("Adjustment #{id} was not added to #{adjustable.class} #{adjustable.id}. Add adjustments via `adjustable.adjustments.create!`. Partial call stack: #{caller.select { |line| line =~ %r(/(app|spec)/) }}.", caller)
         adjustable.adjustments.proxy_association.add_to_target(self)
       end
