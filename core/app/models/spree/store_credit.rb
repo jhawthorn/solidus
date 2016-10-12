@@ -130,7 +130,7 @@ class Spree::StoreCredit < Spree::Base
 
   def debit(amount, options = {})
     # make sure debit amounts are stored as negative number
-    amount = -1 * amount unless amount < 0
+    amount = -amount if amount > 0
     create_ledger_entry(amount, options[:action_originator])
   end
 
@@ -220,7 +220,9 @@ class Spree::StoreCredit < Spree::Base
       self.action_originator = user_performing_invalidation
       self.invalidated_at = Time.current
       self.action_amount = ledger_balance
-      debit(ledger_balance, { action_originator: user_performing_invalidation }) if save
+      if save
+        debit(ledger_balance, { action_originator: user_performing_invalidation })
+      end
     else
       errors.add(:invalidated_at, Spree.t("store_credit.errors.cannot_invalidate_uncaptured_authorization"))
       return false
