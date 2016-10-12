@@ -10,16 +10,12 @@ describe 'solidus:migrations:create_ledger_entries_for_store_credits' do
   let(:store_credit) { create(:store_credit, store_credit_attr) }
   let(:store_credit_attr) { {} }
 
-  before(:all) do
-    # simulate legacy store_credit without any ledger entries
-    Spree::StoreCreditLedgerEntry.destroy_all
-  end
-
   context "Store credit without any changes" do
     let(:store_credit_attr) { { amount: 250 } }
 
     it 'will create a ledger entry with the right amount' do
       store_credit
+      Spree::StoreCreditLedgerEntry.destroy_all
       expect {
         task.invoke
       }.to change { Spree::StoreCreditLedgerEntry.count }.by(1)
@@ -33,6 +29,7 @@ describe 'solidus:migrations:create_ledger_entries_for_store_credits' do
 
     it 'will create a ledger entry with the right amount' do
       store_credit
+      Spree::StoreCreditLedgerEntry.destroy_all
       expect {
         task.invoke
       }.to change { Spree::StoreCreditLedgerEntry.count }.by(1)
@@ -46,6 +43,7 @@ describe 'solidus:migrations:create_ledger_entries_for_store_credits' do
 
     it 'will create a ledger entry with the right amount' do
       store_credit
+      Spree::StoreCreditLedgerEntry.destroy_all
       expect {
         task.invoke
       }.to change { Spree::StoreCreditLedgerEntry.count }.by(1)
@@ -61,6 +59,7 @@ describe 'solidus:migrations:create_ledger_entries_for_store_credits' do
 
     it 'will create a ledger entry with the right amount' do
       store_credit.invalidate(invalidation_reason, invalidation_user)
+      Spree::StoreCreditLedgerEntry.destroy_all
       expect {
         task.invoke
       }.to change { Spree::StoreCreditLedgerEntry.count }.by(1)
