@@ -3,10 +3,10 @@ class OpeningLedgerEntriesForStoreCredits < ActiveRecord::Migration[5.0]
   disable_ddl_transaction!
 
   def up
-    Rake::Task["spree:migrations:create_ledger_entries_for_store_credits:up"].invoke
+    Rake::Task["solidus:migrations:create_ledger_entries_for_store_credits:up"].invoke
   end
 
   def down
-    Rake::Task["spree:migrations:create_ledger_entries_for_store_credits:down"].invoke
+    Rake::Task["solidus:migrations:create_ledger_entries_for_store_credits:down"].invoke
   end
 end
