@@ -3,12 +3,21 @@ namespace :solidus do
     namespace :create_ledger_entries_for_store_credits do
       task up: :environment do
         print 'Creating opening ledger entries for store credits...'
-        Spree::StoreCredit.find_each do |store_credit|
-          current_balance_amount = store_credit.amount_remaining + store_credit.amount_authorized
-          store_credit.store_credit_ledger_entries.create!({
-            amount: current_balance_amount
-          })
-        end
+        now = Time.current.to_s(:db)
+        ActiveRecord::Base.connection.execute <<-SQL
+        INSERT INTO spree_store_credit_ledger_entries
+          (store_credit_id, amount, created_at, updated_at)
+          SELECT id, amount - amount_used, '#{now}', '#{now}'
+          FROM spree_store_credits
+          WHERE invalidated_at IS NULL
+        SQL
+        ActiveRecord::Base.connection.execute <<-SQL
+        INSERT INTO spree_store_credit_ledger_entries
+          (store_credit_id, amount, created_at, updated_at)
+          SELECT id, 0, '#{now}', '#{now}'
+          FROM spree_store_credits
+          WHERE invalidated_at IS NOT NULL
+        SQL
         puts 'success'
       end
 
