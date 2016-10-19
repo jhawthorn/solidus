@@ -2,6 +2,7 @@ module Spree
   class Variant < Spree::Base
     # FIXME: WARNING tested only under sqlite and postgresql
     scope :descend_by_popularity, -> {
+      Spree::Deprecation.warn("descend_by_popularity is DEPRECATED. It has performance problems on stores with a large number of orders.")
       order("COALESCE((SELECT COUNT(*) FROM  #{LineItem.quoted_table_name} GROUP BY #{LineItem.quoted_table_name}.variant_id HAVING #{LineItem.quoted_table_name}.variant_id = #{Variant.quoted_table_name}.id), 0) DESC")
     }
 

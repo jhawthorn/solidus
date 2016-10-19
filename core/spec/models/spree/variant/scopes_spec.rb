@@ -32,7 +32,9 @@ describe "Variant scopes", type: :model do
     # Requires a product with at least two variants, where one has a higher number of
     # orders than the other
     create(:line_item, variant: variant_1)
-    expect(Spree::Variant.descend_by_popularity.first).to eq(variant_1)
+    Spree::Deprecation.silence do
+      expect(Spree::Variant.descend_by_popularity.first).to eq(variant_1)
+    end
   end
 
   context "finding by option values" do
