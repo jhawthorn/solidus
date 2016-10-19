@@ -75,5 +75,23 @@ describe "Variant scopes", type: :model do
       variants = product_variants.has_option(option_type.id, "foo", option_value_2)
       expect(variants).to be_empty
     end
+
+    context "with multiple option_types" do
+      let!(:option_type_2) { create(:option_type, name: "baz") }
+      before do
+        variant_1.option_values << create(:option_value, name: "quux", option_type: option_type_2)
+      end
+
+      it "can select from one option" do
+        expect(product_variants.has_option("bar", "foo")).to eq([variant_1])
+      end
+
+      pending "can chain options" do
+        variants = product_variants.
+          has_option("bar", "foo").
+          has_option("baz", "quux")
+        expect(variants).to eq([variant_1])
+      end
+    end
   end
 end
