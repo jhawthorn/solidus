@@ -15,6 +15,11 @@ module Spree
       # @example Find by names of option type and option value
       # product.variants.has_option('shoe-size', '8')
       def has_option(option_type, *option_values)
+        if option_values.size > 1
+          Spree::Deprecation.warn("has_option with more than two arguments is deprecated and always returns an empty set of records")
+          return none
+        end
+
         option_types = OptionType.table_name
 
         option_type_conditions = case option_type
