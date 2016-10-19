@@ -8,9 +8,11 @@ module Spree
     class << self
       # Returns variants that match a given option value
       #
-      # Example:
+      # @example Find by OptionType and OptionValue
+      # product.variants.has_option(OptionType.find_by(name: 'shoe-size'), OptionValue.find_by(name: '8'))
       #
-      # product.variants_including_master.has_option(OptionType.find_by(name: 'shoe-size'), OptionValue.find_by(name: '8'))
+      # @example Find by names of option type and option value
+      # product.variants.has_option('shoe-size', '8')
       def has_option(option_type, *option_values)
         option_types = OptionType.table_name
 
