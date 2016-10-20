@@ -20,26 +20,38 @@ module Spree
           return none
         end
 
-        option_types = OptionType.table_name
+        t_option_values_variant = OptionValuesVariant.arel_table
+        t_option_value = OptionValue.arel_table
+        t_option_type = OptionType.arel_table
+        subquery = t_option_values_variant.project(Arel.star).where(t_option_values_variant[:variant_id].eq(arel_table[:id]))
+        subquery = subquery.join(t_option_value).on(t_option_values_variant[:option_value_id].eq(t_option_value[:id]))
+        subquery = subquery.join(t_option_type).on(t_option_value[:option_type_id].eq(t_option_type[:id]))
 
-        option_type_conditions = case option_type
-                                 when OptionType then { "#{option_types}.name" => option_type.name }
-                                 when String     then { "#{option_types}.name" => option_type }
-        else { "#{option_types}.id" => option_type }
-        end
-
-        relation = joins(option_values: :option_type).where(option_type_conditions)
-
-        option_values.each do |option_value|
-          option_value_conditions = case option_value
-                                    when OptionValue then { "#{OptionValue.table_name}.name" => option_value.name }
-                                    when String      then { "#{OptionValue.table_name}.name" => option_value }
-          else { "#{OptionValue.table_name}.id" => option_value }
+        option_type_conditions =
+          case option_type
+          when OptionType
+            t_option_type[:id].eq(option_type.id)
+          when String
+            t_option_type[:name].eq(option_type)
+          else
+            t_option_type[:id].eq(option_type)
           end
-          relation = relation.where(option_value_conditions)
-        end
 
-        relation
+        option_value = option_values[0]
+        option_value_conditions =
+          case option_value
+          when OptionValue
+            t_option_value[:id].eq(option_value.id)
+          when String
+            t_option_value[:name].eq(option_value)
+          else
+            t_option_value[:id].eq(option_value)
+          end
+
+        subquery = subquery.where(option_type_conditions)
+        subquery = subquery.where(option_value_conditions)
+
+        where(subquery.exists)
       end
 
       alias_method :has_options, :has_option

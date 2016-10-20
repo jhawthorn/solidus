@@ -86,7 +86,7 @@ describe "Variant scopes", type: :model do
         expect(product_variants.has_option("bar", "foo")).to eq([variant_1])
       end
 
-      pending "can chain options" do
+      it "can chain options" do
         variants = product_variants.
           has_option("bar", "foo").
           has_option("baz", "quux")
