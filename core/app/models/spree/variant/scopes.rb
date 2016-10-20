@@ -9,13 +9,16 @@ module Spree
     class << self
       # Returns variants that match a given option value
       #
+      # @param option_type [OptionType,String,Integer] The name, id, or OptionType itself to filter by
+      # @param option_value [OptionValue,String,Integer] The name, id, or OptionValue itself to filter by
+      #
       # @example Find by OptionType and OptionValue
       # product.variants.has_option(OptionType.find_by(name: 'shoe-size'), OptionValue.find_by(name: '8'))
       #
       # @example Find by names of option type and option value
       # product.variants.has_option('shoe-size', '8')
-      def has_option(option_type, *option_values)
-        if option_values.size > 1
+      def has_option(option_type, option_value, *deprecated)
+        if deprecated.any?
           Spree::Deprecation.warn("has_option with more than two arguments is deprecated and always returns an empty set of records")
           return none
         end
@@ -37,7 +40,6 @@ module Spree
             t_option_type[:id].eq(option_type)
           end
 
-        option_value = option_values[0]
         option_value_conditions =
           case option_value
           when OptionValue
