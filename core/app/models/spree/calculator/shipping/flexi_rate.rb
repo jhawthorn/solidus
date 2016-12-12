@@ -13,18 +13,13 @@ module Spree
       end
 
       def compute_from_quantity(quantity)
-        sum = 0
-        max = preferred_max_items.to_i
-        quantity.times do |i|
-          # check max value to avoid divide by 0 errors
-          if (max == 0 && i == 0) || (max > 0) && (i % max == 0)
-            sum += preferred_first_item.to_f
-          else
-            sum += preferred_additional_item.to_f
-          end
-        end
+        items_count = quantity
+        items_count = [items_count, preferred_max_items].min unless preferred_max_items.zero?
 
-        sum
+        return BigDecimal.new(0) if items_count == 0
+
+        additional_items_count = items_count - 1
+        preferred_first_item + preferred_additional_item * additional_items_count
       end
     end
   end
