@@ -320,37 +320,69 @@ module Spree
       end
     end
 
-    def transfer_to_location(variant, quantity, stock_location)
-      if quantity <= 0
-        raise ArgumentError
+    class ItemTransfer
+      include ActiveModel::Model
+
+      attr_accessor :source_shipment, :variant, :quantity
+
+      validates :source_shipment, presence: true
+      validates :variant, presence: true
+      validates :quantity, numericality: {greater_than: 0, only_integer: true}
+
+      def perform!
+        validate!
+
+        order.transaction do
+          order.contents.remove(variant, quantity, { shipment: source_shipment })
+          order.contents.add(variant, quantity, { shipment: target_shipment })
+
+          source_shipment.refresh_rates
+          source_shipment.save!
+
+          target_shipment.refresh_rates
+          target_shipment.save!
+        end
       end
 
-      transaction do
-        new_shipment = order.shipments.create!(stock_location: stock_location)
+      private
 
-        order.contents.remove(variant, quantity, { shipment: self })
-        order.contents.add(variant, quantity, { shipment: new_shipment })
-
-        refresh_rates
-        save!
-        new_shipment.save!
+      def order
+        source_shipment.order
       end
     end
 
+    class TransferToLocation < ItemTransfer
+      attr_accessor :stock_location
+      validates :stock_location, presence: true
+
+      private
+
+      def target_shipment
+        @target_shipment ||= order.shipments.create!(stock_location: stock_location)
+      end
+    end
+
+    class TransferToShipment < ItemTransfer
+      attr_accessor :target_shipment
+      validates :target_shipment, presence: true
+    end
+
+    def transfer_to_location(variant, quantity, stock_location)
+      TransferToLocation.new(
+        source_shipment: self,
+        variant: variant,
+        quantity: quantity,
+        stock_location: stock_location
+      ).perform!
+    end
+
     def transfer_to_shipment(variant, quantity, shipment_to_transfer_to)
-      if quantity <= 0 || self == shipment_to_transfer_to
-        raise ArgumentError
-      end
-
-      transaction do
-        order.contents.remove(variant, quantity, { shipment: self })
-        order.contents.add(variant, quantity, { shipment: shipment_to_transfer_to })
-
-        refresh_rates
-        save!
-        shipment_to_transfer_to.refresh_rates
-        shipment_to_transfer_to.save!
-      end
+      TransferToShipment.new(
+        source_shipment: self,
+        variant: variant,
+        quantity: quantity,
+        target_shipment: shipment_to_transfer_to
+      ).perform!
     end
 
     def requires_shipment?
