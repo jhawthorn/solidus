@@ -162,12 +162,22 @@ module Spree
             let(:location_1_inventory) { 5 }
             let(:location_2_inventory) { 0 }
             it_behaves_like "a fulfillable package"
+            it "builds one shipment in the first location" do
+              expect(shipments.count).to eq(1)
+              shipment = shipments.first
+              expect(shipment.stock_location).to eq(stock_location_1)
+            end
           end
 
           context "has sufficient inventory in the second location" do
             let(:location_1_inventory) { 0 }
             let(:location_2_inventory) { 5 }
             it_behaves_like "a fulfillable package"
+            it "builds one shipment in the second location" do
+              expect(shipments.count).to eq(1)
+              shipment = shipments.first
+              expect(shipment.stock_location).to eq(stock_location_2)
+            end
           end
 
           context "with sufficient inventory only across both locations" do
@@ -175,6 +185,10 @@ module Spree
             let(:location_2_inventory) { 3 }
             before { pending "This is broken. The coordinator packages this incorrectly" }
             it_behaves_like "a fulfillable package"
+            it "builds a shipments for each location" do
+              expect(shipments.count).to eq(2)
+              expect(shipments.map(&:stock_location)).to match_array([stock_location_1, stock_location_2])
+            end
           end
 
           context "has sufficient inventory in the second location and some in the first" do
