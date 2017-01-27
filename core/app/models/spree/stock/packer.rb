@@ -21,16 +21,12 @@ module Spree
         package = Package.new(stock_location)
         inventory_units.group_by(&:variant).each do |variant, variant_inventory_units|
           units = variant_inventory_units.clone
-          if variant.should_track_inventory?
-            stock_item = stock_item_for(variant.id)
-            next unless stock_item
+          availability = Spree::Stock::Availability.new
+          fill_status = availability.fill_status(variant, units.count, stock_location: stock_location)
 
-            on_hand, backordered = stock_item.fill_status(units.count)
-            package.add_multiple units.slice!(0, on_hand), :on_hand if on_hand > 0
-            package.add_multiple units.slice!(0, backordered), :backordered if backordered > 0
-          else
-            package.add_multiple units
-          end
+          on_hand, backordered = fill_status
+          package.add_multiple units.slice!(0, on_hand), :on_hand if on_hand > 0
+          package.add_multiple units.slice!(0, backordered), :backordered if backordered > 0
         end
         package
       end
