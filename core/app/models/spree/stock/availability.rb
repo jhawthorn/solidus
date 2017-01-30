@@ -28,11 +28,20 @@ module Spree
         total_on_hand = values.sum(&:count_on_hand)
 
         if !track_inventory
-          [quantity, 0]
+          {
+            on_hand: quantity,
+            backordered: 0
+          }
         elsif backorderable
-          [total_on_hand, quantity - total_on_hand]
+          {
+            on_hand: total_on_hand,
+            backordered: quantity - total_on_hand
+          }
         else
-          [total_on_hand, 0]
+          {
+            on_hand: total_on_hand,
+            backordered: 0
+          }
         end
       end
     end
