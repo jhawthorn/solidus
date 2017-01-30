@@ -23,7 +23,7 @@ module Spree
           values = values.select{|v| v.stock_location_id == stock_location_id }
         end
 
-        track_inventory = values.all?(&:track_inventory)
+        track_inventory = Config.track_inventory_levels && values.all?(&:track_inventory)
         backorderable = values.any?(&:backorderable)
         total_on_hand = values.sum(&:count_on_hand)
 
