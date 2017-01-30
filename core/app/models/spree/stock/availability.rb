@@ -1,14 +1,35 @@
 module Spree
   module Stock
     class Availability
-      def initialize
+      Value = Struct.new(:stock_location_id, :variant_id, :backorderable, :track_inventory, :count_on_hand)
+
+      def initialize(variant_ids)
+        variant_scope = Spree::Variant.where(id: variant_ids.uniq)
+        variant_scope.joins!(stock_items: :stock_location)
+        variant_scope.merge!(Spree::StockLocation.active)
+        values = variant_scope.pluck(:stock_location_id, :variant_id, "spree_stock_items.backorderable = 't'", :track_inventory, :count_on_hand).map do |data|
+          # Hack to cast boolean from joined table
+          data[2] = [1, 't', true].include?(data[2])
+
+          Value.new(*data)
+        end
+        @values = values
       end
 
-      def fill_status(variant, quantity, stock_location: nil)
-        quantifier = Spree::Stock::Quantifier.new(variant, stock_location)
-        total_on_hand = quantifier.total_on_hand
-        total_on_hand = [total_on_hand, quantity].min
-        if quantifier.backorderable?
+      def fill_status(variant_id, quantity, stock_location_id: nil)
+        values = @values
+        values = values.select{|v| v.variant_id == variant_id }
+        if stock_location_id
+          values = values.select{|v| v.stock_location_id == stock_location_id }
+        end
+
+        track_inventory = values.all?(&:track_inventory)
+        backorderable = values.any?(&:backorderable)
+        total_on_hand = values.sum(&:count_on_hand)
+
+        if !track_inventory
+          [quantity, 0]
+        elsif backorderable
           [total_on_hand, quantity - total_on_hand]
         else
           [total_on_hand, 0]
