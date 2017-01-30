@@ -24,8 +24,8 @@ module Spree
           units = variant_inventory_units.clone
           statuses = availability.fill_status(variant.id, units.count, stock_location_id: stock_location.id)
 
-          package.add_multiple units.slice!(0, statuses[:on_hand]), :on_hand
-          package.add_multiple units.slice!(0, statuses[:backordered]), :backordered
+          package.add_multiple units.slice!(0, statuses[:on_hand]), :on_hand if statuses[:on_hand] > 0
+          package.add_multiple units.slice!(0, statuses[:backordered]), :backordered if statuses[:backordered] > 0
         end
         package
       end
