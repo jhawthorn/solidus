@@ -30,22 +30,6 @@ module Spree
         package
       end
 
-      private
-
-      def stock_item_for(variant_id)
-        stock_item_lookup[variant_id]
-      end
-
-      # Returns a lookup table in the form of:
-      #   {<variant_id> => <stock_item>, ...}
-      def stock_item_lookup
-        @stock_item_lookup ||= Spree::StockItem.
-          where(variant_id: inventory_units.map(&:variant_id).uniq).
-          where(stock_location_id: stock_location.id).
-          map { |stock_item| [stock_item.variant_id, stock_item] }.
-          to_h # there is only one stock item per variant in a stock location
-      end
-
       def build_splitter
         splitter = nil
         splitters.reverse_each do |klass|
