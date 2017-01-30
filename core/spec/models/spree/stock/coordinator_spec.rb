@@ -8,15 +8,6 @@ module Spree
       subject { Coordinator.new(order) }
 
       describe "#shipments" do
-        it "builds, prioritizes and estimates" do
-          expect(subject).to receive(:build_location_configured_packages).ordered.and_call_original
-          expect(subject).to receive(:build_packages).ordered.and_call_original
-          expect(subject).to receive(:prioritize_packages).ordered.and_call_original
-          expect(subject).to receive(:estimate_packages).ordered.and_call_original
-          expect(subject).to receive(:validate_packages).ordered.and_call_original
-          subject.shipments
-        end
-
         it 'uses the pluggable estimator class' do
           expect(Spree::Config.stock).to receive(:estimator_class).and_call_original
           subject.shipments
