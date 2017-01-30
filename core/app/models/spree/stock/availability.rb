@@ -7,7 +7,7 @@ module Spree
         variant_scope = Spree::Variant.where(id: variant_ids.uniq)
         variant_scope.joins!(stock_items: :stock_location)
         variant_scope.merge!(Spree::StockLocation.active)
-        values = variant_scope.pluck(:stock_location_id, :variant_id, "spree_stock_items.backorderable = 't'", :track_inventory, :count_on_hand).map do |data|
+        values = variant_scope.pluck(:stock_location_id, :variant_id, :backorderable, :track_inventory, :count_on_hand).map do |data|
           # Hack to cast boolean from joined table
           data[2] = [1, 't', true].include?(data[2])
 
