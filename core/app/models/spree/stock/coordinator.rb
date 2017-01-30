@@ -17,8 +17,8 @@ module Spree
 
       def packages
         packages = build_location_configured_packages
-        packages += build_packages
         packages = prioritize_packages(packages)
+        packages += build_packages
         packages.each do |package|
           package.shipment = package.to_shipment
         end
