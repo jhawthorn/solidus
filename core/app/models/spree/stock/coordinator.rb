@@ -59,11 +59,24 @@ module Spree
       #
       # Returns an array of Package instances
       def build_packages
-        stock_location_variant_ids.flat_map do |stock_location, variant_ids|
-          units_for_location = unallocated_inventory_units.select { |unit| variant_ids.include?(unit.variant_id) }
-          packer = build_packer(stock_location, units_for_location)
-          packer.packages
+        units_by_variant_id = unallocated_inventory_units.group_by(&:variant_id)
+        availability = Spree::Stock::Availability.new(unallocated_variant_ids)
+        packages = Spree::StockLocation.active.map do |location|
+          Spree::Stock::Package.new(location)
         end
+
+        [:on_hand, :backordered].each do |status|
+          units_by_variant_id.each do |variant_id, units|
+            packages.each do |package|
+              statuses = availability.fill_status(variant_id, units.count, stock_location_id: package.stock_location.id)
+              available_units = units.slice!(0, statuses[status])
+              package.add_multiple available_units, status if available_units
+            end
+          end
+        end
+
+        packages.reject!(&:empty?)
+        packages
       end
 
       # This finds the variants we're looking for in each active stock location.

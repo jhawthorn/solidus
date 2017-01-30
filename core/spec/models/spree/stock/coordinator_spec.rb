@@ -183,7 +183,6 @@ module Spree
           context "with sufficient inventory only across both locations" do
             let(:location_1_inventory) { 2 }
             let(:location_2_inventory) { 3 }
-            before { pending "This is broken. The coordinator packages this incorrectly" }
             it_behaves_like "a fulfillable package"
             it "builds a shipments for each location" do
               expect(shipments.count).to eq(2)
