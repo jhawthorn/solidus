@@ -3,8 +3,8 @@ require 'csv'
 module Spree
   module Admin
     class PromotionCodesController < Spree::Admin::ResourceController
+      before_action :load_promotion
       def index
-        @promotion = Spree::Promotion.accessible_by(current_ability, :read).find(params[:promotion_id])
         @promotion_codes = @promotion.promotion_codes
 
         respond_to do |format|
@@ -17,6 +17,12 @@ module Spree
             headers["Content-disposition"] = "attachment; filename=\"#{filename}\""
           end
         end
+      end
+
+      private
+
+      def load_promotion
+        @promotion = Spree::Promotion.accessible_by(current_ability, :read).find(params[:promotion_id])
       end
     end
   end

@@ -9,10 +9,10 @@ Spree::Core::Engine.routes.draw do
       end
     end
 
-    resources :promotions do
+    resources :promotions, only: [:index, :new, :edit, :create, :update] do
       resources :promotion_rules
       resources :promotion_actions
-      resources :promotion_codes, only: [:index]
+      resources :promotion_codes, only: [:index, :new, :create]
       resources :promotion_code_batches, only: [:index, :new, :create] do
         get '/download', to: "promotion_code_batches#download", defaults: { format: "csv" }
       end

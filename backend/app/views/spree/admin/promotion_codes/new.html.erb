@@ -1,0 +1,12 @@
+<% admin_breadcrumb(link_to plural_resource_name(Spree::Promotion), spree.admin_promotions_path) %>
+<% admin_breadcrumb(link_to @promotion.name, spree.edit_admin_promotion_path(@promotion.id)) %>
+<% admin_breadcrumb(Spree.t(:new_promotion_code)) %>
+
+<%= form_for [:admin, @promotion, @promotion_code] do |f| %>
+  <%= f.field_container :value do %>
+    <%= f.label :value, class: 'required' %>
+    <%= f.text_field :value, class: 'fullwidth', required: true %>
+  <% end %>
+
+  <%= button Spree.t('actions.create') %>
+<% end %>

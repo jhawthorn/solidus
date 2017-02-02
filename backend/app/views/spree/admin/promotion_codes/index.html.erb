@@ -4,6 +4,12 @@
 
 <% content_for :page_actions do %>
   <li>
+    <%= button_link_to "Add single code", new_admin_promotion_promotion_code_path %>
+  </li>
+  <li>
+    <%= button_link_to "Generate multiple codes", new_admin_promotion_promotion_code_batch_path %>
+  </li>
+  <li>
     <%= button_link_to Spree.t(:download_promotion_code_list), admin_promotion_promotion_codes_path(promotion_id: @promotion.id, format: :csv) %>
   </li>
 <% end %>
@@ -15,11 +21,13 @@
 <table>
   <thead>
     <th><%= Spree::PromotionCode.human_attribute_name :value %></th>
+    <th><%= "Batch" %></th>
   </thead>
   <tbody>
     <% @promotion_codes.each do |promotion_code| %>
       <tr>
-        <td><%= promotion_code.value %></td>
+        <td><code><%= promotion_code.value %></code></td>
+        <td><%= promotion_code.promotion_code_batch_id %></td>
       </tr>
     <% end %>
   </tbody>
