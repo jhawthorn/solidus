@@ -85,12 +85,20 @@ module Spree
       products.not_deleted.available
     end
 
+    def pretty_name_array
+      if association(:parent).loaded?
+        arr = parent.try!(:pretty_name_array) || []
+      else
+        arr = ancestors.map(&:name)
+      end
+      arr << name
+      arr
+    end
+
     # @return [String] this taxon's ancestors names followed by its own name,
     #   separated by arrows
     def pretty_name
-      ancestor_chain = ancestors.map(&:name)
-      ancestor_chain << name
-      ancestor_chain.join(" -> ")
+      pretty_name_array.join(" -> ")
     end
 
     # @see https://github.com/spree/spree/issues/3390
@@ -113,6 +121,15 @@ module Spree
         self.permalink = "#{parent.permalink}/#{value}"
       else
         self.permalink = value
+      end
+    end
+
+    def with_preloaded_tree
+      self.class.associate_parents(self_and_descendants).each do |item|
+        item.association(:children).loaded!
+        item.association(:parent).loaded!
+      end.detect do |item|
+        item == self
       end
     end
 
