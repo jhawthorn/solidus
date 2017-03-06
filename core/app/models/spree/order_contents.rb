@@ -20,40 +20,50 @@ module Spree
     #
     # @return [Spree::LineItem]
     def add(variant, quantity = 1, options = {})
-      line_item = add_to_line_item(variant, quantity, options)
-      after_add_or_remove(line_item, options)
+      transaction do
+        line_item = add_to_line_item(variant, quantity, options)
+        after_add_or_remove(line_item, options)
+      end
     end
 
     def remove(variant, quantity = 1, options = {})
-      line_item = remove_from_line_item(variant, quantity, options)
-      after_add_or_remove(line_item, options)
+      transaction do
+        line_item = remove_from_line_item(variant, quantity, options)
+        after_add_or_remove(line_item, options)
+      end
     end
 
     def remove_line_item(line_item, options = {})
-      order.line_items.destroy(line_item)
-      after_add_or_remove(line_item, options)
+      transaction do
+        order.line_items.destroy(line_item)
+        after_add_or_remove(line_item, options)
+      end
     end
 
     def update_cart(params)
-      if order.update_attributes(params)
-        unless order.completed?
-          order.line_items = order.line_items.select { |li| li.quantity > 0 }
-          # Update totals, then check if the order is eligible for any cart promotions.
-          # If we do not update first, then the item total will be wrong and ItemTotal
-          # promotion rules would not be triggered.
+      transaction do
+        if order.update_attributes(params)
+          unless order.completed?
+            order.line_items = order.line_items.select { |li| li.quantity > 0 }
+            # Update totals, then check if the order is eligible for any cart promotions.
+            # If we do not update first, then the item total will be wrong and ItemTotal
+            # promotion rules would not be triggered.
+            reload_totals
+            PromotionHandler::Cart.new(order).activate
+            order.ensure_updated_shipments
+          end
           reload_totals
-          PromotionHandler::Cart.new(order).activate
-          order.ensure_updated_shipments
+          true
+        else
+          false
         end
-        reload_totals
-        true
-      else
-        false
       end
     end
 
     def advance
-      while @order.next; end
+      transaction do
+        while @order.next; end
+      end
     end
 
     def approve(user: nil, name: nil)
@@ -69,6 +79,8 @@ module Spree
     end
 
     private
+
+    delegate :transaction, to: :@order
 
     def after_add_or_remove(line_item, options = {})
       reload_totals
