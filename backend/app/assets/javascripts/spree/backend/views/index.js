@@ -4,3 +4,5 @@
 //= require 'spree/backend/views/order/details_adjustments'
 //= require 'spree/backend/views/order/details_total'
 //= require 'spree/backend/views/order/summary'
+//= require 'spree/backend/views/payment/new'
+//= require 'spree/backend/views/payment/edit_credit_card'
