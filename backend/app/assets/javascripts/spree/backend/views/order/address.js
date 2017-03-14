@@ -47,6 +47,6 @@ Spree.Views.Order.Address = Backbone.View.extend({
     this.eachField(function(name, el) {
       el.val(model.get(name))
     })
-    this.$(".js-country_id").select2("val", this.model.get("country_id"))
+    this.$(".js-country_id").val(this.model.get("country_id")).trigger('change')
   }
 });
