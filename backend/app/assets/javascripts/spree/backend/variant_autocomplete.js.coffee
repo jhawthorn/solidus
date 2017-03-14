@@ -29,7 +29,7 @@ $.fn.variantAutocomplete = (searchOptions = {}) ->
           token: Spree.api_key
         _.extend(searchData, searchOptions)
 
-      results: (data, page) ->
+      processResults: (data, page) ->
         window.variants = data["variants"]
         results: data["variants"]
 

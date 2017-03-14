@@ -35,7 +35,7 @@ $.fn.productAutocomplete = function (options) {
           page: page
         };
       },
-      results: function (data, page) {
+      processResults: function (data, page) {
         var products = data.products ? data.products : [];
         return {
           results: products,

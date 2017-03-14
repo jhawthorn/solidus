@@ -39,7 +39,7 @@ Spree.Views.Order.CustomerSelect = Backbone.View.extend({
             }
           }
         },
-        results: function(data, page) {
+        processResults: function(data, page) {
           return {
             results: data.users,
             more: data.current_page < data.pages

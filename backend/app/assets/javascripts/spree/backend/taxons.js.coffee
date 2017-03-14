@@ -59,7 +59,7 @@ $ ->
         page: page,
         q:
           name_cont: term
-      results: (data) ->
+      processResults: (data) ->
         results: data['taxons'],
         more: data.current_page < data.pages
     formatResult: formatTaxon,

@@ -35,7 +35,7 @@ $.fn.taxonAutocomplete = function () {
             token: Spree.api_key
           };
         },
-        results: function (data, page) {
+        processResults: function (data, page) {
           var more = page < data.pages;
           return {
             results: data['taxons'],

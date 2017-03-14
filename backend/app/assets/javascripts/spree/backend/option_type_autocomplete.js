@@ -29,7 +29,7 @@ $(document).ready(function () {
             q: { name_cont: term }
           };
         },
-        results: function (data) {
+        processResults: function (data) {
           return {
             results: data
           };

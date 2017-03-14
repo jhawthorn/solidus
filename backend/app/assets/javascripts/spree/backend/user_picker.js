@@ -33,7 +33,7 @@ $.fn.userAutocomplete = function () {
           }
         };
       },
-      results: function (data) {
+      processResults: function (data) {
         return {
           results: data.users,
           more: data.current_page < data.pages

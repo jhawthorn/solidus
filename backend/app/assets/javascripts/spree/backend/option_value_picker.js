@@ -34,7 +34,7 @@ $.fn.optionValueAutocomplete = function (options) {
           token: Spree.api_key
         };
       },
-      results: function (data, page) {
+      processResults: function (data, page) {
         return { results: data };
       }
     },

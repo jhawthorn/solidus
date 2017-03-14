@@ -12,7 +12,7 @@ jQuery ->
           per_page: 50
           page: page
           token: Spree.api_key
-        results: (data, page) ->
+        processResults: (data, page) ->
           more = (page * 50) < data.count
           return { results: data.stock_items, more: more }
       formatResult: (stock_item) ->
