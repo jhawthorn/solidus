@@ -74,7 +74,8 @@
             <div class="col-xs-12">
               <div class="field" data-hook="sku-select">
                 <%= label_tag :q_line_items_variant_id_in, Spree.t(:variant) %>
-                <%= f.text_field :line_items_variant_id_in, class: "variant_autocomplete fullwidth" %>
+                <% variant_id = f.object.line_items_variant_id_in %>
+                <%= f.select :line_items_variant_id_in, options_for_select([variant_id]), {}, class: "variant_autocomplete fullwidth" %>
               </div>
             </div>
           </div>
