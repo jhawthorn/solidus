@@ -24,13 +24,13 @@ $.fn.taxonAutocomplete = function () {
       ajax: {
         url: Spree.routes.taxons_search,
         datatype: 'json',
-        data: function (term, page) {
+        data: function (params) {
           return {
             per_page: 50,
-            page: page,
+            page: params.page,
             without_children: true,
             q: {
-              name_cont: term
+              name_cont: params.term
             },
             token: Spree.api_key
           };

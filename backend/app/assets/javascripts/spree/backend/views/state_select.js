@@ -5,6 +5,8 @@ Spree.Views.StateSelect = Backbone.View.extend({
     this.$state_select = this.$('.js-state_id');
     this.$state_input = this.$('.js-state_name');
 
+    this.$state_select.select2();
+
     // read initial values from page
     this.model.set({
       state_name: this.$state_input.val(),
@@ -39,11 +41,13 @@ Spree.Views.StateSelect = Backbone.View.extend({
   },
 
   render: function() {
-    this.$state_select.empty().select2("destroy").hide();
-    this.$state_input.hide();
+    /* Reset elements, both should be hidden and disabled */
+    this.$state_select.empty().select2("destroy");
+    this.$state_select.prop('disabled', true).hide();
+    this.$state_input.prop('disabled', true).hide();
 
     if (!this.states.fetched) {
-      this.$state_select.show().select2().select2("disable");
+      this.$state_select.show().select2({ width: '100%' });
     } else if (this.states.length) {
       var $state_select = this.$state_select;
       this.states.each(function(state) {
@@ -52,7 +56,7 @@ Spree.Views.StateSelect = Backbone.View.extend({
         );
       })
       this.$state_select.val(this.model.get("state_id"))
-      this.$state_select.show().select2().select2("enable");
+      this.$state_select.prop('disabled', false).show().select2({ width: '100%' });
     } else {
       this.$state_input.prop('disabled', false).show();
     }
