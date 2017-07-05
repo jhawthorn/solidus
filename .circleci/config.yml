@@ -10,13 +10,7 @@ jobs:
       CIRCLE_ARTIFACTS: /tmp/test-artifacts
     docker:
       - image: circleci/ruby:2.4.1-node-browsers
-      - image: postgres:9.6.2
-        command:
-          - postgres
-          - -cfsync=off
-          - -csynchronous_commit=off
-          - -cfull_page_writes=off
-          - -cbgwriter_lru_maxpages=0
+      - image: jhawthorn/circleci-postgres-fast
         environment:
           POSTGRES_USER: root
     parallelism: 3
