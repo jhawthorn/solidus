@@ -69,12 +69,12 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = false
 
   config.before :suite do
-    DatabaseCleaner.clean_with :truncation
+    DatabaseCleaner.clean_with :deletion
   end
 
   config.prepend_before(:each) do
     if RSpec.current_example.metadata[:js]
-      DatabaseCleaner.strategy = :truncation
+      DatabaseCleaner.strategy = :deletion
     else
       DatabaseCleaner.strategy = :transaction
     end

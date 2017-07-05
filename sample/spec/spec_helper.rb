@@ -24,7 +24,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    DatabaseCleaner.clean_with(:truncation)
+    DatabaseCleaner.clean_with(:deletion)
   end
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your

@@ -84,7 +84,7 @@ RSpec.configure do |config|
   end
 
   config.before(:suite) do
-    DatabaseCleaner.clean_with :truncation
+    DatabaseCleaner.clean_with :deletion
   end
 
   config.before(:each) do
@@ -92,7 +92,7 @@ RSpec.configure do |config|
     reset_spree_preferences
     if RSpec.current_example.metadata[:js]
       page.driver.browser.url_blacklist = ['http://fonts.googleapis.com']
-      DatabaseCleaner.strategy = :truncation
+      DatabaseCleaner.strategy = :deletion
     else
       DatabaseCleaner.strategy = :transaction
     end
