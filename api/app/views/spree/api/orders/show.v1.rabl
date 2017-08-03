@@ -7,11 +7,11 @@ child :available_payment_methods => :payment_methods do
 end
 
 child :billing_address => :bill_address do
-  extends "spree/api/addresses/show"
+  extends "spree/api/addresses/address"
 end
 
 child :shipping_address => :ship_address do
-  extends "spree/api/addresses/show"
+  extends "spree/api/addresses/address"
 end
 
 child :line_items => :line_items do

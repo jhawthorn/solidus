@@ -28,11 +28,11 @@ child order: :order do
   extends "spree/api/orders/order"
 
   child billing_address: :bill_address do
-    extends "spree/api/addresses/show"
+    extends "spree/api/addresses/address"
   end
 
   child shipping_address: :ship_address do
-    extends "spree/api/addresses/show"
+    extends "spree/api/addresses/address"
   end
 
   child adjustments: :adjustments do
