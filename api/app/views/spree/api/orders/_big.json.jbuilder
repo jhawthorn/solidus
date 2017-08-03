@@ -30,7 +30,7 @@ end
 json.adjustments(order.adjustments) do |adjustment|
   json.partial!("spree/api/adjustments/adjustment", :adjustment => adjustment)
 end
-json.permissions(:can_update => current_ability.can?(:update, root_object))
+json.permissions(:can_update => current_ability.can?(:update, adjustment))
 json.credit_cards(order.valid_credit_cards) do |credit_card|
   json.partial!("spree/api/credit_cards/credit_card", :credit_card => credit_card)
 end
