@@ -1,7 +1,7 @@
 object false
 
 child(@orders => :orders) do
-  extends "spree/api/orders/show"
+  extends "spree/api/orders/big"
 end
 
 node(:count) { @orders.count }
