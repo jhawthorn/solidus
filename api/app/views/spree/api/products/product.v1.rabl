@@ -35,7 +35,7 @@ unless @exclude_data[:classifications]
     attributes :taxon_id, :position
 
     child(:taxon) do
-      extends "spree/api/taxons/show"
+      extends "spree/api/taxons/taxon"
     end
   end
 end
