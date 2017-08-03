@@ -3,3 +3,5 @@ eval(File.read(File.dirname(__FILE__) + '/../common_spree_dependencies.rb'))
 gem 'solidus_core', path: '../core'
 
 gemspec
+
+gem 'rabl_to_jbuilder', path: '/home/jhawthorn/src/rabl_to_jbuilder', require: false
