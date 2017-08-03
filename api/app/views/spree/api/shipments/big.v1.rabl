@@ -3,7 +3,7 @@ cache @shipment
 attributes *shipment_attributes
 
 child selected_shipping_rate: :selected_shipping_rate do
-  extends "spree/api/shipping_rates/show"
+  extends "spree/api/shipping_rates/shipping_rate"
 end
 
 child inventory_units: :inventory_units do
