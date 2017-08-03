@@ -1,5 +1,4 @@
 object @shipment
-cache [I18n.locale, 'small_shipment', root_object]
 
 attributes *shipment_attributes
 node(:order_id) { |shipment| shipment.order.number }

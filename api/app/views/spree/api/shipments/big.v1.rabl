@@ -1,5 +1,4 @@
 object @shipment
-cache @shipment
 attributes *shipment_attributes
 
 child selected_shipping_rate: :selected_shipping_rate do

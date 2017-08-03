@@ -1,4 +1,3 @@
-cache [I18n.locale, @current_user_roles.include?('admin'), current_pricing_options, root_object]
 
 @product_attributes ||= product_attributes
 attributes(*@product_attributes)

@@ -1,4 +1,3 @@
-cache [I18n.locale, 'small_variant', root_object]
 
 attributes *variant_attributes
 
