@@ -49,5 +49,5 @@ node :permissions do
 end
 
 child :valid_credit_cards => :credit_cards do
-  extends "spree/api/credit_cards/show"
+  extends "spree/api/credit_cards/credit_card"
 end
