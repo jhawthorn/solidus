@@ -14,7 +14,7 @@ child :shipping_address => :ship_address do
 end
 
 child :line_items => :line_items do
-  extends "spree/api/line_items/show"
+  extends "spree/api/line_items/line_item"
 end
 
 child :payments => :payments do
