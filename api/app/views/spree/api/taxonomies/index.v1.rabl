@@ -1,6 +1,6 @@
 object false
 child(@taxonomies => :taxonomies) do
-  extends "spree/api/taxonomies/show"
+  extends "spree/api/taxonomies/taxonomy"
 end
 node(:count) { @taxonomies.count }
 node(:current_page) { @taxonomies.current_page }
