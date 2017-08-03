@@ -1,2 +1,3 @@
 object @option_value
-attributes *option_value_attributes
+
+extends "spree/api/option_values/option_value"
