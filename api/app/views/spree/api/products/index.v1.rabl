@@ -5,5 +5,5 @@ node(:current_page) { @products.current_page }
 node(:per_page) { @products.limit_value }
 node(:pages) { @products.total_pages }
 child(@products => :products) do
-  extends "spree/api/products/show"
+  extends "spree/api/products/product"
 end
