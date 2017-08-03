@@ -1,6 +1,6 @@
 object false
 child(@zones => :zones) do
-  extends 'spree/api/zones/show'
+  extends 'spree/api/zones/zone'
 end
 node(:count) { @zones.count }
 node(:current_page) { @zones.current_page }
