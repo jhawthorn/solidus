@@ -36,7 +36,7 @@ child order: :order do
   end
 
   child adjustments: :adjustments do
-    extends "spree/api/adjustments/show"
+    extends "spree/api/adjustments/adjustment"
   end
 
   child payments: :payments do

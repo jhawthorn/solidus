@@ -40,7 +40,7 @@ child :shipments => :shipments do
 end
 
 child :adjustments => :adjustments do
-  extends "spree/api/adjustments/show"
+  extends "spree/api/adjustments/adjustment"
 end
 
 # Necessary for backend's order interface
