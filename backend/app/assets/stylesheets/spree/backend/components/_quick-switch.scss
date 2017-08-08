@@ -1,0 +1,34 @@
+.quick-switch-form {
+  position: relative;
+  display: flex;
+}
+
+.quick-switch-query-input {
+  flex: 1;
+}
+
+.quick-switch-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.quick-switch-help {
+  font-size: 0.8rem;
+}
+
+.quick-switch-help button {
+  padding-left: 0;
+  box-shadow: none;
+  font-size: inherit;
+}
+
+.quick-switch-help ul {
+  margin: 0.5rem 0 0;
+  padding-left: 2rem;
+}
+
+.quick-switch-dialog .alert {
+  margin-top: 1rem;
+}
