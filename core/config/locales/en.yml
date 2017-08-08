@@ -1728,6 +1728,11 @@ en:
     quantity: Quantity
     quantity_returned: Quantity Returned
     quantity_shipped: Quantity Shipped
+    quick_switch:
+      invalid_query: Invalid or missing search key.
+      order_not_found: Order %{value} could not be found.
+      shipment_not_found: Shipment %{value} could not be found.
+      variant_not_found: Unable to find a variant with a SKU matching %{value}.
     rate: Rate
     ready_to_ship: Ready to ship
     reason: Reason
