@@ -7,11 +7,28 @@
   flex: 1;
 }
 
-.quick-switch-button {
+.quick-switch-button,
+.quick-switch-spinner {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
+}
+
+.quick-switch-spinner {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  border-width: 2px;
+  border-left-color: $color-3;
+  background: $color-1;
+
+  .quick-switch-form:not(.searching) & {
+    display: none;
+  }
 }
 
 .quick-switch-help {

@@ -33,7 +33,12 @@ Spree.Views.QuickSwitch = Backbone.View.extend({
 
   onSubmit: function(e) {
     e.preventDefault();
+    this.toggleSearchClass();
     this.sendQuery();
+  },
+
+  toggleSearchClass: function() {
+    this.$form.toggleClass("searching");
   },
 
   sendQuery: function() {
@@ -43,6 +48,7 @@ Spree.Views.QuickSwitch = Backbone.View.extend({
       url: this.$form.attr("action"),
       type: "POST",
       data: this.$form.serializeArray(),
+      global: false, // disable the backend's default loading messaging
       success: function(response) {
         if(response.redirect_url) {
           window.location = response.redirect_url;
@@ -50,6 +56,7 @@ Spree.Views.QuickSwitch = Backbone.View.extend({
       },
       error: function(response) {
         var message = JSON.parse(response.responseText).message;
+        view.toggleSearchClass();
         if($(".alert", view.$el).length) {
           $(".alert", view.$el).text(message);
         } else {
