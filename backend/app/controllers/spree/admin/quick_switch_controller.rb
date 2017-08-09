@@ -11,6 +11,8 @@ module Spree
           find_and_redirect_to_variant
         when "s"
           find_and_redirect_to_shipment
+        when "u"
+          find_and_redirect_to_user
         when "v"
           find_and_redirect_to_variant
         else
@@ -62,6 +64,16 @@ module Spree
         else
           not_found(
             Spree.t("quick_switch.shipment_not_found", value: searched_value)
+          )
+        end
+      end
+
+      def find_and_redirect_to_user
+        if user = Spree.user_class.find_by(email: searched_value)
+          redirect_to_url spree.edit_admin_user_path(user)
+        else
+          not_found(
+            Spree.t("quick_switch.user_not_found", value: searched_value)
           )
         end
       end

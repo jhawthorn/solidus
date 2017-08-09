@@ -1732,6 +1732,7 @@ en:
       invalid_query: Invalid or missing search key.
       order_not_found: Order %{value} could not be found.
       shipment_not_found: Shipment %{value} could not be found.
+      user_not_found: Unable to find a user with an email matching %{value}.
       variant_not_found: Unable to find a variant with a SKU matching %{value}.
     rate: Rate
     ready_to_ship: Ready to ship
