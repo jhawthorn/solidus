@@ -37,7 +37,7 @@ module Spree
       def destroy
         authorize! :destroy, @store
         @store.destroy
-        respond_with(@store, status: 204)
+        render status: 204
       end
 
       private

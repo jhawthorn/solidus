@@ -58,7 +58,7 @@ module Spree
       def destroy
         authorize! :destroy, taxon
         taxon.destroy
-        respond_with(taxon, status: 204)
+        render status: 204
       end
 
       def products

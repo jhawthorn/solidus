@@ -19,7 +19,7 @@ module Spree
       def destroy
         @return_authorization = @order.return_authorizations.accessible_by(current_ability, :destroy).find(params[:id])
         @return_authorization.destroy
-        respond_with(@return_authorization, status: 204)
+        render status: 204
       end
 
       def index

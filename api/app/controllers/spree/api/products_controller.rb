@@ -92,7 +92,7 @@ module Spree
         @product = find_product(params[:id])
         authorize! :destroy, @product
         @product.destroy
-        respond_with(@product, status: 204)
+        render status: 204
       end
 
       private

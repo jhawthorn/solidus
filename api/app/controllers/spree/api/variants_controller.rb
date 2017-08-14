@@ -16,7 +16,7 @@ module Spree
       def destroy
         @variant = scope.accessible_by(current_ability, :destroy).find(params[:id])
         @variant.destroy
-        respond_with(@variant, status: 204)
+        render status: 204
       end
 
       # The lazyloaded associations here are pretty much attached to which nodes

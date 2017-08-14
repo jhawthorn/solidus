@@ -14,7 +14,7 @@ module Spree
       def destroy
         authorize! :destroy, zone
         zone.destroy
-        respond_with(zone, status: 204)
+        render status: 204
       end
 
       def index

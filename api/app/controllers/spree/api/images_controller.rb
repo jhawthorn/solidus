@@ -26,7 +26,7 @@ module Spree
       def destroy
         @image = Spree::Image.accessible_by(current_ability, :destroy).find(params[:id])
         @image.destroy
-        respond_with(@image, status: 204)
+        render status: 204
       end
 
       private

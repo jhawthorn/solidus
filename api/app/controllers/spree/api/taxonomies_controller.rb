@@ -40,7 +40,7 @@ module Spree
       def destroy
         authorize! :destroy, taxonomy
         taxonomy.destroy
-        respond_with(taxonomy, status: 204)
+        render status: 204
       end
 
       private

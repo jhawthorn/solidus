@@ -52,7 +52,7 @@ class Spree::Api::ResourceController < Spree::Api::BaseController
     authorize! :destroy, @object
 
     if @object.destroy
-      respond_with(@object, status: 204)
+      render status: 204
     else
       invalid_resource!(@object)
     end

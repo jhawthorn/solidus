@@ -50,7 +50,7 @@ module Spree
       def destroy
         @stock_item = Spree::StockItem.accessible_by(current_ability, :destroy).find(params[:id])
         @stock_item.destroy
-        respond_with(@stock_item, status: 204)
+        render status: 204
       end
 
       private

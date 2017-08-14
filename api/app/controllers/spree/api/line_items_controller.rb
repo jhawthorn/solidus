@@ -37,7 +37,7 @@ module Spree
       def destroy
         @line_item = find_line_item
         @order.contents.remove_line_item(@line_item)
-        respond_with(@line_item, status: 204)
+        render status: 204
       end
 
       private
