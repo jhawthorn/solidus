@@ -28,7 +28,7 @@ module Spree
       def create
         authorize! :create, Order
         @order = Spree::Core::Importer::Order.import(determine_order_user, order_params)
-        respond_with(@order, default_template: :show, status: 201)
+        render :show, status: 201
       end
 
       def empty

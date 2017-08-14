@@ -18,34 +18,34 @@ module Spree
       def next
         authorize! :update, @order, order_token
         if !expected_total_ok?(params[:expected_total])
-          respond_with(@order, default_template: 'spree/api/orders/expected_total_mismatch', status: 400)
+          render 'spree/api/orders/expected_total_mismatch', status: 400
           return
         end
         authorize! :update, @order, order_token
         @order.next!
-        respond_with(@order, default_template: 'spree/api/orders/show', status: 200)
+        render 'spree/api/orders/show', status: 200
       rescue StateMachines::InvalidTransition => e
         logger.error("invalid_transition #{e.event} from #{e.from} for #{e.object.class.name}. Error: #{e.inspect}")
-        respond_with(@order, default_template: 'spree/api/orders/could_not_transition', status: 422)
+        render 'spree/api/orders/could_not_transition', status: 422
       end
 
       def advance
         authorize! :update, @order, order_token
         @order.contents.advance
-        respond_with(@order, default_template: 'spree/api/orders/show', status: 200)
+        render 'spree/api/orders/show', status: 200
       end
 
       def complete
         authorize! :update, @order, order_token
         if !expected_total_ok?(params[:expected_total])
-          respond_with(@order, default_template: 'spree/api/orders/expected_total_mismatch', status: 400)
+          render 'spree/api/orders/expected_total_mismatch', status: 400
         else
           @order.complete!
-          respond_with(@order, default_template: 'spree/api/orders/show', status: 200)
+          render 'spree/api/orders/show', status: 200
         end
       rescue StateMachines::InvalidTransition => e
         logger.error("invalid_transition #{e.event} from #{e.from} for #{e.object.class.name}. Error: #{e.inspect}")
-        respond_with(@order, default_template: 'spree/api/orders/could_not_transition', status: 422)
+        render 'spree/api/orders/could_not_transition', status: 422
       end
 
       def update
@@ -63,7 +63,7 @@ module Spree
             respond_with(@order, default_template: 'spree/api/orders/show')
           else
             logger.error("failed_to_transition_errors=#{@order.errors.full_messages}")
-            respond_with(@order, default_template: 'spree/api/orders/could_not_transition', status: 422)
+            render 'spree/api/orders/could_not_transition', status: 422
           end
         else
           invalid_resource!(@order)
