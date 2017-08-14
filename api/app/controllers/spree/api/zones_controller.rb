@@ -5,7 +5,7 @@ module Spree
         authorize! :create, Zone
         @zone = Spree::Zone.new(zone_params)
         if @zone.save
-          respond_with(@zone, status: 201, default_template: :show)
+          render :show, status: 201
         else
           invalid_resource!(@zone)
         end
@@ -36,7 +36,7 @@ module Spree
       def update
         authorize! :update, zone
         if zone.update_attributes(zone_params)
-          respond_with(zone, status: 200, default_template: :show)
+          render :show, status: 200
         else
           invalid_resource!(zone)
         end

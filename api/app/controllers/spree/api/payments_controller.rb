@@ -18,7 +18,7 @@ module Spree
       def create
         @payment = PaymentCreate.new(@order, payment_params).build
         if @payment.save
-          respond_with(@payment, status: 201, default_template: :show)
+          render :show, status: 201
         else
           invalid_resource!(@payment)
         end

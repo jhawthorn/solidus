@@ -32,7 +32,7 @@ class Spree::Api::ResourceController < Spree::Api::BaseController
     instance_variable_set("@#{object_name}", @object)
 
     if @object.save
-      respond_with(@object, status: 201, default_template: :show)
+      render :show, status: 201
     else
       invalid_resource!(@object)
     end
@@ -42,7 +42,7 @@ class Spree::Api::ResourceController < Spree::Api::BaseController
     authorize! :update, @object
 
     if @object.update_attributes(permitted_resource_params)
-      respond_with(@object, status: 200, default_template: :show)
+      render :show, status: 200
     else
       invalid_resource!(@object)
     end

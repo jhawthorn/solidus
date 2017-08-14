@@ -14,7 +14,7 @@ module Spree
         @store = Spree::Store.new(store_params)
         @store.code = params[:store][:code]
         if @store.save
-          respond_with(@store, status: 201, default_template: :show)
+          render :show, status: 201
         else
           invalid_resource!(@store)
         end
@@ -23,7 +23,7 @@ module Spree
       def update
         authorize! :update, @store
         if @store.update_attributes(store_params)
-          respond_with(@store, status: 200, default_template: :show)
+          render :show, status: 200
         else
           invalid_resource!(@store)
         end

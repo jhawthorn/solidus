@@ -14,7 +14,7 @@ module Spree
       def create
         authorize! :create, Image
         @image = scope.images.create(image_params)
-        respond_with(@image, status: 201, default_template: :show)
+        render :show, status: 201
       end
 
       def update

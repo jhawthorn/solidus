@@ -28,7 +28,7 @@ module Spree
         authorize! :create, Property
         @property = Spree::Property.new(property_params)
         if @property.save
-          respond_with(@property, status: 201, default_template: :show)
+          render :show, status: 201
         else
           invalid_resource!(@property)
         end
@@ -38,7 +38,7 @@ module Spree
         if @property
           authorize! :update, @property
           @property.update_attributes(property_params)
-          respond_with(@property, status: 200, default_template: :show)
+          render :show, status: 200
         else
           invalid_resource!(@property)
         end

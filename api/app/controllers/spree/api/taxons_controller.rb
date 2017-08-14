@@ -40,7 +40,7 @@ module Spree
         @taxon.parent_id = taxonomy.root.id unless params[:taxon][:parent_id]
 
         if @taxon.save
-          respond_with(@taxon, status: 201, default_template: :show)
+          render :show, status: 201
         else
           invalid_resource!(@taxon)
         end
@@ -49,7 +49,7 @@ module Spree
       def update
         authorize! :update, taxon
         if taxon.update_attributes(taxon_params)
-          respond_with(taxon, status: 200, default_template: :show)
+          render :show, status: 200
         else
           invalid_resource!(taxon)
         end

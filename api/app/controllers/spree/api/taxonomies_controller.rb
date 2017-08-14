@@ -22,7 +22,7 @@ module Spree
         authorize! :create, Taxonomy
         @taxonomy = Spree::Taxonomy.new(taxonomy_params)
         if @taxonomy.save
-          respond_with(@taxonomy, status: 201, default_template: :show)
+          render :show, status: 201
         else
           invalid_resource!(@taxonomy)
         end
@@ -31,7 +31,7 @@ module Spree
       def update
         authorize! :update, taxonomy
         if taxonomy.update_attributes(taxonomy_params)
-          respond_with(taxonomy, status: 200, default_template: :show)
+          render :show, status: 200
         else
           invalid_resource!(taxonomy)
         end
