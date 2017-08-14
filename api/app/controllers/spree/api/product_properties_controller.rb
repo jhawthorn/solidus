@@ -27,7 +27,7 @@ module Spree
         authorize! :create, ProductProperty
         @product_property = @product.product_properties.new(product_property_params)
         if @product_property.save
-          respond_with(@product_property, status: 201, default_template: :show)
+          render :show, status: 201
         else
           invalid_resource!(@product_property)
         end
@@ -37,7 +37,7 @@ module Spree
         if @product_property
           authorize! :update, @product_property
           @product_property.update_attributes(product_property_params)
-          respond_with(@product_property, status: 200, default_template: :show)
+          render :show, status: 200
         else
           invalid_resource!(@product_property)
         end

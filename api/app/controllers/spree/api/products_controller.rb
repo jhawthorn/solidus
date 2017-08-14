@@ -82,7 +82,7 @@ module Spree
         @product = Core::Importer::Product.new(@product, product_params, options).update
 
         if @product.errors.empty?
-          respond_with(@product.reload, status: 200, default_template: :show)
+          render :show, status: 200
         else
           invalid_resource!(@product)
         end

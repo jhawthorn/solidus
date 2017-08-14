@@ -10,7 +10,7 @@ module Spree
         authorize! :create, ReturnAuthorization
         @return_authorization = @order.return_authorizations.build(return_authorization_params)
         if @return_authorization.save
-          respond_with(@return_authorization, status: 201, default_template: :show)
+          render :show, status: 201
         else
           invalid_resource!(@return_authorization)
         end

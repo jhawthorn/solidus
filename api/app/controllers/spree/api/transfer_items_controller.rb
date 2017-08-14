@@ -6,7 +6,7 @@ module Spree
         stock_transfer = Spree::StockTransfer.accessible_by(current_ability, :update).find_by(number: params[:stock_transfer_id])
         @transfer_item = stock_transfer.transfer_items.build(transfer_item_params)
         if @transfer_item.save
-          respond_with(@transfer_item, status: 201, default_template: :show)
+          render :show, status: 201
         else
           invalid_resource!(@transfer_item)
         end
@@ -16,7 +16,7 @@ module Spree
         authorize! :update, TransferItem
         @transfer_item = Spree::TransferItem.accessible_by(current_ability, :update).find(params[:id])
         if @transfer_item.update_attributes(transfer_item_params)
-          respond_with(@transfer_item, status: 200, default_template: :show)
+          render :show, status: 200
         else
           invalid_resource!(@transfer_item)
         end
@@ -26,7 +26,7 @@ module Spree
         authorize! :destroy, TransferItem
         @transfer_item = Spree::TransferItem.accessible_by(current_ability, :destroy).find(params[:id])
         if @transfer_item.destroy
-          respond_with(@transfer_item, status: 200, default_template: :show)
+          render :show, status: 200
         else
           invalid_resource!(@transfer_item)
         end

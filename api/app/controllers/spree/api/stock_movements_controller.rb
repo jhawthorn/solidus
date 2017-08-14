@@ -18,7 +18,7 @@ module Spree
         authorize! :create, StockMovement
         @stock_movement = scope.new(stock_movement_params)
         if @stock_movement.save
-          respond_with(@stock_movement, status: 201, default_template: :show)
+          render :show, status: 201
         else
           invalid_resource!(@stock_movement)
         end

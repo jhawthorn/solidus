@@ -18,7 +18,7 @@ module Spree
         )
 
         if @line_item.errors.empty?
-          respond_with(@line_item, status: 201, default_template: :show)
+          render :show, status: 201
         else
           invalid_resource!(@line_item)
         end

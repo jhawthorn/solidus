@@ -23,7 +23,7 @@ module Spree
         authorize! :create, StockLocation
         @stock_location = Spree::StockLocation.new(stock_location_params)
         if @stock_location.save
-          respond_with(@stock_location, status: 201, default_template: :show)
+          render :show, status: 201
         else
           invalid_resource!(@stock_location)
         end
@@ -32,7 +32,7 @@ module Spree
       def update
         authorize! :update, stock_location
         if stock_location.update_attributes(stock_location_params)
-          respond_with(stock_location, status: 200, default_template: :show)
+          render :show, status: 200
         else
           invalid_resource!(stock_location)
         end

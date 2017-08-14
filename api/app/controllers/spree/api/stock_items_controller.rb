@@ -22,7 +22,7 @@ module Spree
         Spree::StockItem.transaction do
           if @stock_item.save
             adjust_stock_item_count_on_hand(count_on_hand_adjustment)
-            respond_with(@stock_item, status: 201, default_template: :show)
+            render :show, status: 201
           else
             invalid_resource!(@stock_item)
           end
@@ -40,7 +40,7 @@ module Spree
         Spree::StockItem.transaction do
           if @stock_item.update_attributes(stock_item_params)
             adjust_stock_item_count_on_hand(adjustment)
-            respond_with(@stock_item, status: 200, default_template: :show)
+            render :show, status: 200
           else
             invalid_resource!(@stock_item)
           end
