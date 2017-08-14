@@ -49,7 +49,7 @@ module Spree
       def update
         @return_authorization = @order.return_authorizations.accessible_by(current_ability, :update).find(params[:id])
         if @return_authorization.update_attributes(return_authorization_params)
-          respond_with(@return_authorization, default_template: :show)
+          render :show
         else
           invalid_resource!(@return_authorization)
         end

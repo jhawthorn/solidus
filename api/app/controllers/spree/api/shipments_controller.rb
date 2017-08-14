@@ -30,13 +30,13 @@ module Spree
 
         @shipment.save!
 
-        respond_with(@shipment.reload, default_template: :show)
+        render :show
       end
 
       def update
         @shipment.update_attributes_and_order(shipment_params)
 
-        respond_with(@shipment.reload, default_template: :show)
+        render :show
       end
 
       def ready
