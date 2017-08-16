@@ -1729,6 +1729,14 @@ en:
     quantity_returned: Quantity Returned
     quantity_shipped: Quantity Shipped
     quick_switch:
+      help_actions:
+        order: o ORDER_NUMBER
+        product: p PRODUCT_SKU
+        shipment: s SHIPMENT_NUMBER
+        user: u USER_EMAIL
+        variant: v VARIANT_SKU
+      help_button: How do I use this?
+      help_intro: "Use shortcodes to quickly access specific resources:"
       invalid_query: Invalid or missing search key.
       order_not_found: Order %{value} could not be found.
       shipment_not_found: Shipment %{value} could not be found.

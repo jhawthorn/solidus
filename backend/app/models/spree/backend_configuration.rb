@@ -85,5 +85,53 @@ module Spree
         )
       ]
     end
+
+    # New quick switch items can be added to the admin:
+    #
+    # Spree::Backend::Config.configure do |config|
+    #   config.quick_switch_items << config.class::QuickSwitchItem.new(
+    #     [:o, :order],
+    #     :find_and_redirect_to_order,
+    #     "o ORDER_NUMBER"
+    #   )
+    # end
+    #
+    # @!attribute quick_switch_items
+    #   @return [Array<Spree::QuickSwitchItem>]
+    attr_writer :quick_switch_items
+
+    # Return the quick switch items that administrators can search by
+    #
+    # @api public
+    # @return [Array<Spree::QuickSwitchItem>]
+    def quick_switch_items
+      @quick_switch_items ||= [
+        Spree::QuickSwitchItem.new(
+          [:o, :order],
+          :find_and_redirect_to_order,
+          Spree.t("quick_switch.help_actions.order")
+        ),
+        Spree::QuickSwitchItem.new(
+          [:p, :product],
+          :find_and_redirect_to_variant,
+          Spree.t("quick_switch.help_actions.product")
+        ),
+        Spree::QuickSwitchItem.new(
+          [:s, :shipment],
+          :find_and_redirect_to_shipment,
+          Spree.t("quick_switch.help_actions.shipment")
+        ),
+        Spree::QuickSwitchItem.new(
+          [:u, :user],
+          :find_and_redirect_to_user,
+          Spree.t("quick_switch.help_actions.user")
+        ),
+        Spree::QuickSwitchItem.new(
+          [:v, :variant],
+          :find_and_redirect_to_variant,
+          Spree.t("quick_switch.help_actions.variant")
+        )
+      ]
+    end
   end
 end

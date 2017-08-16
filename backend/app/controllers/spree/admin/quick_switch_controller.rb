@@ -4,17 +4,12 @@ module Spree
       layout false
 
       def find_object
-        case searched_key
-        when "o"
-          find_and_redirect_to_order
-        when "p"
-          find_and_redirect_to_variant
-        when "s"
-          find_and_redirect_to_shipment
-        when "u"
-          find_and_redirect_to_user
-        when "v"
-          find_and_redirect_to_variant
+        quick_switch_item = Spree::Backend::Config.quick_switch_items.detect do |item|
+          item.search_terms.include? searched_key.to_sym
+        end
+
+        if quick_switch_item
+          method(quick_switch_item.method).call
         else
           message = Spree.t("quick_switch.invalid_query")
           respond_to do |format|

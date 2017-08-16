@@ -14,20 +14,18 @@
 
         <div class="quick-switch-help">
           <button class="btn btn-link" data-toggle="collapse" data-toggle="collapse" data-target="#quick-switch-help-content" aria-expanded="false" aria-controls="quick-switch-help-content">
-            How do I use this?
+            <%= Spree.t("quick_switch.help_button") %>
           </button>
 
           <div id="quick-switch-help-content" class="collapse">
             <div class="card">
               <div class="card-body">
-                Use shortcodes to quickly access specific resources:
+                <%= Spree.t("quick_switch.help_intro") %>
 
                 <ul>
-                  <li>o ORDER_NUMBER</li>
-                  <li>p PRODUCT_SKU</li>
-                  <li>s SHIPMENT_NUMBER</li>
-                  <li>u USER_EMAIL</li>
-                  <li>v VARIANT_SKU</li>
+                  <% Spree::Backend::Config.quick_switch_items.each do |item| %>
+                    <li><%= item.help_text %></li>
+                  <% end %>
                 </ul>
               </div>
             </div>
