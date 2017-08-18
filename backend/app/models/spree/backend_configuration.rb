@@ -107,29 +107,55 @@ module Spree
     def quick_switch_items
       @quick_switch_items ||= [
         Spree::QuickSwitchItem.new(
-          [:o, :order],
-          :find_and_redirect_to_order,
-          Spree.t("quick_switch.help_actions.order")
+          search_triggers: [:o, :order],
+          finder: -> (searched_value) do
+            return Spree::Order.find_by(number: searched_value)
+          end,
+          url: -> (order) do
+            return Spree::Core::Engine.routes.url_helpers.edit_admin_order_path(order)
+          end,
+          help_text_key: :order_help,
+          not_found_text_key: :order_not_found
         ),
         Spree::QuickSwitchItem.new(
-          [:p, :product],
-          :find_and_redirect_to_variant,
-          Spree.t("quick_switch.help_actions.product")
+          search_triggers: [:s, :shipment],
+          finder: -> (searched_value) do
+            return Spree::Shipment.find_by(number: searched_value)
+          end,
+          url: -> (shipment) do
+            return Spree::Core::Engine.routes.url_helpers.edit_admin_order_path(shipment.order)
+          end,
+          help_text_key: :shipment_help,
+          not_found_text_key: :shipment_not_found
         ),
         Spree::QuickSwitchItem.new(
-          [:s, :shipment],
-          :find_and_redirect_to_shipment,
-          Spree.t("quick_switch.help_actions.shipment")
+          search_triggers: [:email, :u, :user],
+          finder: -> (searched_value) do
+            return Spree.user_class.find_by(email: searched_value)
+          end,
+          url: -> (user) do
+            return Spree::Core::Engine.routes.url_helpers.edit_admin_user_path(user)
+          end,
+          help_text_key: :user_help,
+          not_found_text_key: :user_not_found
         ),
         Spree::QuickSwitchItem.new(
-          [:u, :user],
-          :find_and_redirect_to_user,
-          Spree.t("quick_switch.help_actions.user")
-        ),
-        Spree::QuickSwitchItem.new(
-          [:v, :variant],
-          :find_and_redirect_to_variant,
-          Spree.t("quick_switch.help_actions.variant")
+          search_triggers: [:p, :product, :sku, :v, :variant],
+          finder: -> (searched_value) do
+            return Spree::Variant.find_by(sku: searched_value)
+          end,
+          url: -> (variant) do
+            if variant.is_master?
+              return Spree::Core::Engine.routes.url_helpers.edit_admin_product_path(variant.product)
+            else
+              return Spree::Core::Engine.routes.url_helpers.edit_admin_product_variant_path(
+                variant.product,
+                variant
+              )
+            end
+          end,
+          help_text_key: :variant_help,
+          not_found_text_key: :variant_not_found
         )
       ]
     end

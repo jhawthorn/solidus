@@ -5,35 +5,36 @@ module Spree
 
       def find_object
         quick_switch_item = Spree::Backend::Config.quick_switch_items.detect do |item|
-          item.search_terms.include? searched_key.to_sym
+          item.search_triggers.include? searched_key.to_sym
         end
 
         if quick_switch_item
-          method(quick_switch_item.method).call
-        else
-          message = Spree.t("quick_switch.invalid_query")
-          respond_to do |format|
-            format.html { redirect_back(fallback_location: spree.admin_path, flash: { error: message }) }
-            format.json { render json: { message: message }, status: :bad_request }
+          if object = quick_switch_item.finder.call(searched_value)
+            render(
+              json: {
+                redirect_url: quick_switch_item.url.call(object)
+              },
+              status: :ok
+            )
+          else
+            render(
+              json: {
+                message: quick_switch_item.not_found_text(searched_value)
+              },
+              status: :not_found
+            )
           end
+        else
+          render(
+            json: {
+              message: Spree.t("quick_switch.invalid_query")
+            },
+            status: :bad_request
+          )
         end
       end
 
       private
-
-      def redirect_to_url(url)
-        respond_to do |format|
-          format.html { redirect_to url }
-          format.json { render json: { redirect_url: url }, status: :ok }
-        end
-      end
-
-      def not_found(message)
-        respond_to do |format|
-          format.html { redirect_back(fallback_location: spree.admin_path, flash: { error: message }) }
-          format.json { render json: { message: message }, status: :not_found }
-        end
-      end
 
       def searched_key
         params[:quick_switch_query].split(" ")[0]
@@ -41,53 +42,6 @@ module Spree
 
       def searched_value
         params[:quick_switch_query].split(" ")[1]
-      end
-
-      def find_and_redirect_to_order
-        if order = Spree::Order.find_by(number: searched_value)
-          redirect_to_url spree.edit_admin_order_path(order)
-        else
-          not_found(
-            Spree.t("quick_switch.order_not_found", value: searched_value)
-          )
-        end
-      end
-
-      def find_and_redirect_to_shipment
-        if shipment = Spree::Shipment.find_by(number: searched_value)
-          redirect_to_url spree.edit_admin_order_path(shipment.order)
-        else
-          not_found(
-            Spree.t("quick_switch.shipment_not_found", value: searched_value)
-          )
-        end
-      end
-
-      def find_and_redirect_to_user
-        if user = Spree.user_class.find_by(email: searched_value)
-          redirect_to_url spree.edit_admin_user_path(user)
-        else
-          not_found(
-            Spree.t("quick_switch.user_not_found", value: searched_value)
-          )
-        end
-      end
-
-      def find_and_redirect_to_variant
-        if variant = Spree::Variant.find_by(sku: searched_value)
-          if variant.is_master?
-            redirect_to_url spree.edit_admin_product_path(variant.product)
-          else
-            redirect_to_url spree.edit_admin_product_variant_path(
-              variant.product,
-              variant
-            )
-          end
-        else
-          not_found(
-            Spree.t("quick_switch.variant_not_found", value: searched_value)
-          )
-        end
       end
     end
   end

@@ -1,22 +1,47 @@
 module Spree
   class QuickSwitchItem
-    attr_reader :search_terms, :method, :help_text
+    attr_reader :search_triggers, :finder, :url, :help_text_key, :not_found_text_key
 
-    # @param search_terms [Array<Symbol>] The search terms (keys)
-    # @param method [Symbol] The method to be invoked if the search terms match
-    # @param help_text [String] A helpful guide for admins to understand how to
-    #   use this QuickSwitchItem
+    # @param search_triggers [Array<Symbol>] An array of symbols that will be
+    #   entered as a part the administrators search that will trigger this
+    #   particular search query to run
+    # @param finder [Proc] A function to find the resource
+    # @param url [Proc] A function to return the URL we should redirect to
+    # @param help_text_key [Symbol] The key for the help text defined in i18n
+    # @param not_found_text_key [Symbol] The key for the 404 text defined in i18n
     #
     # @example
     #   Spree::QuickSwitchItem.new(
-    #     [:o, :order],
-    #     :find_and_redirect_to_order,
-    #     "o ORDER_NUMBER"
+    #     search_triggers: [:o, :order],
+    #     finder: -> (searched_value) do
+    #       return Spree::Order.find_by(number: searched_value)
+    #     end,
+    #     url: -> (order) do
+    #       return Spree::Core::Engine.routes.url_helpers.edit_admin_order_path(order)
+    #     end,
+    #     help_text_key: :order_help,
+    #     not_found_text_key: :order_not_found
     #   )
-    def initialize(search_terms, method, help_text)
-      @search_terms = search_terms
-      @method = method
-      @help_text = help_text
+    def initialize(
+      search_triggers:,
+      finder:,
+      url:,
+      help_text_key:,
+      not_found_text_key:
+    )
+      @search_triggers = search_triggers
+      @finder = finder
+      @url = url
+      @help_text_key = help_text_key
+      @not_found_text_key = not_found_text_key
+    end
+
+    def help_text
+      Spree.t(@help_text_key, scope: "quick_switch")
+    end
+
+    def not_found_text(value)
+      Spree.t(@not_found_text_key, scope: "quick_switch", value: value)
     end
   end
 end
