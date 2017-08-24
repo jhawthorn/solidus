@@ -757,6 +757,10 @@ module Spree
       end
     end
 
+    def desired_stock_quantities
+      line_items.map(&:desired_stock_quantities).sum
+    end
+
     private
 
     def process_payments_before_complete

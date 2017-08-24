@@ -140,6 +140,11 @@ module Spree
         caller
     end
 
+    # @return [Spree::StockQuantities] the stock quantity needed to fulfill this line item
+    def desired_stock_quantities
+      Spree::StockQuantities.new({ variant => quantity })
+    end
+
     private
 
     # Sets the quantity to zero if it is nil or less than zero.
