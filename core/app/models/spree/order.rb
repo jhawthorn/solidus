@@ -758,7 +758,7 @@ module Spree
     end
 
     def desired_stock_quantities
-      line_items.map(&:desired_stock_quantities).sum
+      line_items.map(&:desired_stock_quantities).inject(Spree::StockQuantities.new, :+)
     end
 
     private
