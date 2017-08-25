@@ -5,10 +5,11 @@ module Spree
 
       def initialize(order, inventory_units = nil)
         @order = order
-        raise "Unimplemented" if inventory_units
+        @inventory_units = inventory_units || InventoryUnitBuilder.new(order).units
+        @inventory_units_by_variant = @inventory_units.group_by(&:variant)
 
         @stock_locations = Spree::StockLocation.all
-        @stock_quantities = order.desired_stock_quantities
+        @stock_quantities = Spree::StockQuantities.new(@inventory_units_by_variant.transform_values(&:count))
         @availability = Spree::Stock::Availability.new(variants: @stock_quantities.variants)
       end
 
@@ -37,19 +38,10 @@ module Spree
 
           next if on_hand.empty? && backordered.empty?
 
-          shipment = Spree::Shipment.new(
-            order: order,
-            stock_location_id: location_id
-          )
+          package = Spree::Stock::Package.new(Spree::StockLocation.find(location_id))
 
-          units = []
-          units += build_units(shipment: shipment, quantities: on_hand, state: 'on_hand')
-          units += build_units(shipment: shipment, quantities: backordered, state: 'backordered')
-
-          package = Spree::Stock::Package.new(
-            Spree::StockLocation.find(location_id),
-            units.map{|unit| Spree::Stock::ContentItem.new(unit, unit.state) }
-          )
+          package.add_multiple(get_units(on_hand), :on_hand)
+          package.add_multiple(get_units(backordered), :backordered)
 
           shipment = package.shipment = package.to_shipment
           shipment.shipping_rates = Spree::Config.stock.estimator_class.new.shipping_rates(package)
@@ -60,17 +52,9 @@ module Spree
 
       private
 
-      def build_units(shipment:, quantities:, state:)
+      def get_units(quantities)
         quantities.flat_map do |variant, quantity|
-          quantity.times.map do
-            shipment.inventory_units.new(
-              variant: variant,
-              order: order,
-              state: state,
-              pending: true,
-              line_item: Spree::LineItem.last # FIXME: line_item
-            )
-          end
+          @inventory_units_by_variant[variant].shift(quantity)
         end
       end
     end
