@@ -27,6 +27,10 @@ module Spree
             packaged
           end
 
+        unless desired.empty?
+          raise Spree::Order::InsufficientStock
+        end
+
         (on_hand_packages.keys | backordered_packages.keys).map do |location_id|
           on_hand = on_hand_packages[location_id]
           backordered = backordered_packages[location_id]
@@ -48,7 +52,7 @@ module Spree
           )
 
           shipment = package.shipment = package.to_shipment
-          shipment.shipping_rates = Spree::Stock::Estimator.new.shipping_rates(package)
+          shipment.shipping_rates = Spree::Config.stock.estimator_class.new.shipping_rates(package)
 
           shipment
         end.compact

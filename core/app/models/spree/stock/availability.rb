@@ -40,6 +40,7 @@ module Spree
           counts_on_hand.map do |(variant_id, stock_location_id), count_on_hand|
             variant = @variant_map[variant_id]
             backorderable = backorderables.include?([variant_id, stock_location_id])
+            count_on_hand = Float::INFINITY if !variant.track_inventory?
             count_on_hand = 0 if count_on_hand < 0
             Item.new(variant, stock_location_id, count_on_hand, backorderable)
           end
@@ -56,7 +57,7 @@ module Spree
         @backorderables ||=
           stock_item_scope.
             where(backorderable: true).
-            pluck(:stock_location_id, :variant_id)
+            pluck(:variant_id, :stock_location_id)
       end
 
       def find(variant_id:, stock_location_id:)
@@ -67,12 +68,8 @@ module Spree
 
       def stock_item_scope
         Spree::StockItem.
-          where(variant_id: inventory_variants.map(&:id)).
+          where(variant_id: @variants).
           where(stock_location_id: @stock_locations)
-      end
-
-      def inventory_variants
-        @variants.select(&:track_inventory?)
       end
     end
   end
