@@ -8,7 +8,6 @@ module Spree
         @inventory_units = inventory_units || InventoryUnitBuilder.new(order).units
         @inventory_units_by_variant = @inventory_units.group_by(&:variant)
 
-        @stock_locations = Spree::StockLocation.all
         @desired = Spree::StockQuantities.new(@inventory_units_by_variant.transform_values(&:count))
         @availability = Spree::Stock::Availability.new(variants: @desired.variants)
       end
@@ -20,7 +19,10 @@ module Spree
       private
 
       def build_shipments
+        # Allocate any available on hand inventory
         on_hand_packages = allocate_inventory(@availability.on_hand_by_location)
+
+        # allocate any remaining desired inventory as backorders
         backordered_packages = allocate_inventory(@availability.backorderable_by_location)
 
         unless @desired.empty?
@@ -30,13 +32,14 @@ module Spree
         stock_locations = Spree::StockLocation.find(on_hand_packages.keys | backordered_packages.keys)
 
         stock_locations.map do |stock_location|
+          # Combine on_hand and backorders into one shipment per-location
           on_hand = on_hand_packages[stock_location.id]
           backordered = backordered_packages[stock_location.id]
 
+          # Skip this location if not required
           next if on_hand.empty? && backordered.empty?
 
           package = Spree::Stock::Package.new(stock_location)
-
           package.add_multiple(get_units(on_hand), :on_hand)
           package.add_multiple(get_units(backordered), :backordered)
 
@@ -49,8 +52,12 @@ module Spree
 
       def allocate_inventory(availability_by_location)
         availability_by_location.transform_values do |available|
+          # Take all items available at this location which we haven't already allocated
           packaged = available & @desired
+
+          # Remove the newly allocated inventory from desired
           @desired -= packaged
+
           packaged
         end
       end
