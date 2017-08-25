@@ -9,36 +9,33 @@ module Spree
         @inventory_units_by_variant = @inventory_units.group_by(&:variant)
 
         @stock_locations = Spree::StockLocation.all
-        @stock_quantities = Spree::StockQuantities.new(@inventory_units_by_variant.transform_values(&:count))
-        @availability = Spree::Stock::Availability.new(variants: @stock_quantities.variants)
+        @desired = Spree::StockQuantities.new(@inventory_units_by_variant.transform_values(&:count))
+        @availability = Spree::Stock::Availability.new(variants: @desired.variants)
       end
 
       def shipments
-        desired = @stock_quantities
-        on_hand_packages =
-          @availability.on_hand_by_location.transform_values do |available|
-            packaged = available & desired
-            desired -= packaged
-            packaged
-          end
-        backordered_packages =
-          @availability.backorderable_by_location.transform_values do |available|
-            packaged = available & desired
-            desired -= packaged
-            packaged
-          end
+        @shipments ||= build_shipments
+      end
 
-        unless desired.empty?
+      private
+
+      def build_shipments
+        on_hand_packages = allocate_inventory(@availability.on_hand_by_location)
+        backordered_packages = allocate_inventory(@availability.backorderable_by_location)
+
+        unless @desired.empty?
           raise Spree::Order::InsufficientStock
         end
 
-        (on_hand_packages.keys | backordered_packages.keys).map do |location_id|
-          on_hand = on_hand_packages[location_id]
-          backordered = backordered_packages[location_id]
+        stock_locations = Spree::StockLocation.find(on_hand_packages.keys | backordered_packages.keys)
+
+        stock_locations.map do |stock_location|
+          on_hand = on_hand_packages[stock_location.id]
+          backordered = backordered_packages[stock_location.id]
 
           next if on_hand.empty? && backordered.empty?
 
-          package = Spree::Stock::Package.new(Spree::StockLocation.find(location_id))
+          package = Spree::Stock::Package.new(stock_location)
 
           package.add_multiple(get_units(on_hand), :on_hand)
           package.add_multiple(get_units(backordered), :backordered)
@@ -50,7 +47,13 @@ module Spree
         end.compact
       end
 
-      private
+      def allocate_inventory(availability_by_location)
+        availability_by_location.transform_values do |available|
+          packaged = available & @desired
+          @desired -= packaged
+          packaged
+        end
+      end
 
       def get_units(quantities)
         quantities.flat_map do |variant, quantity|
