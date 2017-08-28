@@ -13,7 +13,7 @@ module Spree
         if splitters.empty?
           [default_package]
         else
-          build_splitter.split [default_package]
+          split_packages([default_package])
         end
       end
 
@@ -51,12 +51,10 @@ module Spree
           to_h # there is only one stock item per variant in a stock location
       end
 
-      def build_splitter
-        splitter = nil
-        splitters.reverse_each do |klass|
-          splitter = klass.new(self, splitter)
+      def split_packages(initial_packages)
+        splitters.to_a.reverse.inject(initial_packages) do |packages, splitter|
+          splitter.new(stock_location).split(packages)
         end
-        splitter
       end
     end
   end

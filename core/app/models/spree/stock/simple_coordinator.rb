@@ -21,6 +21,8 @@ module Spree
         @inventory_units = inventory_units || InventoryUnitBuilder.new(order).units
         @inventory_units_by_variant = @inventory_units.group_by(&:variant)
 
+        @splitters = Rails.application.config.spree.stock_splitters
+
         @desired = Spree::StockQuantities.new(@inventory_units_by_variant.transform_values(&:count))
         @availability = Spree::Stock::Availability.new(variants: @desired.variants)
       end
@@ -44,7 +46,7 @@ module Spree
 
         stock_locations = Spree::StockLocation.find(on_hand_packages.keys | backordered_packages.keys)
 
-        stock_locations.map do |stock_location|
+        packages = stock_locations.map do |stock_location|
           # Combine on_hand and backorders into a single shipment per-location
           on_hand = on_hand_packages[stock_location.id]
           backordered = backordered_packages[stock_location.id]
@@ -57,12 +59,33 @@ module Spree
           package.add_multiple(get_units(on_hand), :on_hand)
           package.add_multiple(get_units(backordered), :backordered)
 
-          # Turn the Stock::Package into a Shipment with rates
+          package
+        end.compact
+
+        # Split the packages
+        packages = split_packages(packages)
+
+        # Turn the Stock::Packages into a Shipment with rates
+        packages.map do |package|
           shipment = package.shipment = package.to_shipment
           shipment.shipping_rates = Spree::Config.stock.estimator_class.new.shipping_rates(package)
-
           shipment
-        end.compact
+        end
+      end
+
+      def split_packages(initial_packages)
+        initial_packages.flat_map do |initial_package|
+          stock_location = initial_package.stock_location
+
+          splitters = splitters(stock_location).to_a
+          if splitters.empty?
+            [initial_package]
+          else
+            splitters.reverse.inject([initial_package]) do |packages, splitter|
+              splitter.new(stock_location).split(packages)
+            end
+          end
+        end
       end
 
       def allocate_inventory(availability_by_location)
@@ -82,6 +105,11 @@ module Spree
         quantities.flat_map do |variant, quantity|
           @inventory_units_by_variant[variant].shift(quantity)
         end
+      end
+
+      def splitters(_stock_location)
+        # extension point to return custom splitters for a location
+        Rails.application.config.spree.stock_splitters
       end
     end
   end
