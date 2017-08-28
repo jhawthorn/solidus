@@ -1,5 +1,5 @@
 module Spree
-  # A value object to hold quantities of several variants
+  # A value object to hold a map of variants to their quantities
   class StockQuantities
     attr_reader :quantities
     include Enumerable
