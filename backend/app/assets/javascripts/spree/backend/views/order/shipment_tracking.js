@@ -4,7 +4,7 @@ Spree.Views.Order.ShipmentTracking = Backbone.View.extend({
 
   events: {
     "click .js-edit":   "onEdit",
-    "click .js-save":   "onSave",
+    "submit form":      "onSave",
     "click .js-cancel": "onCancel",
   },
 
