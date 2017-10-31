@@ -10,3 +10,4 @@ gem 'teaspoon-mocha', require: false
 
 gem 'stackprof'
 gem 'flamegraph'
+gem 'benchmark-ips', require: false
