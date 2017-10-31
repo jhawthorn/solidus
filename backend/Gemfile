@@ -7,3 +7,6 @@ gemspec
 
 gem 'teaspoon', require: false
 gem 'teaspoon-mocha', require: false
+
+gem 'stackprof'
+gem 'flamegraph'
