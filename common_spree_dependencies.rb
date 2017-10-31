@@ -39,7 +39,7 @@ end
 group :test, :development do
   gem 'rubocop', require: false
   gem 'pry'
-  gem 'listen', '~> 3.1.5'
+  gem 'listen', '~> 3.1.5', require: false
 
   platforms :mri do
     gem 'byebug'
