@@ -37,7 +37,7 @@ group :test do
 end
 
 group :test, :development do
-  gem 'rubocop'
+  gem 'rubocop', require: false
   gem 'pry'
   gem 'listen', '~> 3.1.5'
 
