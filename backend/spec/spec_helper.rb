@@ -88,7 +88,7 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
 
   config.before :suite do
-    DatabaseCleaner.clean_with :truncation
+    DatabaseCleaner.clean_with :truncation, pre_count: true
   end
 
   config.when_first_matching_example_defined(type: :feature) do

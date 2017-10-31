@@ -21,7 +21,7 @@ RSpec.configure do |config|
   end
 
   config.before(:suite) do
-    DatabaseCleaner.clean_with(:truncation)
+    DatabaseCleaner.clean_with :truncation, pre_count: true
   end
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your

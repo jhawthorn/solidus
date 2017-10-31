@@ -58,7 +58,7 @@ RSpec.configure do |config|
   config.fail_fast = ENV['FAIL_FAST'] || false
 
   config.before(:suite) do
-    DatabaseCleaner.clean_with :truncation
+    DatabaseCleaner.clean_with :truncation, pre_count: true
   end
 
   config.before(:each) do
