@@ -12,6 +12,15 @@ class Spree::Base < ActiveRecord::Base
     end
   end
 
+  def self.acts_as_paranoid
+    super
+
+    deprecate destroy:  :paranoia_destroy,  deprecator: Spree::Deprecation
+    deprecate destroy!: :paranoia_destroy!, deprecator: Spree::Deprecation
+    deprecate delete:   :paranoia_delete,   deprecator: Spree::Deprecation
+  end
+
+
   # Only run preference initialization on models which requires it. Improves
   # performance of record initialization slightly.
   def self.preference(*args)
