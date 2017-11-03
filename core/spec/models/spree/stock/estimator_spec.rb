@@ -83,7 +83,7 @@ module Spree
         end
 
         it "sorts shipping rates by cost" do
-          ShippingMethod.destroy_all
+          ShippingMethod.all.each(&:really_destroy!)
           create(:shipping_method, cost: 5)
           create(:shipping_method, cost: 3)
           create(:shipping_method, cost: 4)
