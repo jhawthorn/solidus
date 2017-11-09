@@ -1,3 +1,4 @@
+require 'ransack'
 require 'spree/deprecation'
 
 module Spree

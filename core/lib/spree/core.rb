@@ -1,3 +1,4 @@
+require 'active_support'
 require 'active_support/all'
 require 'active_record'
 
@@ -10,7 +11,6 @@ require 'mail'
 require 'monetize'
 require 'paperclip'
 require 'paranoia'
-require 'ransack'
 require 'state_machines-activerecord'
 
 require 'spree/deprecation'

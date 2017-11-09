@@ -15,8 +15,8 @@
 # a.get :color
 # a.preferred_color
 #
-require "spree/core/search/base"
-require "spree/core/search/variant"
+
+require 'spree/core/search'
 require 'spree/preferences/configuration'
 require 'spree/core/environment'
 
