@@ -6,9 +6,9 @@ require 'bundler'
 
 Bundler.setup
 
-require 'active_record'
-require 'action_controller'
-require 'action_mailer'
+require 'active_record/railtie'
+require 'action_controller/railtie'
+require 'action_mailer/railtie'
 require 'rails'
 
 Rails.env = 'test'

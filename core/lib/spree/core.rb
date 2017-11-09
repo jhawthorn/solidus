@@ -1,4 +1,6 @@
-require 'rails/all'
+require 'active_support/all'
+require 'active_record'
+
 require 'acts_as_list'
 require 'awesome_nested_set'
 require 'cancan'
