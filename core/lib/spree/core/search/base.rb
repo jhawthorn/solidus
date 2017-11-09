@@ -1,5 +1,6 @@
 require 'ransack'
 require 'spree/deprecation'
+require 'kaminari'
 
 module Spree
   module Core

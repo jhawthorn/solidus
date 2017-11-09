@@ -1,3 +1,6 @@
+require 'active_support'
+require 'active_support/core_ext'
+
 module Spree
   module Core
     module ClassConstantizer
