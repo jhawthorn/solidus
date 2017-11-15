@@ -1,2 +1,1 @@
-Spree.Models.Address = Backbone.Model.extend({
-})
+Spree.Models.Address = Backbone.Model.extend({});

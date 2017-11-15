@@ -1,12 +1,12 @@
 Spree.initNumberWithCurrency = function() {
-  $('.js-number-with-currency').each(function() {
+  $(".js-number-with-currency").each(function() {
     var view = new Spree.Views.NumberWithCurrency({
-      el: this,
+      el: this
     });
     view.render();
   });
-}
+};
 
 Spree.ready(function() {
-  Spree.initNumberWithCurrency()
-})
+  Spree.initNumberWithCurrency();
+});

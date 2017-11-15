@@ -1,19 +1,21 @@
-Spree.ready(function () {
-  'use strict';
+Spree.ready(function() {
+  "use strict";
 
   function formatOptionType(option_type) {
-    return Select2.util.escapeMarkup(option_type.presentation + ' (' + option_type.name + ')');
+    return Select2.util.escapeMarkup(
+      option_type.presentation + " (" + option_type.name + ")"
+    );
   }
 
-  if ($('#product_option_type_ids').length > 0) {
-    $('#product_option_type_ids').select2({
+  if ($("#product_option_type_ids").length > 0) {
+    $("#product_option_type_ids").select2({
       placeholder: Spree.translations.option_type_placeholder,
       multiple: true,
-      initSelection: function (element, callback) {
+      initSelection: function(element, callback) {
         return Spree.ajax({
           url: Spree.routes.option_type_search,
           data: { ids: element.val() },
-          type: 'get',
+          type: "get",
           success: function(data) {
             return callback(data);
           }
@@ -22,14 +24,14 @@ Spree.ready(function () {
       ajax: {
         url: Spree.routes.option_type_search,
         quietMillis: 200,
-        datatype: 'json',
-        params: { "headers": { "X-Spree-Token": Spree.api_key } },
-        data: function (term) {
+        datatype: "json",
+        params: { headers: { "X-Spree-Token": Spree.api_key } },
+        data: function(term) {
           return {
             q: { name_cont: term }
           };
         },
-        results: function (data) {
+        results: function(data) {
           return {
             results: data
           };

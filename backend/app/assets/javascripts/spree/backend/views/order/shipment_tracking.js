@@ -1,12 +1,12 @@
 Spree.Views.Order.ShipmentTracking = Backbone.View.extend({
-  tagName: 'tr',
-  className: 'edit-tracking',
+  tagName: "tr",
+  className: "edit-tracking",
 
   events: {
-    "click .js-edit":   "onEdit",
-    "click .js-save":   "onSave",
-    "submit form":      "onSave",
-    "click .js-cancel": "onCancel",
+    "click .js-edit": "onEdit",
+    "click .js-save": "onSave",
+    "submit form": "onSave",
+    "click .js-cancel": "onCancel"
   },
 
   initialize: function(options) {
@@ -20,11 +20,14 @@ Spree.Views.Order.ShipmentTracking = Backbone.View.extend({
 
   onSave: function(event) {
     this.editing = false;
-    this.model.save({
-      tracking: this.$('input[type="text"]').val()
-    }, {
-      patch: true
-    });
+    this.model.save(
+      {
+        tracking: this.$('input[type="text"]').val()
+      },
+      {
+        patch: true
+      }
+    );
     this.render();
 
     return false;
@@ -36,9 +39,9 @@ Spree.Views.Order.ShipmentTracking = Backbone.View.extend({
   },
 
   render: function() {
-    var html = HandlebarsTemplates['orders/shipment_tracking']({
+    var html = HandlebarsTemplates["orders/shipment_tracking"]({
       editing: this.editing,
-      tracking: this.model.get("tracking"),
+      tracking: this.model.get("tracking")
     });
 
     this.$el.html(html);

@@ -1,10 +1,11 @@
-$.fn.optionValueAutocomplete = function (options) {
-  'use strict';
+$.fn.optionValueAutocomplete = function(options) {
+  "use strict";
 
   // Default options
-  options = options || {}
-  var multiple = typeof(options['multiple']) !== 'undefined' ? options['multiple'] : true;
-  var productSelect = options['productSelect'];
+  options = options || {};
+  var multiple =
+    typeof options["multiple"] !== "undefined" ? options["multiple"] : true;
+  var productSelect = options["productSelect"];
 
   function formatOptionValue(option_value) {
     return Select2.util.escapeMarkup(option_value.name);
@@ -13,19 +14,26 @@ $.fn.optionValueAutocomplete = function (options) {
   this.select2({
     minimumInputLength: 3,
     multiple: multiple,
-    initSelection: function (element, callback) {
-      $.get(Spree.routes.option_value_search, {
-        ids: element.val().split(','),
-        token: Spree.api_key
-      }, function (data) {
-        callback(multiple ? data : data[0]);
-      });
+    initSelection: function(element, callback) {
+      $.get(
+        Spree.routes.option_value_search,
+        {
+          ids: element.val().split(","),
+          token: Spree.api_key
+        },
+        function(data) {
+          callback(multiple ? data : data[0]);
+        }
+      );
     },
     ajax: {
       url: Spree.routes.option_value_search,
-      datatype: 'json',
-      data: function (term, page) {
-        var productId = typeof(productSelect) !== 'undefined' ? $(productSelect).select2('val') : null;
+      datatype: "json",
+      data: function(term, page) {
+        var productId =
+          typeof productSelect !== "undefined"
+            ? $(productSelect).select2("val")
+            : null;
         return {
           q: {
             name_cont: term,
@@ -34,7 +42,7 @@ $.fn.optionValueAutocomplete = function (options) {
           token: Spree.api_key
         };
       },
-      results: function (data, page) {
+      results: function(data, page) {
         return { results: data };
       }
     },

@@ -1,11 +1,11 @@
 Spree.Views.Cart.AddLineItemButton = Backbone.View.extend({
   initialize: function() {
-    this.listenTo(this.collection, 'update', this.render);
+    this.listenTo(this.collection, "update", this.render);
     this.render();
   },
 
   events: {
-    "click": "onClick"
+    click: "onClick"
   },
 
   onClick: function() {
@@ -13,7 +13,12 @@ Spree.Views.Cart.AddLineItemButton = Backbone.View.extend({
   },
 
   render: function() {
-    var isNew = function(item) { return item.isNew() };
-    this.$el.prop("disabled", !this.collection.length || this.collection.some(isNew));
+    var isNew = function(item) {
+      return item.isNew();
+    };
+    this.$el.prop(
+      "disabled",
+      !this.collection.length || this.collection.some(isNew)
+    );
   }
 });

@@ -1,7 +1,12 @@
-Spree.ready(function(){
-  $('body').popover({selector: '.hint-tooltip', html: true, trigger: 'hover', placement: 'top'});
+Spree.ready(function() {
+  $("body").popover({
+    selector: ".hint-tooltip",
+    html: true,
+    trigger: "hover",
+    placement: "top"
+  });
 
-  $('body').tooltip({selector: '.with-tip'});
+  $("body").tooltip({ selector: ".with-tip" });
 
   /*
    * Poll tooltips to hide them if they are no longer being hovered.
@@ -12,20 +17,20 @@ Spree.ready(function(){
    * bootstrap, which intends to solve this using MutationObserver.
    */
   var removeDesyncedTooltip = function(tooltip) {
-    var interval = setInterval(function(){
-      if(!$(tooltip.element).is(":hover")) {
+    var interval = setInterval(function() {
+      if (!$(tooltip.element).is(":hover")) {
         tooltip.hide();
         clearInterval(interval);
       }
     }, 200);
-    $(tooltip.element).on('hidden.bs.tooltip', function(){
+    $(tooltip.element).on("hidden.bs.tooltip", function() {
       clearInterval(interval);
     });
   };
 
-  $('body').on('inserted.bs.tooltip', function(e){
+  $("body").on("inserted.bs.tooltip", function(e) {
     var $target = $(e.target);
-    var tooltip = $target.data('bs.tooltip');
+    var tooltip = $target.data("bs.tooltip");
     removeDesyncedTooltip(tooltip);
     var $tooltip = $("#" + $target.attr("aria-describedby"));
     $tooltip.addClass("action-" + $target.data("action"));

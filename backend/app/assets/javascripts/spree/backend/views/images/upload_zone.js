@@ -1,13 +1,13 @@
 Spree.Views.Images.UploadZone = Backbone.View.extend({
   events: {
-    "dragover" : "onDragOver",
-    "dragleave" : "onDragLeave",
-    "drop" : "onDrop",
-    'change input[type="file"]' : "onFileBrowserSelect"
+    dragover: "onDragOver",
+    dragleave: "onDragLeave",
+    drop: "onDrop",
+    'change input[type="file"]': "onFileBrowserSelect"
   },
 
   upload: function(file) {
-    var progressModel = new Spree.Models.ImageUpload({file: file});
+    var progressModel = new Spree.Models.ImageUpload({ file: file });
 
     this.collection.add(progressModel);
 
@@ -15,7 +15,7 @@ Spree.Views.Images.UploadZone = Backbone.View.extend({
     progressModel.uploadFile();
   },
 
-  dragClass: 'with-images',
+  dragClass: "with-images",
 
   onDragOver: function(e) {
     this.el.classList.add(this.dragClass);

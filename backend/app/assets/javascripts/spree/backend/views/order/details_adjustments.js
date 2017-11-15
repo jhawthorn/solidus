@@ -1,20 +1,24 @@
 Spree.Views.Order.DetailsAdjustments = Backbone.View.extend({
   initialize: function() {
     this.listenTo(this.model, "change", this.render);
-    this.render()
+    this.render();
   },
 
   adjustmentTotals: function() {
     var totals = {};
-    var collection = this.collection ? this.collection.chain() : _.chain([this.model]);
+    var collection = this.collection
+      ? this.collection.chain()
+      : _.chain([this.model]);
     collection
-      .map(function(item){ return item.get("adjustments") || [] })
+      .map(function(item) {
+        return item.get("adjustments") || [];
+      })
       .flatten(true)
-      .each(function(adjustment){
+      .each(function(adjustment) {
         var label = adjustment.label;
 
         /* Fixme: because this is done in JS, we only have floating point math */
-        totals[label] = (totals[label] || 0);
+        totals[label] = totals[label] || 0;
         totals[label] += Number(adjustment.amount);
       });
     return totals;
@@ -22,18 +26,18 @@ Spree.Views.Order.DetailsAdjustments = Backbone.View.extend({
 
   render: function() {
     var model = this.model;
-    var tbody = this.$('tbody');
-    var adjustmentTotals = this.adjustmentTotals()
+    var tbody = this.$("tbody");
+    var adjustmentTotals = this.adjustmentTotals();
 
     tbody.empty();
     _.each(adjustmentTotals, function(amount, label) {
-       var html = HandlebarsTemplates["orders/details_adjustment_row"]({
-         label: label,
-         amount: Spree.formatMoney(amount, model.get("currency"))
-       });
-       tbody.append(html);
+      var html = HandlebarsTemplates["orders/details_adjustment_row"]({
+        label: label,
+        amount: Spree.formatMoney(amount, model.get("currency"))
+      });
+      tbody.append(html);
     });
 
     this.$el.toggleClass("hidden", _.isEmpty(adjustmentTotals));
   }
-})
+});

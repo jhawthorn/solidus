@@ -6,25 +6,33 @@ Spree.Views.Order.Address = Backbone.View.extend({
     this.render();
     this.listenTo(this.model, "change", this.render);
 
-    this.stateSelect =
-      new Spree.Views.StateSelect({
-        model: this.model,
-        el: this.$el
-      });
+    this.stateSelect = new Spree.Views.StateSelect({
+      model: this.model,
+      el: this.$el
+    });
   },
 
   events: {
-    "change": "onChange",
+    change: "onChange"
   },
 
   onChange: function() {
-    this.model.set(this.getValues())
+    this.model.set(this.getValues());
   },
 
-  eachField: function(callback){
+  eachField: function(callback) {
     var view = this;
-    var fields = ["firstname", "lastname", "company", "address1", "address2",
-      "city", "zipcode", "phone", "country_id"];
+    var fields = [
+      "firstname",
+      "lastname",
+      "company",
+      "address1",
+      "address2",
+      "city",
+      "zipcode",
+      "phone",
+      "country_id"
+    ];
     _.each(fields, function(field) {
       var el = view.$('[name$="[' + field + ']"]');
       if (el.length) callback(field, el);
@@ -42,7 +50,7 @@ Spree.Views.Order.Address = Backbone.View.extend({
   render: function() {
     var model = this.model;
     this.eachField(function(name, el) {
-      el.val(model.get(name))
-    })
+      el.val(model.get(name));
+    });
   }
 });

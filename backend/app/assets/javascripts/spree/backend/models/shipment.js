@@ -4,7 +4,7 @@ Spree.Models.Shipment = Backbone.Model.extend({
   urlRoot: Spree.routes.shipments_api,
 
   relations: {
-    "selected_shipping_rate": Backbone.Model,
-    "shipping_rates": Backbone.Collection,
+    selected_shipping_rate: Backbone.Model,
+    shipping_rates: Backbone.Collection
   }
-})
+});

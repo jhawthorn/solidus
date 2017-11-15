@@ -5,14 +5,17 @@
 Spree.jQueryReady = $.fn.ready;
 
 // override jQuery.ready to use Spree.ready even if it was not used explicitly
-$.fn.ready = function (callback) {
-  console.warn("Using jQuery.ready() in Solidus is deprecated. Use Spree.ready() instead. Called from: ", callback);
+$.fn.ready = function(callback) {
+  console.warn(
+    "Using jQuery.ready() in Solidus is deprecated. Use Spree.ready() instead. Called from: ",
+    callback
+  );
   Spree.ready(callback);
 };
 
 Spree.ready = function(callback) {
   if (Turbolinks.supported) {
-    jQuery(document).on('turbolinks:load', function() {
+    jQuery(document).on("turbolinks:load", function() {
       callback(jQuery);
     });
   } else {

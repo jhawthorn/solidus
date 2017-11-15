@@ -1,16 +1,16 @@
 Spree.Views.Order.ShippingMethod = Backbone.View.extend({
-  tagName: 'tr',
-  className: 'edit-shipping-method',
+  tagName: "tr",
+  className: "edit-shipping-method",
 
   events: {
-    "click .js-edit":   "onEdit",
-    "click .js-save":   "onSave",
-    "submit form":      "onSave",
+    "click .js-edit": "onEdit",
+    "click .js-save": "onSave",
+    "submit form": "onSave",
     "click .js-cancel": "onCancel"
   },
 
   initialize: function(options) {
-    this.shippingRateId = this.model.get('selected_shipping_rate').get('id')
+    this.shippingRateId = this.model.get("selected_shipping_rate").get("id");
     this.render();
   },
 
@@ -21,15 +21,18 @@ Spree.Views.Order.ShippingMethod = Backbone.View.extend({
 
   onSave: function(event) {
     this.editing = false;
-    this.model.save({
-      selected_shipping_rate_id: this.$('select').val()
-    }, {
-      patch: true,
-      success: function() {
-        // FIXME: should update page without reloading
-        window.location.reload();
+    this.model.save(
+      {
+        selected_shipping_rate_id: this.$("select").val()
+      },
+      {
+        patch: true,
+        success: function() {
+          // FIXME: should update page without reloading
+          window.location.reload();
+        }
       }
-    });
+    );
 
     return false;
   },
@@ -40,7 +43,7 @@ Spree.Views.Order.ShippingMethod = Backbone.View.extend({
   },
 
   render: function() {
-    var html = HandlebarsTemplates['orders/shipping_method']({
+    var html = HandlebarsTemplates["orders/shipping_method"]({
       editing: this.editing,
       order: this.model.collection.parent.toJSON(),
       shipment: this.model.toJSON(),
@@ -49,6 +52,6 @@ Spree.Views.Order.ShippingMethod = Backbone.View.extend({
     });
 
     this.$el.html(html);
-    this.$('select').val(this.shippingRateId);
+    this.$("select").val(this.shippingRateId);
   }
-})
+});

@@ -3,7 +3,7 @@
 Spree.Collections.LineItems = Backbone.Collection.extend({
   model: Spree.Models.LineItem,
 
-  url: function () {
+  url: function() {
     return this.parent.url() + "/line_items";
   }
-})
+});
