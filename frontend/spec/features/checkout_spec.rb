@@ -645,6 +645,7 @@ describe "Checkout", type: :feature, inaccessible: true do
       expect(page).to have_current_path("/checkout/confirm")
     end
 
+    100.times do
     it "works with card number 4111111111111111", js: true do
       add_mug_to_cart
 
@@ -659,12 +660,16 @@ describe "Checkout", type: :feature, inaccessible: true do
 
       expect(page).to have_current_path("/checkout/confirm")
     end
+    end
   end
 
   def fill_in_credit_card(number:)
     fill_in "Card Number", with: number
     fill_in "Expiration", with: "1224"
     fill_in "Card Code", with: "123"
+
+    # Previously there were issues with jquery.payment barfing
+    expect(page).to have_field("Expiration", with: "12 / 24")
   end
 
   def fill_in_address
