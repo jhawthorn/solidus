@@ -43,6 +43,7 @@ module Spree
       extend ActiveSupport::Concern
 
       included do
+        Spree::Deprecation.warn "Spree::TestingSupport::ControllerRequests is deprecated. Use `routes { Spree::Core::Engine.routes }` instead"
         routes { Spree::Core::Engine.routes }
       end
 
