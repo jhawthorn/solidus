@@ -23,7 +23,7 @@ describe "Product Images", type: :feature do
       click_nav "Products"
       click_icon(:edit)
       click_link "Images"
-      click_link "new_image_link"
+      click_link "New Image"
       within_fieldset 'New Image' do
         attach_file('image_attachment', file_path)
       end
