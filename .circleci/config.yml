@@ -33,7 +33,15 @@ jobs:
 
       - run:
           name: Run Tests
-          command: ./build-ci.rb test
+          command: |
+            circleci tests split <<TASKS | xargs bundle exec rake
+            spec:api
+            spec:backend
+            spec:backend:js
+            spec:core
+            spec:frontend
+            spec:sample
+            TASKS
 
       - store_artifacts:
           path: /tmp/test-artifacts
