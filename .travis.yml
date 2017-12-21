@@ -1,7 +1,8 @@
-before_script:
-  - sh -e /etc/init.d/xvfb start
-  - export DISPLAY=:99.0
-bundler_args: --without development production --quiet
+sudo: false
+dist: trusty
+addons:
+  chrome: stable
+bundler_args: --without utils --quiet
 env:
   global:
     DEFAULT_MAX_WAIT_TIME: 10
@@ -17,8 +18,6 @@ env:
     - GEM=sample DB=mysql
     - GEM=sample DB=postgres
     - GEM=backend:js
-before_install:
-  - gem install chromedriver-helper
 script:
   - bundle exec rake spec:$GEM
 rvm:
