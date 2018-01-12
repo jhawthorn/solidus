@@ -842,12 +842,10 @@ module Spree
     end
 
     def ensure_inventory_units
-      if has_checkout_step?("delivery")
-        inventory_validator = Spree::Stock::InventoryValidator.new
+      inventory_validator = Spree::Stock::InventoryValidator.new
 
-        errors = line_items.map { |line_item| inventory_validator.validate(line_item) }.compact
-        raise InsufficientStock if errors.any?
-      end
+      errors = line_items.map { |line_item| inventory_validator.validate(line_item) }.compact
+      raise InsufficientStock if errors.any?
     end
 
     def ensure_promotions_eligible
