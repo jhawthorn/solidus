@@ -1,49 +1,22 @@
-Spree.ready(function() {
-  // Fix sortable helper
-  var fixHelper = function(e, ui) {
-      ui.children().each(function() {
-          $(this).width($(this).width());
-      });
-      return ui;
-  };
+//= require solidus_admin/html.sortable
 
-  var td_count = $(this).find('tbody tr:first-child td').length
-  $('table.sortable tbody').sortable({
-    handle: '.handle',
-    helper: fixHelper,
-    placeholder: 'ui-sortable-placeholder',
-    update: function(event, ui) {
-      $("#progress").show();
-      var tableEl = $(ui.item).closest("table.sortable")
+Spree.ready(function() {
+  var sortables = sortable(
+    'table.sortable tbody', {
+      items: 'tr:not(.unsortable)',
+      forcePlaceholderSize: true
+    });
+
+  _.each(sortables, function(table) {
+    table.addEventListener('sortupdate', function(e) {
       var positions = {};
-      $.each(tableEl.find('tbody tr'), function(position, obj){
-        var idAttr = $(obj).prop('id');
+      _.each(e.detail.newStartList, function(el, index) {
+        var idAttr = el.id;
         if (idAttr) {
           var objId = idAttr.split('_').slice(-1);
-          if (!isNaN(objId)) {
-            positions['positions['+objId+']'] = position+1;
-          }
+          positions['positions['+objId+']'] = index + 1;
         }
       });
-      Spree.ajax({
-        type: 'POST',
-        dataType: 'script',
-        url: tableEl.data("sortable-link"),
-        data: positions,
-        success: function(data){ $("#progress").hide(); }
-      });
-    },
-    start: function (event, ui) {
-      // Set correct height for placehoder (from dragged tr)
-      ui.placeholder.height(ui.item.height())
-      // Fix placeholder content to make it correct width
-      ui.placeholder.html("<td colspan='"+(td_count-1)+"'></td><td class='actions'></td>")
-    },
-    stop: function (event, ui) {
-      var tableEl = $(ui.item).closest("table.sortable")
-      // Fix odd/even classes after reorder
-      tableEl.find("tr:even").removeClass("odd even").addClass("even");
-      tableEl.find("tr:odd").removeClass("odd even").addClass("odd");
-    }
+    });
   });
 });
