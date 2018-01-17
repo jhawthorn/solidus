@@ -37,18 +37,23 @@ var TaxonTreeView = Backbone.View.extend({
   },
 
   render: function() {
-    var taxons_template;
-    taxons_template = HandlebarsTemplates["taxons/tree"];
+    /* Cleanup any existing sortable */
+    sortable(this.el.querySelectorAll('ul'), 'destroy');
+
+    var taxons_template = HandlebarsTemplates["taxons/tree"];
     this.$el.html(taxons_template({
       taxons: [this.model.get("root")]
-    })).find('ul').sortable({
-      connectWith: '#taxonomy_tree ul',
-      placeholder: 'sortable-placeholder ui-state-highlight',
-      tolerance: 'pointer',
-      cursorAt: {
-        left: 5
-      }
-    });
+    }));
+
+    var ul = sortable(
+      this.el.querySelectorAll('ul'), {
+        connectWith: this.cid,
+        forcePlaceholderSize: true,
+        placeholderClass: 'sortable-placeholder ui-state-highlight',
+        hoverClass: 'ui-sortable-over'
+      });
+
+    ul[0].addEventListener('sortupdate', this.handle_move.bind(this));
   },
 
   redraw_tree: function() {
@@ -57,26 +62,8 @@ var TaxonTreeView = Backbone.View.extend({
     });
   },
 
-  resize_placeholder: function(e, ui) {
-    var handleHeight;
-    handleHeight = ui.helper.find('.taxon').outerHeight();
-    ui.placeholder.height(handleHeight);
-  },
-
-  restore_sort_targets: function() {
-    $('.ui-sortable-over').removeClass('ui-sortable-over');
-  },
-
-  highlight_sort_targets: function(e, ui) {
-    this.restore_sort_targets();
-    ui.placeholder.parents('ul').addClass('ui-sortable-over');
-  },
-
   handle_move: function(e, ui) {
-    if (ui.sender != null) {
-      return;
-    }
-    var el = ui.item;
+    var el = $(e.detail.item);
     this.update_taxon({
       id: el.data('taxon-id'),
       parent_id: el.parent().closest('li').data('taxon-id'),
@@ -114,10 +101,6 @@ var TaxonTreeView = Backbone.View.extend({
   },
 
   events: {
-    'sortstart': 'resize_placeholder',
-    'sortover': 'highlight_sort_targets',
-    'sortstop': 'restore_sort_targets',
-    'sortupdate': 'handle_move',
     'click .js-taxon-delete': 'handle_delete',
     'click .js-taxon-add-child': 'handle_add_child'
   },
