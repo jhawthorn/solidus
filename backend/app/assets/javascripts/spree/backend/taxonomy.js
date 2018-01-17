@@ -50,7 +50,6 @@ var TaxonTreeView = Backbone.View.extend({
         connectWith: this.cid,
         forcePlaceholderSize: true,
         placeholderClass: 'sortable-placeholder ui-state-highlight',
-        hoverClass: 'ui-sortable-over'
       });
 
     ul[0].addEventListener('sortupdate', this.handle_move.bind(this));

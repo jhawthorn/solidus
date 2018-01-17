@@ -7,7 +7,12 @@
   }
 
   ul {
-    min-height: 0.5em;
+    background: rgba(0,0,0,0.2);
+  }
+
+  li:not(.sortable-dragging):not(.sortable-placeholder) > ul {
+    min-height: 1em;
+    padding-bottom: 2em;
   }
 
   .ui-sortable {
@@ -17,10 +22,7 @@
   .taxon,
   .sortable-placeholder {
     border-radius: $border-radius;
-  }
-
-  .sortable-placeholder {
-    margin: 0.5em 0;
+    min-height: 2.5em;
   }
 
   .taxon {
@@ -49,7 +51,7 @@
     padding-bottom: 1em;
   }
 
-  .ui-sortable-handle:first-child {
+  li:first-child {
     margin-top: 1em;
   }
 }
