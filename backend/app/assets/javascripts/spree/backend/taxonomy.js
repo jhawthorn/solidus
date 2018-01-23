@@ -1,3 +1,5 @@
+//= require 'solidus_admin/Sortable'
+
 Handlebars.registerHelper('isRootTaxon', function() {
   return this.parent_id == null;
 });
@@ -38,13 +40,28 @@ var TaxonTreeView = Backbone.View.extend({
 
   render: function() {
     /* Cleanup any existing sortable */
-    sortable(this.el.querySelectorAll('ul'), 'destroy');
+    //sortable(this.el.querySelectorAll('ul'), 'destroy');
 
     var taxons_template = HandlebarsTemplates["taxons/tree"];
     this.$el.html(taxons_template({
       taxons: [this.model.get("root")]
     }));
 
+    console.log(this.cid);
+
+    var sortableOptions = {
+      group: {
+        name: this.cid,
+        pull: true,
+        put: true
+      },
+      forceFallback: true
+    };
+
+    var lists = this.$('ul');
+    for(var i = 0; i < lists.length; i++) {
+      new Sortable(lists[i], sortableOptions); 
+    }
     var ul = sortable(
       this.el.querySelectorAll('ul'), {
         connectWith: this.cid,
