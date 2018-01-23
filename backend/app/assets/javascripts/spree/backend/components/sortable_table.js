@@ -17,6 +17,13 @@ Spree.ready(function() {
           positions['positions['+objId+']'] = index + 1;
         }
       });
+
+      Spree.ajax({
+        type: 'POST',
+        dataType: 'script',
+        url: $(table).parent('table').data("sortable-link"),
+        data: positions,
+      });
     });
   });
 });
