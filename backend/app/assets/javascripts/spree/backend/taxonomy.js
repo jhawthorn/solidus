@@ -47,30 +47,20 @@ var TaxonTreeView = Backbone.View.extend({
       taxons: [this.model.get("root")]
     }));
 
-    console.log(this.cid);
-
     var sortableOptions = {
       group: {
         name: this.cid,
         pull: true,
         put: true
       },
-      forceFallback: true
+      forceFallback: true,
+      onEnd: this.handle_move.bind(this)
     };
 
     var lists = this.$('ul');
     for(var i = 0; i < lists.length; i++) {
-      new Sortable(lists[i], sortableOptions); 
+      new Sortable(lists[i], sortableOptions);
     }
-    var ul = sortable(
-      this.el.querySelectorAll('ul'), {
-        connectWith: this.cid,
-        forcePlaceholderSize: true,
-        placeholderClass: 'sortable-placeholder ui-state-highlight',
-        hoverClass: 'ui-sortable-over'
-      });
-
-    ul[0].addEventListener('sortupdate', this.handle_move.bind(this));
   },
 
   redraw_tree: function() {
@@ -79,8 +69,8 @@ var TaxonTreeView = Backbone.View.extend({
     });
   },
 
-  handle_move: function(e, ui) {
-    var el = $(e.detail.item);
+  handle_move: function(e) {
+    var el = $(e.item);
     this.update_taxon({
       id: el.data('taxon-id'),
       parent_id: el.parent().closest('li').data('taxon-id'),
