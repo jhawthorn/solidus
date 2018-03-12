@@ -32,6 +32,11 @@ describe "Product Display Order", type: :feature do
       assert_selected_taxons([taxon_1, taxon_2])
     end
 
+    ActionController::Base.class_eval do
+      before_action { sleep rand * 5 }
+    end
+
+    20.times do
     context "with an XSS attempt" do
       let(:taxon_name) { %(<script>throw("XSS")</script>) }
       let!(:taxon) { create(:taxon, name: taxon_name) }
@@ -42,6 +47,7 @@ describe "Product Display Order", type: :feature do
 
         expect(page).to have_content(taxon_name)
       end
+    end
     end
   end
 end

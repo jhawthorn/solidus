@@ -39,10 +39,14 @@ module CapybaraExt
       select: true
     }.merge(options)
     label = find_label_by_text(options[:from])
+    sleep rand
     within label.first(:xpath, ".//..") do
+      sleep rand
       options[:from] = "##{find('.select2-container')['id']}"
     end
+    sleep rand
     select2_search_without_selection(options[:search], from: options[:from])
+    sleep rand
     select_select2_result(value) if options[:select]
   end
 
